@@ -8,25 +8,27 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
     body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#f5f5f7; color:#111; }
-    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(32px); border:1px solid rgba(255,255,255,0.7); box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); }
+    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(40px); border:1px solid rgba(255,255,255,0.75); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
+    .glass-dark { background: rgba(30,30,30,0.92); backdrop-filter: blur(40px); }
     .page { display:none; }
     .page.active { display:block; }
-    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-end; z-index:200; }
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-end; z-index:999; }
     .modal.active { display:flex; }
-    .modal-content { background:#fff; width:100%; max-width:480px; margin:0 auto; border-radius:24px 24px 0 0; max-height:92vh; overflow:auto; }
+    .modal-content { background:#fff; width:100%; max-width:480px; margin:0 auto; border-radius:28px 28px 0 0; max-height:94vh; overflow:auto; box-shadow:0 -20px 30px rgba(0,0,0,0.1); }
     .nav-btn.active { color:#10b981; border-top:3px solid #10b981; }
-    .nav-bar { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(32px); border-top:1px solid #ddd; height:78px; z-index:100; }
+    .nav-bar { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(40px); border-top:1px solid #ddd; height:80px; z-index:100; }
+    .emerald-accent { color:#10b981; }
   </style>
 </head>
 <body>
 
 <!-- ONBOARDING -->
 <div id="onboarding" class="page active min-h-screen bg-gradient-to-br from-emerald-900 to-teal-900 flex items-center justify-center text-white">
-  <div class="text-center px-8">
-    <i class="fa-solid fa-leaf text-7xl mb-6"></i>
+  <div class="text-center px-8 max-w-xs">
+    <i class="fa-solid fa-leaf text-8xl mb-8 emerald-accent"></i>
     <h1 class="text-6xl font-bold tracking-tighter">Protein Outfitters</h1>
     <p class="mt-6 text-xl">Farm → Processor → You.<br>Direct. Fresh. Fair.</p>
-    <button onclick="goToAuth()" class="mt-16 w-full max-w-xs mx-auto bg-white text-black py-5 rounded-3xl font-semibold text-lg">Get Started</button>
+    <button onclick="goToAuth()" class="mt-16 w-full bg-white text-black py-5 rounded-3xl font-semibold text-lg">Get Started</button>
   </div>
 </div>
 
@@ -44,10 +46,10 @@
 <div id="role-select" class="page min-h-screen bg-white p-8">
   <h2 class="text-4xl font-semibold text-center mb-12">Who are you?</h2>
   <div class="grid grid-cols-2 gap-6">
-    <div onclick="selectRole('Consumer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-user text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Consumer</p></div>
-    <div onclick="selectRole('Farmer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-cow text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Farmer</p></div>
-    <div onclick="selectRole('Processor')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-industry text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Processor</p></div>
-    <div onclick="selectRole('Admin')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-shield-halved text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Admin</p></div>
+    <div onclick="selectRole('Consumer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-user text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Consumer</p></div>
+    <div onclick="selectRole('Farmer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-cow text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Farmer</p></div>
+    <div onclick="selectRole('Processor')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-industry text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Processor</p></div>
+    <div onclick="selectRole('Admin')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-shield-halved text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Admin</p></div>
   </div>
 </div>
 
@@ -55,7 +57,7 @@
 <div id="main-app" class="page hidden flex flex-col h-screen">
   <div class="glass px-6 py-4 flex justify-between items-center border-b">
     <div class="flex items-center gap-3">
-      <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
+      <i class="fa-solid fa-leaf text-3xl emerald-accent"></i>
       <span class="font-semibold text-2xl tracking-tighter">Protein Outfitters</span>
     </div>
     <div id="role-badge" class="glass px-5 py-1.5 rounded-3xl text-sm font-medium"></div>
@@ -83,20 +85,21 @@
 
     <div id="notifications-page" class="p-6 hidden">
       <h2 class="text-3xl font-semibold mb-6">Notifications</h2>
-      <div class="glass p-6 rounded-3xl">Your order is ready for pickup in Bemidji.</div>
+      <div class="glass p-6 rounded-3xl">Your Angus share is ready for pickup in Bemidji.</div>
     </div>
 
     <div id="profile-page" class="p-6 hidden">
       <h2 class="text-3xl font-semibold mb-6">Profile</h2>
-      <div class="glass p-8 rounded-3xl space-y-6 text-sm">
-        <div class="flex justify-between cursor-pointer" onclick="alert('Personal Information')">Personal Information <i class="fa-solid fa-chevron-right"></i></div>
-        <div class="flex justify-between cursor-pointer" onclick="alert('Security')">Security <i class="fa-solid fa-chevron-right"></i></div>
-        <div class="flex justify-between cursor-pointer" onclick="alert('Payment Methods')">Payment Methods <i class="fa-solid fa-chevron-right"></i></div>
+      <div class="glass p-8 rounded-3xl space-y-6">
+        <div onclick="showSubScreen('personal')" class="flex justify-between cursor-pointer"><span>Personal Information</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div onclick="showSubScreen('security')" class="flex justify-between cursor-pointer"><span>Security</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div onclick="showSubScreen('payment')" class="flex justify-between cursor-pointer"><span>Payment Methods</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div onclick="showSubScreen('orders')" class="flex justify-between cursor-pointer"><span>Order History</span><i class="fa-solid fa-chevron-right"></i></div>
+        <div onclick="showSubScreen('withdraw')" class="flex justify-between cursor-pointer"><span>Withdraw Funds</span><i class="fa-solid fa-chevron-right"></i></div>
       </div>
     </div>
   </div>
 
-  <!-- Bottom Navigation -->
   <div class="nav-bar flex justify-around text-xs font-medium">
     <button onclick="switchTab(0)" class="nav-btn flex flex-col items-center active"><i class="fa-solid fa-house text-2xl"></i>Home</button>
     <button onclick="switchTab(1)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-store text-2xl"></i>Market</button>
@@ -106,70 +109,50 @@
   </div>
 </div>
 
-<!-- Detail Modal with Weight Calculator -->
+<!-- LISTING DETAIL MODAL -->
 <div id="detail-modal" class="modal">
-  <div class="modal-content p-6">
-    <button onclick="closeModal()" class="text-4xl text-zinc-400 mb-4">×</button>
-    <h3 id="modal-name" class="text-3xl font-semibold"></h3>
-    <div class="mt-8 glass p-6 rounded-3xl">
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="text-xs font-medium text-zinc-500">Age (months)</label>
-          <input id="calc-age" type="number" value="18" oninput="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1">
+  <div class="modal-content">
+    <div class="p-6">
+      <button onclick="closeModal()" class="text-4xl text-zinc-400 mb-4">×</button>
+      <h3 id="modal-name" class="text-3xl font-semibold"></h3>
+      <div class="mt-8 glass p-6 rounded-3xl">
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="text-xs font-medium text-zinc-500">Age (months)</label><input id="calc-age" type="number" value="18" oninput="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1"></div>
+          <div><label class="text-xs font-medium text-zinc-500">Feed Type</label><select id="calc-feed" onchange="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1"><option value="grain">Grain-Fed</option><option value="grass">Grass-Fed</option></select></div>
         </div>
-        <div>
-          <label class="text-xs font-medium text-zinc-500">Feed Type</label>
-          <select id="calc-feed" onchange="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1">
-            <option value="grain">Grain-Fed</option>
-            <option value="grass">Grass-Fed</option>
-          </select>
+        <div class="mt-6 space-y-4 text-sm">
+          <div class="flex justify-between"><span>Live Weight</span><span id="live-wt" class="font-semibold">1,250 lbs</span></div>
+          <div class="flex justify-between"><span>Hanging Weight</span><span id="hanging-wt" class="font-semibold">775 lbs</span></div>
+          <div class="flex justify-between"><span>Take-Home Meat</span><span id="takehome-wt" class="font-semibold">519 lbs</span></div>
+          <div class="flex justify-between"><span>Price/lb</span><span id="price-lb" class="font-semibold">$13.75</span></div>
         </div>
+        <div class="mt-6 pt-6 border-t flex justify-between text-xl">
+          <span>Your Share</span>
+          <select id="share-size" onchange="updateCalculator()" class="font-semibold"><option value="1">Whole</option><option value="0.5">Half</option><option value="0.25">Quarter</option></select>
+        </div>
+        <div id="total-price" class="text-4xl font-bold emerald-accent mt-2">$7,156</div>
       </div>
-      <div class="mt-6 space-y-4 text-sm">
-        <div class="flex justify-between"><span>Live Weight</span><span id="live-wt" class="font-semibold">1,250 lbs</span></div>
-        <div class="flex justify-between"><span>Hanging Weight</span><span id="hanging-wt" class="font-semibold">775 lbs</span></div>
-        <div class="flex justify-between"><span>Take-Home Meat</span><span id="takehome-wt" class="font-semibold">519 lbs</span></div>
-        <div class="flex justify-between"><span>Price/lb</span><span id="price-lb" class="font-semibold">$13.75</span></div>
-      </div>
-      <div class="mt-6 pt-6 border-t flex justify-between text-xl">
-        <span>Your Share</span>
-        <select id="share-size" onchange="updateCalculator()" class="font-semibold">
-          <option value="1">Whole</option>
-          <option value="0.5">Half</option>
-          <option value="0.25">Quarter</option>
-        </select>
-      </div>
-      <div id="total-price" class="text-4xl font-bold text-emerald-600 mt-2">$7,156</div>
+      <button onclick="addToCart()" class="mt-8 w-full py-6 bg-black text-white rounded-3xl text-xl font-semibold flex items-center justify-center gap-4"><i class="fa-brands fa-apple-pay text-4xl"></i> Add to Bag</button>
     </div>
-    <button onclick="addToCart()" class="mt-8 w-full py-6 bg-black text-white rounded-3xl text-xl font-semibold flex items-center justify-center gap-4">
-      <i class="fa-brands fa-apple-pay text-4xl"></i> Add to Bag
-    </button>
+  </div>
+</div>
+
+<!-- CHECKOUT MODAL -->
+<div id="checkout-modal" class="modal">
+  <div class="modal-content p-8">
+    <h3 class="text-3xl font-semibold mb-8">Checkout</h3>
+    <button onclick="completePayment()" class="w-full h-16 bg-black text-white rounded-3xl text-2xl flex items-center justify-center gap-4"><i class="fa-brands fa-apple-pay text-5xl"></i> Pay with Apple Pay</button>
   </div>
 </div>
 
 <script>
-// Full functionality
 let currentRole = "Consumer";
 let cart = [];
+const listings = [{id:1, name:"Premium Angus Steer", price:13.75},{id:2, name:"Heritage Berkshire Pork", price:9.25}];
 
-const listings = [
-  {id:1, name:"Premium Angus Steer", price:13.75},
-  {id:2, name:"Heritage Berkshire Pork", price:9.25}
-];
-
-function goToAuth() {
-  document.getElementById("onboarding").classList.remove("active");
-  document.getElementById("auth").classList.add("active");
-}
-
-function demoLogin() {
-  goToRoleSelect();
-}
-
-function goToRoleSelect() {
-  document.getElementById("auth").classList.remove("active");
-  document.getElementById("role-select").classList.add("active");
-}
+function goToAuth() { document.getElementById("onboarding").classList.remove("active"); document.getElementById("auth").classList.add("active"); }
+function demoLogin() { goToRoleSelect(); }
+function goToRoleSelect() { document.getElementById("auth").classList.remove("active"); document.getElementById("role-select").classList.add("active"); }
 
 function selectRole(role) {
   currentRole = role;
@@ -184,8 +167,8 @@ function switchTab(n) {
   const pages = ["home-page","market-page","cart-page","notifications-page","profile-page"];
   document.getElementById(pages[n]).classList.remove("hidden");
   document.querySelectorAll(".nav-btn").forEach((b,i) => b.classList.toggle("active", i===n));
-  if (n === 1) renderMarket();
-  if (n === 2) renderCart();
+  if (n===1) renderMarket();
+  if (n===2) renderCart();
 }
 
 function renderMarket() {
@@ -206,9 +189,7 @@ function openDetail(l) {
   updateCalculator();
 }
 
-function closeModal() {
-  document.getElementById("detail-modal").classList.remove("active");
-}
+function closeModal() { document.getElementById("detail-modal").classList.remove("active"); }
 
 function updateCalculator() {
   const age = parseFloat(document.getElementById("calc-age").value) || 18;
@@ -226,23 +207,13 @@ function updateCalculator() {
   document.getElementById("total-price").textContent = "$" + total;
 }
 
-function addToCart() {
-  alert("Added to bag ✓");
-  closeModal();
-}
+function addToCart() { alert("Added to bag ✓"); closeModal(); }
+function renderCart() { document.getElementById("cart-items").innerHTML = "<p class='text-center text-zinc-500 py-12'>Your bag is empty</p>"; }
+function goToCheckout() { document.getElementById("checkout-modal").classList.add("active"); }
+function completePayment() { document.getElementById("checkout-modal").classList.remove("active"); alert("✅ Order complete!"); }
+function showSubScreen(screen) { alert(screen.toUpperCase() + " Screen"); }
 
-function renderCart() {
-  document.getElementById("cart-items").innerHTML = "<p class='text-center text-zinc-500 py-12'>Your bag is empty</p>";
-}
-
-function goToCheckout() {
-  alert("Going to checkout (Apple Pay ready)");
-}
-
-// Initialize
-window.onload = () => {
-  renderMarket();
-};
+window.onload = () => { renderMarket(); };
 </script>
 </body>
 </html>
