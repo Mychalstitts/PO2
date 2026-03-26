@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Protein Outfitters</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
+    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#f5f5f7; color:#111; }
+    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(32px); border:1px solid rgba(255,255,255,0.7); box-shadow:0 20px 25px -5px rgba(0,0,0,0.1); }
+    .page { display:none; }
+    .page.active { display:block; }
+    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-end; z-index:200; }
+    .modal.active { display:flex; }
+    .modal-content { background:#fff; width:100%; max-width:480px; margin:0 auto; border-radius:24px 24px 0 0; max-height:92vh; overflow:auto; }
+    .nav-btn.active { color:#10b981; border-top:3px solid #10b981; }
+    .nav-bar { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(32px); border-top:1px solid #ddd; height:78px; z-index:100; }
+  </style>
+</head>
+<body>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="page active min-h-screen bg-gradient-to-br from-emerald-900 to-teal-900 flex items-center justify-center text-white">
+  <div class="text-center px-8">
+    <i class="fa-solid fa-leaf text-7xl mb-6"></i>
+    <h1 class="text-6xl font-bold tracking-tighter">Protein Outfitters</h1>
+    <p class="mt-6 text-xl">Farm → Processor → You.<br>Direct. Fresh. Fair.</p>
+    <button onclick="goToAuth()" class="mt-16 w-full max-w-xs mx-auto bg-white text-black py-5 rounded-3xl font-semibold text-lg">Get Started</button>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div id="auth" class="page min-h-screen bg-white flex flex-col items-center justify-center p-8">
+  <div class="w-full max-w-md">
+    <h2 class="text-4xl font-semibold text-center mb-12">Sign in</h2>
+    <button onclick="demoLogin()" class="glass w-full py-5 rounded-3xl text-lg font-semibold mb-4 flex items-center justify-center gap-3"><i class="fa-brands fa-apple text-3xl"></i>Continue with Apple</button>
+    <button onclick="demoLogin()" class="glass w-full py-5 rounded-3xl text-lg font-semibold">Continue with Google</button>
+    <button onclick="goToRoleSelect()" class="mt-10 w-full text-emerald-600 font-semibold">Demo Mode – Skip Login</button>
+  </div>
+</div>
+
+<!-- ROLE SELECT -->
+<div id="role-select" class="page min-h-screen bg-white p-8">
+  <h2 class="text-4xl font-semibold text-center mb-12">Who are you?</h2>
+  <div class="grid grid-cols-2 gap-6">
+    <div onclick="selectRole('Consumer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-user text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Consumer</p></div>
+    <div onclick="selectRole('Farmer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-cow text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Farmer</p></div>
+    <div onclick="selectRole('Processor')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-industry text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Processor</p></div>
+    <div onclick="selectRole('Admin')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-shield-halved text-5xl mb-4 text-emerald-600"></i><p class="font-semibold">Admin</p></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" class="page hidden flex flex-col h-screen">
+  <div class="glass px-6 py-4 flex justify-between items-center border-b">
+    <div class="flex items-center gap-3">
+      <i class="fa-solid fa-leaf text-3xl text-emerald-600"></i>
+      <span class="font-semibold text-2xl tracking-tighter">Protein Outfitters</span>
+    </div>
+    <div id="role-badge" class="glass px-5 py-1.5 rounded-3xl text-sm font-medium"></div>
+  </div>
+
+  <div class="flex-1 overflow-y-auto pb-20" id="content-area">
+    <div id="home-page" class="p-6">
+      <h2 class="text-3xl font-semibold mb-6">Good morning, Mychal</h2>
+      <div id="role-home-content" class="glass p-8 rounded-3xl text-center">Welcome to your dashboard</div>
+    </div>
+
+    <div id="market-page" class="p-6 hidden">
+      <h2 class="text-3xl font-semibold mb-6">Marketplace</h2>
+      <div id="listing-grid" class="grid grid-cols-2 gap-6"></div>
+    </div>
+
+    <div id="cart-page" class="p-6 hidden">
+      <h2 class="text-3xl font-semibold mb-6">Your Bag</h2>
+      <div id="cart-items" class="space-y-6"></div>
+      <div class="mt-8 text-right">
+        <p class="text-2xl font-semibold">Total: $<span id="cart-total">0</span></p>
+        <button onclick="goToCheckout()" class="mt-8 w-full py-5 bg-black text-white rounded-3xl text-lg font-semibold">Checkout</button>
+      </div>
+    </div>
+
+    <div id="notifications-page" class="p-6 hidden">
+      <h2 class="text-3xl font-semibold mb-6">Notifications</h2>
+      <div class="glass p-6 rounded-3xl">Your order is ready for pickup in Bemidji.</div>
+    </div>
+
+    <div id="profile-page" class="p-6 hidden">
+      <h2 class="text-3xl font-semibold mb-6">Profile</h2>
+      <div class="glass p-8 rounded-3xl space-y-6 text-sm">
+        <div class="flex justify-between cursor-pointer" onclick="alert('Personal Information')">Personal Information <i class="fa-solid fa-chevron-right"></i></div>
+        <div class="flex justify-between cursor-pointer" onclick="alert('Security')">Security <i class="fa-solid fa-chevron-right"></i></div>
+        <div class="flex justify-between cursor-pointer" onclick="alert('Payment Methods')">Payment Methods <i class="fa-solid fa-chevron-right"></i></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="nav-bar flex justify-around text-xs font-medium">
+    <button onclick="switchTab(0)" class="nav-btn flex flex-col items-center active"><i class="fa-solid fa-house text-2xl"></i>Home</button>
+    <button onclick="switchTab(1)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-store text-2xl"></i>Market</button>
+    <button onclick="switchTab(2)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-bag-shopping text-2xl"></i>Bag</button>
+    <button onclick="switchTab(3)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-bell text-2xl"></i>Alerts</button>
+    <button onclick="switchTab(4)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-user text-2xl"></i>Me</button>
+  </div>
+</div>
+
+<!-- Detail Modal with Weight Calculator -->
+<div id="detail-modal" class="modal">
+  <div class="modal-content p-6">
+    <button onclick="closeModal()" class="text-4xl text-zinc-400 mb-4">×</button>
+    <h3 id="modal-name" class="text-3xl font-semibold"></h3>
+    <div class="mt-8 glass p-6 rounded-3xl">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-medium text-zinc-500">Age (months)</label>
+          <input id="calc-age" type="number" value="18" oninput="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1">
+        </div>
+        <div>
+          <label class="text-xs font-medium text-zinc-500">Feed Type</label>
+          <select id="calc-feed" onchange="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1">
+            <option value="grain">Grain-Fed</option>
+            <option value="grass">Grass-Fed</option>
+          </select>
+        </div>
+      </div>
+      <div class="mt-6 space-y-4 text-sm">
+        <div class="flex justify-between"><span>Live Weight</span><span id="live-wt" class="font-semibold">1,250 lbs</span></div>
+        <div class="flex justify-between"><span>Hanging Weight</span><span id="hanging-wt" class="font-semibold">775 lbs</span></div>
+        <div class="flex justify-between"><span>Take-Home Meat</span><span id="takehome-wt" class="font-semibold">519 lbs</span></div>
+        <div class="flex justify-between"><span>Price/lb</span><span id="price-lb" class="font-semibold">$13.75</span></div>
+      </div>
+      <div class="mt-6 pt-6 border-t flex justify-between text-xl">
+        <span>Your Share</span>
+        <select id="share-size" onchange="updateCalculator()" class="font-semibold">
+          <option value="1">Whole</option>
+          <option value="0.5">Half</option>
+          <option value="0.25">Quarter</option>
+        </select>
+      </div>
+      <div id="total-price" class="text-4xl font-bold text-emerald-600 mt-2">$7,156</div>
+    </div>
+    <button onclick="addToCart()" class="mt-8 w-full py-6 bg-black text-white rounded-3xl text-xl font-semibold flex items-center justify-center gap-4">
+      <i class="fa-brands fa-apple-pay text-4xl"></i> Add to Bag
+    </button>
+  </div>
+</div>
+
+<script>
+// Full functionality
+let currentRole = "Consumer";
+let cart = [];
+
+const listings = [
+  {id:1, name:"Premium Angus Steer", price:13.75},
+  {id:2, name:"Heritage Berkshire Pork", price:9.25}
+];
+
+function goToAuth() {
+  document.getElementById("onboarding").classList.remove("active");
+  document.getElementById("auth").classList.add("active");
+}
+
+function demoLogin() {
+  goToRoleSelect();
+}
+
+function goToRoleSelect() {
+  document.getElementById("auth").classList.remove("active");
+  document.getElementById("role-select").classList.add("active");
+}
+
+function selectRole(role) {
+  currentRole = role;
+  document.getElementById("role-select").classList.remove("active");
+  document.getElementById("main-app").classList.remove("hidden");
+  document.getElementById("role-badge").textContent = role;
+  switchTab(0);
+}
+
+function switchTab(n) {
+  document.querySelectorAll("#content-area > div").forEach(d => d.classList.add("hidden"));
+  const pages = ["home-page","market-page","cart-page","notifications-page","profile-page"];
+  document.getElementById(pages[n]).classList.remove("hidden");
+  document.querySelectorAll(".nav-btn").forEach((b,i) => b.classList.toggle("active", i===n));
+  if (n === 1) renderMarket();
+  if (n === 2) renderCart();
+}
+
+function renderMarket() {
+  const grid = document.getElementById("listing-grid");
+  grid.innerHTML = "";
+  listings.forEach(l => {
+    const card = document.createElement("div");
+    card.className = "glass p-6 rounded-3xl cursor-pointer";
+    card.innerHTML = `<div class="text-6xl mb-4">🐂</div><h4 class="font-semibold">${l.name}</h4><p class="text-emerald-600">$${l.price}/lb</p>`;
+    card.onclick = () => openDetail(l);
+    grid.appendChild(card);
+  });
+}
+
+function openDetail(l) {
+  document.getElementById("modal-name").textContent = l.name;
+  document.getElementById("detail-modal").classList.add("active");
+  updateCalculator();
+}
+
+function closeModal() {
+  document.getElementById("detail-modal").classList.remove("active");
+}
+
+function updateCalculator() {
+  const age = parseFloat(document.getElementById("calc-age").value) || 18;
+  const feed = document.getElementById("calc-feed").value;
+  const share = parseFloat(document.getElementById("share-size").value);
+  let live = 1100 + (age * 8);
+  let hanging = Math.round(live * 0.62);
+  let takehome = Math.round(hanging * 0.67);
+  let price = feed === "grain" ? 13.75 : 12.50;
+  let total = (takehome * price * share).toFixed(0);
+  document.getElementById("live-wt").textContent = live + " lbs";
+  document.getElementById("hanging-wt").textContent = hanging + " lbs";
+  document.getElementById("takehome-wt").textContent = takehome + " lbs";
+  document.getElementById("price-lb").textContent = "$" + price;
+  document.getElementById("total-price").textContent = "$" + total;
+}
+
+function addToCart() {
+  alert("Added to bag ✓");
+  closeModal();
+}
+
+function renderCart() {
+  document.getElementById("cart-items").innerHTML = "<p class='text-center text-zinc-500 py-12'>Your bag is empty</p>";
+}
+
+function goToCheckout() {
+  alert("Going to checkout (Apple Pay ready)");
+}
+
+// Initialize
+window.onload = () => {
+  renderMarket();
+};
+</script>
+</body>
+</html>
