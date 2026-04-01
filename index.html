@@ -1,219 +1,950 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Protein Outfitters</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap');
-    body { font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; margin:0; background:#f5f5f7; color:#111; }
-    .glass { background: rgba(255,255,255,0.92); backdrop-filter: blur(40px); border:1px solid rgba(255,255,255,0.75); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
-    .glass-dark { background: rgba(30,30,30,0.92); backdrop-filter: blur(40px); }
-    .page { display:none; }
-    .page.active { display:block; }
-    .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); align-items:flex-end; z-index:999; }
-    .modal.active { display:flex; }
-    .modal-content { background:#fff; width:100%; max-width:480px; margin:0 auto; border-radius:28px 28px 0 0; max-height:94vh; overflow:auto; box-shadow:0 -20px 30px rgba(0,0,0,0.1); }
-    .nav-btn.active { color:#10b981; border-top:3px solid #10b981; }
-    .nav-bar { position:fixed; bottom:0; left:0; right:0; background:rgba(255,255,255,0.95); backdrop-filter:blur(40px); border-top:1px solid #ddd; height:80px; z-index:100; }
-    .emerald-accent { color:#10b981; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protein Outfitters | Farm → Processor → You</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'SF Pro Display',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:#111;overflow-x:hidden}
+.glass{background:rgba(255,255,255,0.92);backdrop-filter:blur(40px);-webkit-backdrop-filter:blur(40px);border:1px solid rgba(255,255,255,0.75);box-shadow:0 25px 50px -12px rgba(0,0,0,0.15)}
+.glass-dark{background:rgba(20,20,20,0.92);backdrop-filter:blur(40px);color:#fff}
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+.screen{display:none}
+.screen.active{display:block}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.65);align-items:flex-end;z-index:999;overflow:hidden}
+.modal.active{display:flex}
+.modal-content{background:#fff;width:100%;max-width:480px;margin:0 auto;border-radius:28px 28px 0 0;max-height:94vh;overflow-y:auto;box-shadow:0 -20px 30px rgba(0,0,0,0.1)}
+.modal-sheet{background:#fff;width:100%;max-width:480px;margin:0 auto;border-radius:28px 28px 0 0;max-height:85vh;overflow-y:auto}
+.nav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;padding:8px 12px;color:#999;font-size:10px;font-weight:600;gap:3px;transition:color 0.2s;font-family:inherit;min-width:60px}
+.nav-btn.active{color:#10b981}
+.nav-btn i{font-size:22px}
+.nav-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,0.97);backdrop-filter:blur(40px);border-top:1px solid rgba(0,0,0,0.1);height:80px;z-index:100;display:flex;justify-content:space-around;align-items:center;max-width:480px;margin:0 auto}
+.emerald{color:#10b981}
+.emerald-bg{background:#10b981}
+.emerald-border{border-color:#10b981}
+.btn-primary{background:#10b981;color:#fff;border:none;padding:16px 32px;border-radius:100px;font-size:16px;font-weight:600;cursor:pointer;width:100%;display:block;font-family:inherit;transition:opacity 0.2s}
+.btn-primary:hover{opacity:0.9}
+.btn-black{background:#111;color:#fff;border:none;padding:16px 32px;border-radius:100px;font-size:16px;font-weight:600;cursor:pointer;width:100%;display:block;font-family:inherit;transition:opacity 0.2s}
+.btn-ghost{background:transparent;color:#10b981;border:2px solid #10b981;padding:14px 28px;border-radius:100px;font-size:15px;font-weight:600;cursor:pointer;width:100%;font-family:inherit}
+.card{background:#fff;border-radius:24px;padding:20px;box-shadow:0 2px 20px rgba(0,0,0,0.08);cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(0,0,0,0.12)}
+.tag{display:inline-block;padding:4px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.5px}
+.tag-green{background:#d1fae5;color:#065f46}
+.tag-orange{background:#ffedd5;color:#9a3412}
+.tag-blue{background:#dbeafe;color:#1e40af}
+.tag-red{background:#fee2e2;color:#991b1b}
+.progress-bar{height:8px;background:#e5e7eb;border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#10b981,#059669);border-radius:100px;transition:width 0.6s ease}
+.divider{height:1px;background:#f0f0f0;margin:16px 0}
+.input-field{width:100%;padding:16px;border:2px solid #e5e7eb;border-radius:16px;font-size:15px;font-family:inherit;outline:none;transition:border-color 0.2s;background:#fff}
+.input-field:focus{border-color:#10b981}
+.select-field{width:100%;padding:16px;border:2px solid #e5e7eb;border-radius:16px;font-size:15px;font-family:inherit;outline:none;background:#fff;cursor:pointer;appearance:none;-webkit-appearance:none}
+.section-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#999;margin-bottom:12px}
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid #f0f0f0;cursor:pointer}
+.list-item:last-child{border-bottom:none}
+.stat-box{background:linear-gradient(135deg,#10b981,#059669);color:#fff;border-radius:20px;padding:20px;text-align:center}
+.stat-box h3{font-size:28px;font-weight:800;margin-bottom:4px}
+.stat-box p{font-size:12px;opacity:0.85;font-weight:500}
+.avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px;flex-shrink:0}
+.notification-dot{width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:0;right:0}
+.back-btn{background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;color:#10b981;font-size:16px;font-weight:600;font-family:inherit;margin-bottom:20px;padding:0}
+.hero-img{width:100%;height:200px;object-fit:cover;border-radius:24px;background:linear-gradient(135deg,#064e3b,#065f46)}
+.scroll-x{overflow-x:auto;display:flex;gap:16px;padding-bottom:8px;scrollbar-width:none}
+.scroll-x::-webkit-scrollbar{display:none}
+.chip{display:inline-block;padding:8px 16px;border-radius:100px;font-size:13px;font-weight:600;white-space:nowrap;cursor:pointer;border:2px solid transparent;transition:all 0.2s}
+.chip.active{background:#10b981;color:#fff;border-color:#10b981}
+.chip.inactive{background:#f5f5f7;color:#555;border-color:#f5f5f7}
+.animal-icon{font-size:48px;margin-bottom:12px;display:block}
+.fraction-pill{display:flex;align-items:center;justify-content:center;width:64px;height:36px;border-radius:100px;font-size:13px;font-weight:700;border:2px solid #e5e7eb;cursor:pointer;transition:all 0.2s}
+.fraction-pill.selected{background:#10b981;color:#fff;border-color:#10b981}
+.calendar-day{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.calendar-day.available{background:#d1fae5;color:#065f46}
+.calendar-day.booked{background:#fee2e2;color:#991b1b;cursor:not-allowed}
+.calendar-day.selected{background:#10b981;color:#fff}
+.calendar-day.today{border:2px solid #10b981}
+.map-placeholder{width:100%;height:200px;background:linear-gradient(135deg,#1a1a2e,#16213e);border-radius:20px;display:flex;align-items:center;justify-content:center;color:#10b981;font-size:48px;position:relative;overflow:hidden}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:14px 24px;border-radius:100px;font-size:14px;font-weight:600;z-index:9999;opacity:0;transition:opacity 0.3s;white-space:nowrap}
+.toast.show{opacity:1}
+::-webkit-scrollbar{width:0}
+.app-wrapper{max-width:480px;margin:0 auto;position:relative;min-height:100vh;background:#f5f5f7}
+</style>
 </head>
 <body>
+<div class="app-wrapper" id="app">
 
-<!-- ONBOARDING -->
-<div id="onboarding" class="page active min-h-screen bg-gradient-to-br from-emerald-900 to-teal-900 flex items-center justify-center text-white">
-  <div class="text-center px-8 max-w-xs">
-    <i class="fa-solid fa-leaf text-8xl mb-8 emerald-accent"></i>
-    <h1 class="text-6xl font-bold tracking-tighter">Protein Outfitters</h1>
-    <p class="mt-6 text-xl">Farm → Processor → You.<br>Direct. Fresh. Fair.</p>
-    <button onclick="goToAuth()" class="mt-16 w-full bg-white text-black py-5 rounded-3xl font-semibold text-lg">Get Started</button>
+<!-- ========== ONBOARDING ========== -->
+<div id="page-onboarding" class="page active" style="background:linear-gradient(160deg,#064e3b 0%,#065f46 40%,#047857 100%);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:60px 32px 48px;color:#fff;text-align:center">
+  <div style="opacity:0.6;font-size:13px;font-weight:600;letter-spacing:2px;text-transform:uppercase">Farm Direct</div>
+  <div>
+    <div style="font-size:88px;margin-bottom:24px">🌿</div>
+    <h1 style="font-size:52px;font-weight:800;tracking:tighter;letter-spacing:-2px;line-height:1">Protein<br>Outfitters</h1>
+    <p style="margin-top:16px;font-size:18px;opacity:0.8;line-height:1.5">Farm → Processor → You<br><span style="font-size:15px;opacity:0.65">Direct. Fresh. Fair.</span></p>
+    <div style="margin-top:32px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <span style="background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600">🐂 Beef</span>
+      <span style="background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600">🐷 Pork</span>
+      <span style="background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600">🐑 Lamb</span>
+      <span style="background:rgba(255,255,255,0.15);padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600">🦌 Venison</span>
+    </div>
+  </div>
+  <div style="width:100%">
+    <button onclick="goTo('page-auth')" class="btn-black" style="background:#fff;color:#065f46;font-size:18px;padding:20px;margin-bottom:16px">Get Started</button>
+    <button onclick="demoMode()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit">Demo Mode – Skip Login</button>
   </div>
 </div>
 
-<!-- AUTH -->
-<div id="auth" class="page min-h-screen bg-white flex flex-col items-center justify-center p-8">
-  <div class="w-full max-w-md">
-    <h2 class="text-4xl font-semibold text-center mb-12">Sign in</h2>
-    <button onclick="demoLogin()" class="glass w-full py-5 rounded-3xl text-lg font-semibold mb-4 flex items-center justify-center gap-3"><i class="fa-brands fa-apple text-3xl"></i>Continue with Apple</button>
-    <button onclick="demoLogin()" class="glass w-full py-5 rounded-3xl text-lg font-semibold">Continue with Google</button>
-    <button onclick="goToRoleSelect()" class="mt-10 w-full text-emerald-600 font-semibold">Demo Mode – Skip Login</button>
+<!-- ========== AUTH ========== -->
+<div id="page-auth" class="page">
+  <div style="min-height:100vh;background:#fff;display:flex;flex-direction:column;justify-content:center;padding:48px 32px">
+    <button onclick="goTo('page-onboarding')" class="back-btn" style="position:absolute;top:52px;left:32px"><i class="fa-solid fa-arrow-left"></i></button>
+    <div style="text-align:center;margin-bottom:48px">
+      <div style="font-size:48px;margin-bottom:16px">🌿</div>
+      <h2 style="font-size:36px;font-weight:700">Welcome back</h2>
+      <p style="color:#999;margin-top:8px">Sign in to your account</p>
+    </div>
+    <div id="auth-tab-bar" style="display:flex;background:#f5f5f7;border-radius:16px;padding:4px;margin-bottom:32px">
+      <button onclick="toggleAuthTab(0)" class="auth-tab active" style="flex:1;padding:12px;border-radius:12px;border:none;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.1)">Sign In</button>
+      <button onclick="toggleAuthTab(1)" class="auth-tab" style="flex:1;padding:12px;border-radius:12px;border:none;font-weight:600;font-size:14px;cursor:pointer;font-family:inherit;background:transparent;color:#999">Sign Up</button>
+    </div>
+    <div id="login-form">
+      <div style="margin-bottom:16px"><input type="email" placeholder="Email address" class="input-field"></div>
+      <div style="margin-bottom:24px;position:relative"><input type="password" id="pw-field" placeholder="Password" class="input-field"><button onclick="togglePw()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#999"><i class="fa-solid fa-eye"></i></button></div>
+      <button onclick="completeAuth()" class="btn-primary" style="margin-bottom:16px;font-size:17px;padding:18px">Sign In</button>
+    </div>
+    <div id="signup-form" style="display:none">
+      <div style="margin-bottom:16px"><input type="text" placeholder="Full name" class="input-field"></div>
+      <div style="margin-bottom:16px"><input type="email" placeholder="Email address" class="input-field"></div>
+      <div style="margin-bottom:24px"><input type="password" placeholder="Create password" class="input-field"></div>
+      <button onclick="completeAuth()" class="btn-primary" style="margin-bottom:16px;font-size:17px;padding:18px">Create Account</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px"><div style="flex:1;height:1px;background:#eee"></div><span style="color:#ccc;font-size:13px">or continue with</span><div style="flex:1;height:1px;background:#eee"></div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button onclick="completeAuth()" class="glass" style="padding:16px;border-radius:16px;border:none;cursor:pointer;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit"><i class="fa-brands fa-apple" style="font-size:20px"></i>Apple</button>
+      <button onclick="completeAuth()" class="glass" style="padding:16px;border-radius:16px;border:none;cursor:pointer;font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit"><i class="fa-brands fa-google" style="color:#DB4437;font-size:18px"></i>Google</button>
+    </div>
   </div>
 </div>
 
-<!-- ROLE SELECT -->
-<div id="role-select" class="page min-h-screen bg-white p-8">
-  <h2 class="text-4xl font-semibold text-center mb-12">Who are you?</h2>
-  <div class="grid grid-cols-2 gap-6">
-    <div onclick="selectRole('Consumer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-user text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Consumer</p></div>
-    <div onclick="selectRole('Farmer')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-cow text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Farmer</p></div>
-    <div onclick="selectRole('Processor')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-industry text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Processor</p></div>
-    <div onclick="selectRole('Admin')" class="glass p-8 rounded-3xl text-center cursor-pointer hover:scale-105 transition"><i class="fa-solid fa-shield-halved text-5xl mb-4 emerald-accent"></i><p class="font-semibold">Admin</p></div>
+<!-- ========== ROLE SELECT ========== -->
+<div id="page-role-select" class="page">
+  <div style="min-height:100vh;background:#f5f5f7;padding:60px 24px 40px">
+    <div style="text-align:center;margin-bottom:40px">
+      <h2 style="font-size:34px;font-weight:800">Who are you?</h2>
+      <p style="color:#777;margin-top:8px;font-size:16px">Choose your role to get started</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+      <div onclick="selectRole('Consumer')" class="card" style="text-align:center;padding:28px 16px">
+        <span style="font-size:52px;display:block;margin-bottom:12px">🛒</span>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:6px">Consumer</h3>
+        <p style="font-size:12px;color:#777;line-height:1.4">Buy farm-direct meat. Quarter, half, or whole animal shares.</p>
+      </div>
+      <div onclick="selectRole('Farmer')" class="card" style="text-align:center;padding:28px 16px">
+        <span style="font-size:52px;display:block;margin-bottom:12px">🐄</span>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:6px">Farmer</h3>
+        <p style="font-size:12px;color:#777;line-height:1.4">List livestock, manage your ranch, track sales & earnings.</p>
+      </div>
+      <div onclick="selectRole('Processor')" class="card" style="text-align:center;padding:28px 16px">
+        <span style="font-size:52px;display:block;margin-bottom:12px">🏭</span>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:6px">Processor</h3>
+        <p style="font-size:12px;color:#777;line-height:1.4">Manage your processing calendar, bookings & capacity.</p>
+      </div>
+      <div onclick="selectRole('Admin')" class="card" style="text-align:center;padding:28px 16px">
+        <span style="font-size:52px;display:block;margin-bottom:12px">🛡️</span>
+        <h3 style="font-size:17px;font-weight:700;margin-bottom:6px">Admin</h3>
+        <p style="font-size:12px;color:#777;line-height:1.4">Platform command center, analytics & operations.</p>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- MAIN APP -->
-<div id="main-app" class="page hidden flex flex-col h-screen">
-  <div class="glass px-6 py-4 flex justify-between items-center border-b">
-    <div class="flex items-center gap-3">
-      <i class="fa-solid fa-leaf text-3xl emerald-accent"></i>
-      <span class="font-semibold text-2xl tracking-tighter">Protein Outfitters</span>
+<!-- ========== MAIN APP SHELL ========== -->
+<div id="page-main" class="page">
+  <!-- APP HEADER -->
+  <div id="app-header" style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;justify-content:space-between;align-items:center">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:24px">🌿</span>
+      <span style="font-weight:800;font-size:20px;letter-spacing:-0.5px">Protein Outfitters</span>
     </div>
-    <div id="role-badge" class="glass px-5 py-1.5 rounded-3xl text-sm font-medium"></div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span id="role-badge" style="background:#d1fae5;color:#065f46;padding:5px 14px;border-radius:100px;font-size:12px;font-weight:700"></span>
+      <button onclick="showNotifications()" style="background:none;border:none;cursor:pointer;position:relative;color:#555;font-size:20px"><i class="fa-solid fa-bell"></i><span id="notif-dot" style="width:8px;height:8px;background:#ef4444;border-radius:50%;position:absolute;top:0;right:0"></span></button>
+    </div>
   </div>
 
-  <div class="flex-1 overflow-y-auto pb-20" id="content-area">
-    <div id="home-page" class="p-6">
-      <h2 class="text-3xl font-semibold mb-6">Good morning, Mychal</h2>
-      <div id="role-home-content" class="glass p-8 rounded-3xl text-center">Welcome to your dashboard</div>
-    </div>
+  <!-- MAIN CONTENT AREA -->
+  <div id="main-content" style="padding-bottom:90px;min-height:calc(100vh - 70px)">
 
-    <div id="market-page" class="p-6 hidden">
-      <h2 class="text-3xl font-semibold mb-6">Marketplace</h2>
-      <div id="listing-grid" class="grid grid-cols-2 gap-6"></div>
-    </div>
-
-    <div id="cart-page" class="p-6 hidden">
-      <h2 class="text-3xl font-semibold mb-6">Your Bag</h2>
-      <div id="cart-items" class="space-y-6"></div>
-      <div class="mt-8 text-right">
-        <p class="text-2xl font-semibold">Total: $<span id="cart-total">0</span></p>
-        <button onclick="goToCheckout()" class="mt-8 w-full py-5 bg-black text-white rounded-3xl text-lg font-semibold">Checkout</button>
+    <!-- HOME SCREEN -->
+    <div id="screen-home" class="screen active" style="padding:20px">
+      <div id="home-consumer" class="role-home" style="display:none">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:4px">Good morning, Mychal 👋</h2>
+        <p style="color:#777;margin-bottom:24px">Find your next harvest-fresh share</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+          <div class="stat-box" onclick="switchTab(1)"><h3>24</h3><p>Animals Listed</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#f97316,#ea580c)"><h3>3</h3><p>Orders Active</p></div>
+        </div>
+        <div class="section-title">Featured Listings</div>
+        <div id="featured-listings" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px"></div>
+        <div class="section-title">Browse by Animal</div>
+        <div class="scroll-x" style="gap:12px">
+          <div onclick="filterMarket('beef')" class="card" style="padding:16px;text-align:center;min-width:90px"><span style="font-size:36px">🐂</span><p style="font-size:12px;font-weight:600;margin-top:8px">Beef</p></div>
+          <div onclick="filterMarket('pork')" class="card" style="padding:16px;text-align:center;min-width:90px"><span style="font-size:36px">🐷</span><p style="font-size:12px;font-weight:600;margin-top:8px">Pork</p></div>
+          <div onclick="filterMarket('lamb')" class="card" style="padding:16px;text-align:center;min-width:90px"><span style="font-size:36px">🐑</span><p style="font-size:12px;font-weight:600;margin-top:8px">Lamb</p></div>
+          <div onclick="filterMarket('chicken')" class="card" style="padding:16px;text-align:center;min-width:90px"><span style="font-size:36px">🐔</span><p style="font-size:12px;font-weight:600;margin-top:8px">Poultry</p></div>
+          <div onclick="filterMarket('venison')" class="card" style="padding:16px;text-align:center;min-width:90px"><span style="font-size:36px">🦌</span><p style="font-size:12px;font-weight:600;margin-top:8px">Venison</p></div>
+        </div>
+        <div style="margin-top:24px">
+          <div class="section-title">Nearby Processing</div>
+          <div class="card" onclick="goTo('page-processor-map')">
+            <div class="map-placeholder" style="margin-bottom:12px"><i class="fa-solid fa-map-location-dot"></i></div>
+            <p style="font-weight:600;margin-bottom:4px">Find Processors Near You</p>
+            <p style="font-size:13px;color:#777">3 processors within 50 miles</p>
+          </div>
+        </div>
+      </div>
+      <div id="home-farmer" class="role-home" style="display:none">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:4px">Ranch Dashboard 🐄</h2>
+        <p style="color:#777;margin-bottom:24px">Manage your listings & earnings</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:24px">
+          <div class="stat-box"><h3>5</h3><p>Active Listings</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#f97316,#ea580c)"><h3>$4.2K</h3><p>This Month</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><h3>18</h3><p>Orders</p></div>
+        </div>
+        <button onclick="goTo('page-create-listing')" class="btn-primary" style="margin-bottom:20px"><i class="fa-solid fa-plus"></i> Create New Listing</button>
+        <div class="section-title">Your Active Listings</div>
+        <div id="farmer-listings"></div>
+      </div>
+      <div id="home-processor" class="role-home" style="display:none">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:4px">Processing Hub 🏭</h2>
+        <p style="color:#777;margin-bottom:24px">Your calendar & bookings</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+          <div class="stat-box"><h3>12</h3><p>This Month</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#f97316,#ea580c)"><h3>3</h3><p>Upcoming</p></div>
+        </div>
+        <button onclick="goTo('page-processor-calendar')" class="btn-primary" style="margin-bottom:20px"><i class="fa-solid fa-calendar-days"></i> Manage Calendar</button>
+        <div class="section-title">Upcoming Bookings</div>
+        <div id="processor-bookings"></div>
+      </div>
+      <div id="home-admin" class="role-home" style="display:none">
+        <h2 style="font-size:28px;font-weight:800;margin-bottom:4px">Command Center 🛡️</h2>
+        <p style="color:#777;margin-bottom:24px">Platform overview</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+          <div class="stat-box"><h3>1,284</h3><p>Total Users</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#f97316,#ea580c)"><h3>$82K</h3><p>GMV This Month</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><h3>247</h3><p>Active Listings</p></div>
+          <div class="stat-box" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)"><h3>38</h3><p>Processors</p></div>
+        </div>
+        <button onclick="goTo('page-admin-center')" class="btn-primary"><i class="fa-solid fa-chart-line"></i> Full Analytics</button>
       </div>
     </div>
 
-    <div id="notifications-page" class="p-6 hidden">
-      <h2 class="text-3xl font-semibold mb-6">Notifications</h2>
-      <div class="glass p-6 rounded-3xl">Your Angus share is ready for pickup in Bemidji.</div>
+    <!-- MARKETPLACE SCREEN -->
+    <div id="screen-market" class="screen" style="padding:20px">
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:4px">Marketplace</h2>
+      <p style="color:#777;margin-bottom:20px">Farm-direct livestock & processed cuts</p>
+      <div style="display:flex;gap:8px;margin-bottom:16px">
+        <div style="flex:1;position:relative"><input type="text" placeholder="Search animals, farms..." class="input-field" style="padding-left:44px;padding-top:12px;padding-bottom:12px"><i class="fa-solid fa-magnifying-glass" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#999"></i></div>
+        <button onclick="showFilterModal()" style="background:#fff;border:2px solid #e5e7eb;border-radius:16px;padding:0 16px;cursor:pointer;font-size:18px;color:#555"><i class="fa-solid fa-sliders"></i></button>
+      </div>
+      <div class="scroll-x" style="margin-bottom:20px">
+        <span onclick="setMarketTab('live')" id="tab-live" class="chip active">🐂 Live Animals</span>
+        <span onclick="setMarketTab('cuts')" id="tab-cuts" class="chip inactive">🥩 Processed Cuts</span>
+        <span onclick="setMarketTab('hardware')" id="tab-hardware" class="chip inactive">⚙️ Equipment</span>
+      </div>
+      <div id="market-live" style="display:block">
+        <div id="market-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"></div>
+      </div>
+      <div id="market-cuts" style="display:none">
+        <div id="cuts-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"></div>
+      </div>
+      <div id="market-hardware" style="display:none">
+        <div id="hardware-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px"></div>
+      </div>
     </div>
 
-    <div id="profile-page" class="p-6 hidden">
-      <h2 class="text-3xl font-semibold mb-6">Profile</h2>
-      <div class="glass p-8 rounded-3xl space-y-6">
-        <div onclick="showSubScreen('personal')" class="flex justify-between cursor-pointer"><span>Personal Information</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div onclick="showSubScreen('security')" class="flex justify-between cursor-pointer"><span>Security</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div onclick="showSubScreen('payment')" class="flex justify-between cursor-pointer"><span>Payment Methods</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div onclick="showSubScreen('orders')" class="flex justify-between cursor-pointer"><span>Order History</span><i class="fa-solid fa-chevron-right"></i></div>
-        <div onclick="showSubScreen('withdraw')" class="flex justify-between cursor-pointer"><span>Withdraw Funds</span><i class="fa-solid fa-chevron-right"></i></div>
+    <!-- BAG SCREEN -->
+    <div id="screen-bag" class="screen" style="padding:20px">
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:20px">Your Bag</h2>
+      <div id="bag-empty" style="text-align:center;padding:60px 20px;display:none">
+        <div style="font-size:64px;margin-bottom:16px">🛍️</div>
+        <h3 style="font-size:20px;font-weight:700;margin-bottom:8px">Your bag is empty</h3>
+        <p style="color:#777;margin-bottom:24px">Browse the marketplace to add items</p>
+        <button onclick="switchTab(1)" class="btn-primary">Browse Marketplace</button>
+      </div>
+      <div id="bag-items" style="margin-bottom:24px"></div>
+      <div id="bag-summary" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="list-item"><span style="font-weight:600">Subtotal</span><span id="bag-subtotal">$0</span></div>
+          <div class="list-item"><span style="font-weight:600">Processing</span><span id="bag-processing">$0</span></div>
+          <div class="list-item"><span style="font-weight:600">Shipping</span><span>Calculated at checkout</span></div>
+          <div style="display:flex;justify-content:space-between;padding-top:16px;font-size:20px;font-weight:800"><span>Total</span><span class="emerald" id="bag-total">$0</span></div>
+        </div>
+        <button onclick="goTo('page-checkout')" class="btn-black" style="font-size:17px;padding:20px"><i class="fa-brands fa-apple-pay" style="font-size:24px"></i> Checkout</button>
+      </div>
+    </div>
+
+    <!-- ALERTS SCREEN -->
+    <div id="screen-alerts" class="screen" style="padding:20px">
+      <h2 style="font-size:28px;font-weight:800;margin-bottom:20px">Notifications</h2>
+      <div id="notif-list"></div>
+    </div>
+
+    <!-- PROFILE SCREEN -->
+    <div id="screen-profile" class="screen" style="padding:20px">
+      <div style="text-align:center;margin-bottom:32px">
+        <div class="avatar" style="width:80px;height:80px;font-size:32px;margin:0 auto 12px"><span id="avatar-initial">M</span></div>
+        <h2 style="font-size:24px;font-weight:700" id="profile-name">Mychal Stitts</h2>
+        <p style="color:#777;font-size:14px" id="profile-role-text">Consumer</p>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="list-item" onclick="goTo('page-personal-info')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-user emerald"></i><span style="font-weight:600">Personal Information</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        <div class="list-item" onclick="goTo('page-payment-methods')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-credit-card emerald"></i><span style="font-weight:600">Payment Methods</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        <div class="list-item" onclick="goTo('page-order-history')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-clock-rotate-left emerald"></i><span style="font-weight:600">Order History</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        <div class="list-item" onclick="goTo('page-shipping-tracker')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-truck emerald"></i><span style="font-weight:600">Track Shipments</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        <div class="list-item" onclick="goTo('page-security')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-shield-halved emerald"></i><span style="font-weight:600">Security</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        <div id="farmer-links" style="display:none">
+          <div class="list-item" onclick="goTo('page-withdraw')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-money-bill-wave emerald"></i><span style="font-weight:600">Withdraw Funds</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+          <div class="list-item" onclick="goTo('page-ranch-management')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-barn emerald" style="font-size:16px"></i><span style="font-weight:600">Ranch Management</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        </div>
+        <div id="processor-profile-links" style="display:none">
+          <div class="list-item" onclick="goTo('page-processor-calendar')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-calendar emerald"></i><span style="font-weight:600">Processing Calendar</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+          <div class="list-item" onclick="goTo('page-compliance')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-clipboard-check emerald"></i><span style="font-weight:600">Compliance & Standards</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        </div>
+        <div id="admin-profile-links" style="display:none">
+          <div class="list-item" onclick="goTo('page-admin-center')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-chart-line emerald"></i><span style="font-weight:600">Command Center</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+        </div>
+        <div class="list-item" onclick="goTo('page-support')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-headset emerald"></i><span style="font-weight:600">Support</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      </div>
+      <button onclick="logout()" class="btn-ghost" style="margin-top:8px;color:#ef4444;border-color:#ef4444">Sign Out</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV BAR -->
+  <div class="nav-bar">
+    <button onclick="switchTab(0)" class="nav-btn active" id="nav-0"><i class="fa-solid fa-house"></i>Home</button>
+    <button onclick="switchTab(1)" class="nav-btn" id="nav-1"><i class="fa-solid fa-store"></i>Market</button>
+    <button onclick="switchTab(2)" class="nav-btn" id="nav-2" style="position:relative"><i class="fa-solid fa-bag-shopping"></i>Bag<span id="bag-count" style="display:none;position:absolute;top:4px;right:12px;background:#ef4444;color:#fff;width:16px;height:16px;border-radius:50%;font-size:9px;font-weight:700;display:none;align-items:center;justify-content:center">0</span></button>
+    <button onclick="switchTab(3)" class="nav-btn" id="nav-3"><i class="fa-solid fa-bell"></i>Alerts</button>
+    <button onclick="switchTab(4)" class="nav-btn" id="nav-4"><i class="fa-solid fa-user"></i>Me</button>
+  </div>
+</div>
+
+<!-- ========== STANDALONE PAGES ========== -->
+
+<!-- LISTING DETAIL PAGE -->
+<div id="page-listing-detail" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Animal Detail</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:24px;padding:32px;text-align:center;color:#fff;margin-bottom:20px">
+      <div id="detail-animal-icon" style="font-size:80px;margin-bottom:16px">🐂</div>
+      <h1 id="detail-name" style="font-size:28px;font-weight:800;margin-bottom:8px">Premium Angus Steer</h1>
+      <p id="detail-farm" style="opacity:0.75;font-size:14px">Stittsworth Meats · Bemidji, MN</p>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+        <span class="tag tag-green" id="detail-breed">Angus</span>
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff" id="detail-age">18 months</span>
+        <span class="tag" style="background:rgba(255,255,255,0.2);color:#fff" id="detail-feed">Grain-Fed</span>
+      </div>
+    </div>
+    <!-- Sales Progress -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:700">Sales Progress</span><span id="detail-pct" class="emerald" style="font-weight:700">62% sold</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="detail-progress" style="width:62%"></div></div>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+        <span id="frac-whole" onclick="selectFraction('whole')" class="fraction-pill selected">Whole</span>
+        <span id="frac-half" onclick="selectFraction('half')" class="fraction-pill">½</span>
+        <span id="frac-quarter" onclick="selectFraction('quarter')" class="fraction-pill">¼</span>
+      </div>
+    </div>
+    <!-- AI Yield Calculator -->
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px"><span style="font-size:20px">🤖</span><h3 style="font-size:16px;font-weight:700">AI Yield Calculator</h3></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div><label style="font-size:12px;font-weight:600;color:#777;display:block;margin-bottom:6px">Age (months)</label><input id="calc-age" type="number" value="18" oninput="updateCalc()" class="input-field" style="padding:12px"></div>
+        <div><label style="font-size:12px;font-weight:600;color:#777;display:block;margin-bottom:6px">Feed Type</label><select id="calc-feed" onchange="updateCalc()" class="select-field" style="padding:12px"><option value="grain">Grain-Fed</option><option value="grass">Grass-Fed</option></select></div>
+      </div>
+      <div style="background:#f9fafb;border-radius:16px;padding:16px">
+        <div class="list-item" style="padding:8px 0"><span style="color:#777">Live Weight</span><span id="res-live" style="font-weight:700">1,250 lbs</span></div>
+        <div class="list-item" style="padding:8px 0"><span style="color:#777">Hanging Weight</span><span id="res-hang" style="font-weight:700">775 lbs</span></div>
+        <div class="list-item" style="padding:8px 0"><span style="color:#777">Take-Home</span><span id="res-take" style="font-weight:700">519 lbs</span></div>
+        <div class="list-item" style="padding:8px 0;border-bottom:none"><span style="color:#777">Price/lb</span><span id="res-price" style="font-weight:700">$13.75</span></div>
+      </div>
+    </div>
+    <!-- Pricing -->
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><p style="color:#777;font-size:14px">Your share price</p><div style="font-size:40px;font-weight:800;color:#10b981" id="detail-total">$7,156</div></div>
+        <div style="text-align:right"><p style="font-size:12px;color:#777">Kill Fee</p><p style="font-weight:700;margin-top:4px">$350</p><p style="font-size:12px;color:#777;margin-top:8px">Processing</p><p style="font-weight:700;margin-top:4px">~$1.25/lb</p></div>
+      </div>
+    </div>
+    <button onclick="addToBag()" class="btn-black" style="font-size:17px;padding:20px;margin-bottom:12px"><i class="fa-brands fa-apple-pay" style="font-size:24px"></i> Add to Bag</button>
+    <button onclick="goTo('page-book-processor')" class="btn-ghost">Book Processor First</button>
+  </div>
+</div>
+
+<!-- CHECKOUT PAGE -->
+<div id="page-checkout" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Checkout</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <!-- Step indicator -->
+    <div style="display:flex;align-items:center;margin-bottom:28px">
+      <div id="step-1-dot" style="width:32px;height:32px;border-radius:50%;background:#10b981;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">1</div>
+      <div style="flex:1;height:2px;background:#e5e7eb" id="step-line-1"></div>
+      <div id="step-2-dot" style="width:32px;height:32px;border-radius:50%;background:#e5e7eb;color:#999;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">2</div>
+      <div style="flex:1;height:2px;background:#e5e7eb" id="step-line-2"></div>
+      <div id="step-3-dot" style="width:32px;height:32px;border-radius:50%;background:#e5e7eb;color:#999;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">3</div>
+    </div>
+    <!-- Step 1: Delivery -->
+    <div id="checkout-step-1">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:20px">Delivery Address</h3>
+      <div style="display:grid;gap:12px;margin-bottom:24px">
+        <input type="text" placeholder="Full name" class="input-field">
+        <input type="text" placeholder="Street address" class="input-field">
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px">
+          <input type="text" placeholder="City" class="input-field">
+          <input type="text" placeholder="State" class="input-field">
+        </div>
+        <input type="text" placeholder="ZIP code" class="input-field">
+      </div>
+      <div class="card" style="margin-bottom:20px">
+        <h4 style="font-weight:700;margin-bottom:12px">Shipping Options</h4>
+        <label style="display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer;border-bottom:1px solid #f0f0f0"><input type="radio" name="ship" checked style="accent-color:#10b981"><div><p style="font-weight:600">Standard Insulated Box</p><p style="font-size:12px;color:#777">Dry ice + 2-day shipping</p></div><span style="margin-left:auto;font-weight:700">$85</span></label>
+        <label style="display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer"><input type="radio" name="ship" style="accent-color:#10b981"><div><p style="font-weight:600">Local Pickup</p><p style="font-size:12px;color:#777">Pickup at processor facility</p></div><span style="margin-left:auto;font-weight:700">Free</span></label>
+      </div>
+      <button onclick="checkoutNext(2)" class="btn-primary">Continue to Payment →</button>
+    </div>
+    <!-- Step 2: Payment -->
+    <div id="checkout-step-2" style="display:none">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:20px">Payment</h3>
+      <div class="card" style="margin-bottom:16px">
+        <h4 style="font-weight:700;margin-bottom:4px">Order Summary</h4>
+        <div class="divider"></div>
+        <div class="list-item"><span>Animal Share (¼ Angus Steer)</span><span style="font-weight:600">$1,789</span></div>
+        <div class="list-item"><span>Kill Fee</span><span style="font-weight:600">$87.50</span></div>
+        <div class="list-item"><span>Processing (~$1.25/lb)</span><span style="font-weight:600">$162</span></div>
+        <div class="list-item"><span>Shipping</span><span style="font-weight:600">$85</span></div>
+        <div class="divider"></div>
+        <div style="display:flex;justify-content:space-between;font-size:20px;font-weight:800"><span>Total</span><span class="emerald">$2,123.50</span></div>
+        <p style="font-size:11px;color:#999;margin-top:8px">Non-refundable deposit locks in your price. Balance due at pickup/delivery.</p>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <label style="display:flex;align-items:center;gap:12px;cursor:pointer"><input type="checkbox" style="accent-color:#10b981"><div><p style="font-weight:600">Kill-Fee Protection (+$25)</p><p style="font-size:12px;color:#777">Refund if animal condemned</p></div></label>
+      </div>
+      <button onclick="checkoutNext(3)" class="btn-black" style="font-size:17px;padding:20px;margin-bottom:12px"><i class="fa-brands fa-apple-pay" style="font-size:24px"></i> Pay with Apple Pay</button>
+      <button class="btn-ghost">Enter Card Manually</button>
+    </div>
+    <!-- Step 3: Confirmation -->
+    <div id="checkout-step-3" style="display:none;text-align:center;padding:40px 0">
+      <div style="font-size:80px;margin-bottom:20px">✅</div>
+      <h2 style="font-size:30px;font-weight:800;margin-bottom:12px">Order Confirmed!</h2>
+      <p style="color:#777;margin-bottom:8px">Order #PO-2024-1847</p>
+      <p style="color:#777;margin-bottom:32px">You'll be notified when the farmer books a processor.</p>
+      <div class="card" style="text-align:left;margin-bottom:24px">
+        <div class="list-item"><span>Animal</span><span style="font-weight:600">¼ Angus Steer</span></div>
+        <div class="list-item"><span>Farm</span><span style="font-weight:600">Stittsworth Meats</span></div>
+        <div class="list-item"><span>Est. Processing</span><span style="font-weight:600">~3-6 weeks</span></div>
+        <div class="list-item"><span>Amount Paid</span><span style="font-weight:600;color:#10b981">$2,123.50</span></div>
+      </div>
+      <button onclick="goTo('page-main');switchTab(0)" class="btn-primary">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- CREATE LISTING PAGE -->
+<div id="page-create-listing" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Create Listing</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="display:grid;gap:16px">
+      <div><label class="section-title">Animal Type</label>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div onclick="selectAnimalType('beef')" class="card" style="text-align:center;padding:16px" id="type-beef"><span style="font-size:32px">🐂</span><p style="font-size:12px;font-weight:600;margin-top:8px">Beef</p></div>
+          <div onclick="selectAnimalType('pork')" class="card" style="text-align:center;padding:16px" id="type-pork"><span style="font-size:32px">🐷</span><p style="font-size:12px;font-weight:600;margin-top:8px">Pork</p></div>
+          <div onclick="selectAnimalType('lamb')" class="card" style="text-align:center;padding:16px" id="type-lamb"><span style="font-size:32px">🐑</span><p style="font-size:12px;font-weight:600;margin-top:8px">Lamb</p></div>
+          <div onclick="selectAnimalType('chicken')" class="card" style="text-align:center;padding:16px" id="type-chicken"><span style="font-size:32px">🐔</span><p style="font-size:12px;font-weight:600;margin-top:8px">Poultry</p></div>
+          <div onclick="selectAnimalType('venison')" class="card" style="text-align:center;padding:16px" id="type-venison"><span style="font-size:32px">🦌</span><p style="font-size:12px;font-weight:600;margin-top:8px">Venison</p></div>
+          <div onclick="selectAnimalType('other')" class="card" style="text-align:center;padding:16px" id="type-other"><span style="font-size:32px">🐾</span><p style="font-size:12px;font-weight:600;margin-top:8px">Other</p></div>
+        </div>
+      </div>
+      <div><label class="section-title">Listing Title</label><input type="text" placeholder="e.g. Premium Angus Steer" class="input-field"></div>
+      <div><label class="section-title">Breed</label><input type="text" placeholder="e.g. Angus, Hereford, Berkshire..." class="input-field"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div><label class="section-title">Age (months)</label><input type="number" id="listing-age" value="18" oninput="updateListingCalc()" class="input-field"></div>
+        <div><label class="section-title">Feed Type</label><select id="listing-feed" onchange="updateListingCalc()" class="select-field"><option value="grain">Grain-Fed</option><option value="grass">Grass-Fed</option><option value="mixed">Mixed</option></select></div>
+      </div>
+      <!-- AI Yield Preview -->
+      <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-radius:20px;padding:16px;border:2px solid #bbf7d0">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span>🤖</span><span style="font-weight:700;font-size:14px">AI Yield Estimate</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div style="background:#fff;border-radius:12px;padding:10px;text-align:center"><div id="listing-live" style="font-weight:800;color:#10b981">1,250 lbs</div><div style="font-size:11px;color:#777">Live Weight</div></div>
+          <div style="background:#fff;border-radius:12px;padding:10px;text-align:center"><div id="listing-take" style="font-weight:800;color:#10b981">519 lbs</div><div style="font-size:11px;color:#777">Take-Home</div></div>
+        </div>
+      </div>
+      <div><label class="section-title">Price per lb (Hanging Weight)</label><input type="number" placeholder="e.g. 13.75" class="input-field"></div>
+      <div><label class="section-title">Must Process By Date</label><input type="date" class="input-field"></div>
+      <div><label class="section-title">Description</label><textarea placeholder="Describe your animal, feeding practices, certifications..." class="input-field" style="height:100px;resize:none"></textarea></div>
+      <button onclick="submitListing()" class="btn-primary" style="font-size:17px;padding:18px">🚀 Publish Listing</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESSOR CALENDAR PAGE -->
+<div id="page-processor-calendar" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Processing Calendar</h2>
+    <button onclick="goTo('page-processor-settings')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:#10b981;font-weight:600;font-size:14px;font-family:inherit">Settings</button>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px">
+      <div class="stat-box"><h3>$2,840</h3><p>This Month</p></div>
+      <div class="stat-box" style="background:linear-gradient(135deg,#f97316,#ea580c)"><h3>85%</h3><p>Capacity Used</p></div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <button style="background:none;border:none;cursor:pointer;font-size:20px;color:#555"><i class="fa-solid fa-chevron-left"></i></button>
+        <h3 id="cal-month" style="font-size:18px;font-weight:700">April 2026</h3>
+        <button style="background:none;border:none;cursor:pointer;font-size:20px;color:#555"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;margin-bottom:8px">
+        <div style="font-size:11px;font-weight:600;color:#999">S</div><div style="font-size:11px;font-weight:600;color:#999">M</div><div style="font-size:11px;font-weight:600;color:#999">T</div><div style="font-size:11px;font-weight:600;color:#999">W</div><div style="font-size:11px;font-weight:600;color:#999">T</div><div style="font-size:11px;font-weight:600;color:#999">F</div><div style="font-size:11px;font-weight:600;color:#999">S</div>
+      </div>
+      <div id="calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center"></div>
+    </div>
+    <div class="section-title">Upcoming Bookings</div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700">Stittsworth Farms – 2x Angus</span><span class="tag tag-green">Confirmed</span></div>
+      <p style="font-size:14px;color:#777;margin-bottom:8px"><i class="fa-solid fa-calendar"></i> Apr 15, 2026 · 8:00 AM</p>
+      <div style="display:flex;gap:8px;font-size:13px;color:#777"><span><i class="fa-solid fa-scale-balanced"></i> ~2,500 lbs hanging</span><span><i class="fa-solid fa-dollar-sign"></i> $3,125 est.</span></div>
+      <button onclick="showToast('Booking details sent to farmer!')" class="btn-ghost" style="margin-top:12px;padding:10px">View Details</button>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700">Green Valley Ranch – Berkshire Pork</span><span class="tag tag-orange">Pending</span></div>
+      <p style="font-size:14px;color:#777;margin-bottom:8px"><i class="fa-solid fa-calendar"></i> Apr 22, 2026 · 7:30 AM</p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button onclick="showToast('Booking confirmed!')" class="btn-primary" style="flex:1;padding:10px">Accept</button>
+        <button onclick="showToast('Booking declined')" class="btn-ghost" style="flex:1;padding:10px">Decline</button>
       </div>
     </div>
   </div>
+</div>
 
-  <div class="nav-bar flex justify-around text-xs font-medium">
-    <button onclick="switchTab(0)" class="nav-btn flex flex-col items-center active"><i class="fa-solid fa-house text-2xl"></i>Home</button>
-    <button onclick="switchTab(1)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-store text-2xl"></i>Market</button>
-    <button onclick="switchTab(2)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-bag-shopping text-2xl"></i>Bag</button>
-    <button onclick="switchTab(3)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-bell text-2xl"></i>Alerts</button>
-    <button onclick="switchTab(4)" class="nav-btn flex flex-col items-center"><i class="fa-solid fa-user text-2xl"></i>Me</button>
+<!-- ORDER HISTORY PAGE -->
+<div id="page-order-history" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Order History</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div id="orders-list"></div>
   </div>
 </div>
 
-<!-- LISTING DETAIL MODAL -->
-<div id="detail-modal" class="modal">
-  <div class="modal-content">
-    <div class="p-6">
-      <button onclick="closeModal()" class="text-4xl text-zinc-400 mb-4">×</button>
-      <h3 id="modal-name" class="text-3xl font-semibold"></h3>
-      <div class="mt-8 glass p-6 rounded-3xl">
-        <div class="grid grid-cols-2 gap-4">
-          <div><label class="text-xs font-medium text-zinc-500">Age (months)</label><input id="calc-age" type="number" value="18" oninput="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1"></div>
-          <div><label class="text-xs font-medium text-zinc-500">Feed Type</label><select id="calc-feed" onchange="updateCalculator()" class="glass w-full p-4 rounded-3xl mt-1"><option value="grain">Grain-Fed</option><option value="grass">Grass-Fed</option></select></div>
-        </div>
-        <div class="mt-6 space-y-4 text-sm">
-          <div class="flex justify-between"><span>Live Weight</span><span id="live-wt" class="font-semibold">1,250 lbs</span></div>
-          <div class="flex justify-between"><span>Hanging Weight</span><span id="hanging-wt" class="font-semibold">775 lbs</span></div>
-          <div class="flex justify-between"><span>Take-Home Meat</span><span id="takehome-wt" class="font-semibold">519 lbs</span></div>
-          <div class="flex justify-between"><span>Price/lb</span><span id="price-lb" class="font-semibold">$13.75</span></div>
-        </div>
-        <div class="mt-6 pt-6 border-t flex justify-between text-xl">
-          <span>Your Share</span>
-          <select id="share-size" onchange="updateCalculator()" class="font-semibold"><option value="1">Whole</option><option value="0.5">Half</option><option value="0.25">Quarter</option></select>
-        </div>
-        <div id="total-price" class="text-4xl font-bold emerald-accent mt-2">$7,156</div>
+<!-- SHIPPING TRACKER PAGE -->
+<div id="page-shipping-tracker" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Shipment Tracker</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div><h3 style="font-weight:700">Order #PO-2024-1847</h3><p style="font-size:13px;color:#777">¼ Angus Steer · Stittsworth Meats</p></div>
+        <span class="tag tag-blue">In Transit</span>
       </div>
-      <button onclick="addToCart()" class="mt-8 w-full py-6 bg-black text-white rounded-3xl text-xl font-semibold flex items-center justify-center gap-4"><i class="fa-brands fa-apple-pay text-4xl"></i> Add to Bag</button>
+      <div class="map-placeholder"><i class="fa-solid fa-truck"></i></div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <h3 style="font-weight:700;margin-bottom:20px">Tracking Timeline</h3>
+      <div style="position:relative;padding-left:28px">
+        <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:#e5e7eb"></div>
+        <div style="margin-bottom:24px;position:relative"><div style="position:absolute;left:-24px;width:16px;height:16px;border-radius:50%;background:#10b981;border:3px solid #fff;box-shadow:0 0 0 2px #10b981"></div><p style="font-weight:700;font-size:14px">In Transit</p><p style="font-size:12px;color:#777">FedEx · Minneapolis, MN → Your address</p><p style="font-size:11px;color:#10b981;font-weight:600">TODAY · 2:30 PM</p></div>
+        <div style="margin-bottom:24px;position:relative"><div style="position:absolute;left:-24px;width:16px;height:16px;border-radius:50%;background:#10b981;border:3px solid #fff;box-shadow:0 0 0 2px #10b981"></div><p style="font-weight:700;font-size:14px;color:#777">Packaged & Shipped</p><p style="font-size:12px;color:#999">Dry ice + insulated box sealed</p><p style="font-size:11px;color:#777;font-weight:600">Apr 12 · 9:00 AM</p></div>
+        <div style="margin-bottom:24px;position:relative"><div style="position:absolute;left:-24px;width:16px;height:16px;border-radius:50%;background:#10b981;border:3px solid #fff;box-shadow:0 0 0 2px #10b981"></div><p style="font-weight:700;font-size:14px;color:#777">Processing Complete</p><p style="font-size:12px;color:#999">Cut, wrapped & frozen at processor</p><p style="font-size:11px;color:#777;font-weight:600">Apr 12 · 6:00 AM</p></div>
+        <div style="position:relative"><div style="position:absolute;left:-24px;width:16px;height:16px;border-radius:50%;background:#e5e7eb"></div><p style="font-weight:700;font-size:14px;color:#ccc">Delivered</p><p style="font-size:12px;color:#ccc">Expected Apr 14</p></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- CHECKOUT MODAL -->
-<div id="checkout-modal" class="modal">
-  <div class="modal-content p-8">
-    <h3 class="text-3xl font-semibold mb-8">Checkout</h3>
-    <button onclick="completePayment()" class="w-full h-16 bg-black text-white rounded-3xl text-2xl flex items-center justify-center gap-4"><i class="fa-brands fa-apple-pay text-5xl"></i> Pay with Apple Pay</button>
+<!-- ADMIN COMMAND CENTER -->
+<div id="page-admin-center" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,0.1);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0;color:#10b981"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700;color:#fff">Command Center</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px;background:#0a0a0a;min-height:100vh">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
+      <div style="background:linear-gradient(135deg,#10b981,#059669);border-radius:20px;padding:20px;color:#fff"><div style="font-size:32px;font-weight:800">1,284</div><div style="font-size:12px;opacity:0.8;margin-top:4px">Total Users</div><div style="font-size:11px;opacity:0.6;margin-top:8px">↑ 12% this week</div></div>
+      <div style="background:linear-gradient(135deg,#f97316,#ea580c);border-radius:20px;padding:20px;color:#fff"><div style="font-size:32px;font-weight:800">$82K</div><div style="font-size:12px;opacity:0.8;margin-top:4px">GMV This Month</div><div style="font-size:11px;opacity:0.6;margin-top:8px">↑ 28% vs last month</div></div>
+      <div style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);border-radius:20px;padding:20px;color:#fff"><div style="font-size:32px;font-weight:800">247</div><div style="font-size:12px;opacity:0.8;margin-top:4px">Active Listings</div><div style="font-size:11px;opacity:0.6;margin-top:8px">38 processors</div></div>
+      <div style="background:linear-gradient(135deg,#0ea5e9,#0284c7);border-radius:20px;padding:20px;color:#fff"><div style="font-size:32px;font-weight:800">94%</div><div style="font-size:12px;opacity:0.8;margin-top:4px">Fulfillment Rate</div><div style="font-size:11px;opacity:0.6;margin-top:8px">Target: 95%</div></div>
+    </div>
+    <div style="background:#1a1a1a;border-radius:20px;padding:20px;margin-bottom:16px">
+      <h3 style="color:#fff;font-weight:700;margin-bottom:16px">Pending Actions</h3>
+      <div style="border-bottom:1px solid #333;padding-bottom:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><div><p style="color:#fff;font-weight:600;font-size:14px">Dispute: Order #PO-2024-1823</p><p style="color:#777;font-size:12px">Consumer claims short weight</p></div><button onclick="goTo('page-dispute-resolution')" style="background:#ef4444;color:#fff;border:none;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Resolve</button></div>
+      <div style="border-bottom:1px solid #333;padding-bottom:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><div><p style="color:#fff;font-weight:600;font-size:14px">New Processor Application</p><p style="color:#777;font-size:12px">Northern MN Meats · Duluth</p></div><button onclick="showToast('Application reviewed!')" style="background:#10b981;color:#fff;border:none;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Review</button></div>
+      <div style="display:flex;justify-content:space-between;align-items:center"><div><p style="color:#fff;font-weight:600;font-size:14px">OTM Alert: 2 Animals</p><p style="color:#777;font-size:12px">Over 30 months — SRM removal required</p></div><button onclick="showToast('Farmers notified!')" style="background:#f97316;color:#fff;border:none;padding:8px 16px;border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Notify</button></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <button onclick="goTo('page-compliance')" style="background:#1a1a1a;border:1px solid #333;color:#fff;padding:20px;border-radius:20px;cursor:pointer;font-family:inherit;text-align:center"><i class="fa-solid fa-clipboard-check" style="color:#10b981;font-size:24px;display:block;margin-bottom:8px"></i><span style="font-weight:600;font-size:14px">Compliance</span></button>
+      <button onclick="goTo('page-processing-catalog')" style="background:#1a1a1a;border:1px solid #333;color:#fff;padding:20px;border-radius:20px;cursor:pointer;font-family:inherit;text-align:center"><i class="fa-solid fa-gear" style="color:#f97316;font-size:24px;display:block;margin-bottom:8px"></i><span style="font-weight:600;font-size:14px">Equipment</span></button>
+      <button onclick="goTo('page-intelligence')" style="background:#1a1a1a;border:1px solid #333;color:#fff;padding:20px;border-radius:20px;cursor:pointer;font-family:inherit;text-align:center"><i class="fa-solid fa-brain" style="color:#8b5cf6;font-size:24px;display:block;margin-bottom:8px"></i><span style="font-weight:600;font-size:14px">Market Intel</span></button>
+      <button onclick="goTo('page-dispute-resolution')" style="background:#1a1a1a;border:1px solid #333;color:#fff;padding:20px;border-radius:20px;cursor:pointer;font-family:inherit;text-align:center"><i class="fa-solid fa-gavel" style="color:#ef4444;font-size:24px;display:block;margin-bottom:8px"></i><span style="font-weight:600;font-size:14px">Disputes</span></button>
+    </div>
   </div>
 </div>
 
+<!-- INTELLIGENCE PAGE -->
+<div id="page-intelligence" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Market Intelligence</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <h3 style="font-weight:700;margin-bottom:16px">🤖 AI Market Insights</h3>
+      <div style="background:#f0fdf4;border-radius:16px;padding:16px;margin-bottom:12px"><p style="font-size:14px;color:#065f46;line-height:1.5"><strong>Demand Forecast:</strong> Beef demand expected to rise 15% in Q2. Consider listing additional Angus steers now to lock in current pricing.</p></div>
+      <div style="background:#fffbeb;border-radius:16px;padding:16px;margin-bottom:12px"><p style="font-size:14px;color:#92400e;line-height:1.5"><strong>Processing Bottleneck:</strong> 3 processors within 100 miles are near capacity in May. Book early to avoid delays.</p></div>
+      <div style="background:#eff6ff;border-radius:16px;padding:16px"><p style="font-size:14px;color:#1e40af;line-height:1.5"><strong>Price Trend:</strong> Grass-fed beef premiums averaging $2.50/lb over grain-fed in your region this quarter.</p></div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <h3 style="font-weight:700;margin-bottom:16px">Price Benchmarks (Hanging Weight)</h3>
+      <div class="list-item"><div style="display:flex;align-items:center;gap:8px"><span>🐂</span><span style="font-weight:600">Beef (Grain)</span></div><span style="font-weight:700;color:#10b981">$13.75/lb</span></div>
+      <div class="list-item"><div style="display:flex;align-items:center;gap:8px"><span>🐂</span><span style="font-weight:600">Beef (Grass)</span></div><span style="font-weight:700;color:#10b981">$16.25/lb</span></div>
+      <div class="list-item"><div style="display:flex;align-items:center;gap:8px"><span>🐷</span><span style="font-weight:600">Pork</span></div><span style="font-weight:700;color:#10b981">$9.25/lb</span></div>
+      <div class="list-item" style="border-bottom:none"><div style="display:flex;align-items:center;gap:8px"><span>🐑</span><span style="font-weight:600">Lamb</span></div><span style="font-weight:700;color:#10b981">$14.50/lb</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESSING UNIT CATALOG -->
+<div id="page-processing-catalog" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Processing Units</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <p style="color:#777;margin-bottom:24px">Modular on-farm processing systems by Protein Outfitters</p>
+    <div class="card" style="margin-bottom:16px;border:2px solid #10b981">
+      <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:16px;padding:20px;text-align:center;color:#fff;margin-bottom:16px"><div style="font-size:48px;margin-bottom:8px">⚙️</div><h3 style="font-size:22px;font-weight:800">PS1 Mobile Unit</h3><span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:100px;font-size:12px;font-weight:600">Most Popular</span></div>
+      <div style="margin-bottom:16px"><p style="font-size:14px;color:#777;line-height:1.6">Complete mobile slaughter & processing unit. Fits on a standard flatbed trailer. USDA-inspectable. Harvest up to 8 cattle/day or 20 hogs/day.</p></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+        <div style="background:#f9fafb;border-radius:12px;padding:12px;text-align:center"><div style="font-weight:700;color:#10b981">8 head/day</div><div style="font-size:11px;color:#777">Beef Capacity</div></div>
+        <div style="background:#f9fafb;border-radius:12px;padding:12px;text-align:center"><div style="font-weight:700;color:#10b981">20 hogs/day</div><div style="font-size:11px;color:#777">Pork Capacity</div></div>
+        <div style="background:#f9fafb;border-radius:12px;padding:12px;text-align:center"><div style="font-weight:700;color:#10b981">USDA</div><div style="font-size:11px;color:#777">Inspectable</div></div>
+        <div style="background:#f9fafb;border-radius:12px;padding:12px;text-align:center"><div style="font-weight:700;color:#10b981">Semi-Auto</div><div style="font-size:11px;color:#777">Cut & Wrap</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:28px;font-weight:800;color:#10b981">$185,000</span><span style="color:#777;font-size:14px">Financing available</span></div>
+      <button onclick="showToast('Request sent! Our team will contact you within 24 hours.')" class="btn-primary">Request Quote</button>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div style="background:linear-gradient(135deg,#1e40af,#1d4ed8);border-radius:16px;padding:20px;text-align:center;color:#fff;margin-bottom:16px"><div style="font-size:48px;margin-bottom:8px">🧊</div><h3 style="font-size:22px;font-weight:800">CS1 Cold Storage</h3></div>
+      <p style="font-size:14px;color:#777;line-height:1.6;margin-bottom:16px">Portable refrigerated aging room. 500 sq ft capacity. Walk-in cooler + freezer combo. Perfect complement to PS1.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><span style="font-size:28px;font-weight:800;color:#1d4ed8">$48,000</span><span style="color:#777;font-size:14px">Bundle discount available</span></div>
+      <button onclick="showToast('Request sent!')" class="btn-ghost">Request Quote</button>
+    </div>
+  </div>
+</div>
+
+<!-- COMPLIANCE PAGE -->
+<div id="page-compliance" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Compliance Hub</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:20px;padding:20px;color:#fff;margin-bottom:20px">
+      <h3 style="font-weight:700;margin-bottom:8px">Compliance Status</h3>
+      <div style="display:flex;align-items:center;gap:8px"><i class="fa-solid fa-circle-check" style="color:#4ade80;font-size:20px"></i><span>All systems compliant</span></div>
+    </div>
+    <div class="section-title">Age Tracking (OTM Rules)</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="list-item"><span style="font-weight:600">Animals < 30 months</span><span class="tag tag-green">Clear</span></div>
+      <div class="list-item"><span style="font-weight:600">Animals 30-42 months</span><span class="tag tag-orange">SRM Removal Required</span></div>
+      <div class="list-item" style="border-bottom:none"><span style="font-weight:600">Animals > 42 months</span><span class="tag tag-red">Contact Admin</span></div>
+    </div>
+    <div class="section-title">HACCP Standards</div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="list-item" onclick="showToast('Opening HACCP documentation...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-file-shield emerald"></i><span style="font-weight:600">HACCP Plan</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      <div class="list-item" onclick="showToast('Opening inspection protocols...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-clipboard-check emerald"></i><span style="font-weight:600">Inspection Protocols</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      <div class="list-item" onclick="showToast('Opening aging room standards...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-snowflake emerald"></i><span style="font-weight:600">Aging Room Standards</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      <div class="list-item" style="border-bottom:none" onclick="showToast('Opening VistaTrac integration...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-database emerald"></i><span style="font-weight:600">VistaTrac Integration</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- DISPUTE RESOLUTION PAGE -->
+<div id="page-dispute-resolution" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Dispute Resolution</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:12px"><h3 style="font-weight:700">Order #PO-2024-1823</h3><span class="tag tag-red">Open</span></div>
+      <div class="list-item"><span style="color:#777">Consumer</span><span style="font-weight:600">John M.</span></div>
+      <div class="list-item"><span style="color:#777">Farmer</span><span style="font-weight:600">Stittsworth Meats</span></div>
+      <div class="list-item"><span style="color:#777">Issue</span><span style="font-weight:600">Short weight claim</span></div>
+      <div class="list-item" style="border-bottom:none"><span style="color:#777">Amount Disputed</span><span style="font-weight:600;color:#ef4444">$142</span></div>
+      <div class="divider"></div>
+      <p style="font-size:14px;color:#777;margin-bottom:16px;line-height:1.5">Consumer claims received 118 lbs take-home vs. 130 lbs promised. Processor submitted cut sheet showing 119 lbs — within 1.2% variance.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <button onclick="showToast('Refund issued to consumer')" class="btn-primary" style="background:#10b981;padding:12px">Refund Consumer</button>
+        <button onclick="showToast('Case closed, no action taken')" class="btn-ghost" style="padding:12px;color:#777;border-color:#e5e7eb">Close Case</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PERSONAL INFO PAGE -->
+<div id="page-personal-info" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Personal Information</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="display:grid;gap:16px">
+      <div><label class="section-title">Full Name</label><input type="text" value="Mychal Stitts" class="input-field"></div>
+      <div><label class="section-title">Email</label><input type="email" value="mychalstitts@gmail.com" class="input-field"></div>
+      <div><label class="section-title">Phone</label><input type="tel" placeholder="Phone number" class="input-field"></div>
+      <div><label class="section-title">Address</label><input type="text" placeholder="Street address" class="input-field"></div>
+      <div style="display:grid;grid-template-columns:2fr 1fr;gap:12px"><input type="text" placeholder="City" class="input-field"><input type="text" placeholder="State" class="input-field"></div>
+      <button onclick="showToast('Profile updated!')" class="btn-primary">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- SECURITY PAGE -->
+<div id="page-security" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Security</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <div class="list-item" onclick="showToast('Change password email sent!')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-key emerald"></i><span style="font-weight:600">Change Password</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      <div class="list-item"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-shield emerald"></i><span style="font-weight:600">Two-Factor Authentication</span></div><label style="position:relative;display:inline-block;width:44px;height:24px;margin-left:auto"><input type="checkbox" style="opacity:0;width:0;height:0" checked><span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#10b981;border-radius:34px;transition:0.4s"></span></label></div>
+      <div class="list-item" onclick="showToast('Biometric settings updated!')" style="border-bottom:none"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-fingerprint emerald"></i><span style="font-weight:600">Biometric Login</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT METHODS PAGE -->
+<div id="page-payment-methods" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Payment Methods</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <div class="list-item"><div style="display:flex;align-items:center;gap:12px"><i class="fa-brands fa-apple-pay" style="font-size:28px;color:#111"></i><div><p style="font-weight:600">Apple Pay</p><p style="font-size:12px;color:#777">Default</p></div></div><span class="tag tag-green">Active</span></div>
+      <div class="list-item" style="border-bottom:none"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-credit-card" style="color:#777;font-size:20px"></i><div><p style="font-weight:600">Visa •••• 4242</p><p style="font-size:12px;color:#777">Expires 12/27</p></div></div><button onclick="showToast('Card removed')" style="background:none;border:none;cursor:pointer;color:#ef4444;font-size:13px;font-weight:600;font-family:inherit">Remove</button></div>
+    </div>
+    <button onclick="showToast('Add new card — coming soon!')" class="btn-ghost"><i class="fa-solid fa-plus"></i> Add Payment Method</button>
+  </div>
+</div>
+
+<!-- WITHDRAW FUNDS PAGE -->
+<div id="page-withdraw" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Withdraw Funds</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="stat-box" style="margin-bottom:24px;padding:32px;text-align:center"><p style="opacity:0.8;margin-bottom:8px">Available Balance</p><h2 style="font-size:48px;font-weight:800">$4,218.50</h2></div>
+    <div class="card" style="margin-bottom:16px">
+      <h3 style="font-weight:700;margin-bottom:16px">Withdrawal Method</h3>
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #f0f0f0;cursor:pointer"><input type="radio" name="withdraw" checked style="accent-color:#10b981"><div><p style="font-weight:600">ACH Bank Transfer</p><p style="font-size:12px;color:#777">1-3 business days</p></div><span style="margin-left:auto;font-size:12px;color:#777">Free</span></label>
+      <label style="display:flex;align-items:center;gap:12px;padding:12px 0;cursor:pointer"><input type="radio" name="withdraw" style="accent-color:#10b981"><div><p style="font-weight:600">Instant Transfer</p><p style="font-size:12px;color:#777">Available immediately</p></div><span style="margin-left:auto;font-size:12px;color:#777">1.5%</span></label>
+    </div>
+    <div style="margin-bottom:16px"><label class="section-title">Amount</label><input type="number" placeholder="0.00" class="input-field" style="font-size:24px;font-weight:700"></div>
+    <button onclick="showToast('Withdrawal initiated! Funds arrive in 1-3 business days.')" class="btn-primary">Withdraw Funds</button>
+  </div>
+</div>
+
+<!-- RANCH MANAGEMENT PAGE -->
+<div id="page-ranch-management" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Ranch Management</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:20px;padding:20px;color:#fff;margin-bottom:20px">
+      <h3 style="font-weight:700;font-size:20px">Stittsworth Meats</h3>
+      <p style="opacity:0.75;margin-top:4px">Bemidji, MN · Est. 1947 · 4th Generation</p>
+      <div style="display:flex;gap:16px;margin-top:16px">
+        <div style="text-align:center"><div style="font-size:24px;font-weight:800">42</div><div style="font-size:11px;opacity:0.75">Head of Cattle</div></div>
+        <div style="text-align:center"><div style="font-size:24px;font-weight:800">18</div><div style="font-size:11px;opacity:0.75">Hogs</div></div>
+        <div style="text-align:center"><div style="font-size:24px;font-weight:800">5</div><div style="font-size:11px;opacity:0.75">Active Listings</div></div>
+      </div>
+    </div>
+    <button onclick="goTo('page-create-listing')" class="btn-primary" style="margin-bottom:16px"><i class="fa-solid fa-plus"></i> Add New Animal</button>
+    <div class="section-title">Current Livestock</div>
+    <div class="card" style="margin-bottom:12px"><div class="list-item"><div><p style="font-weight:700">Angus Steer #A-221</p><p style="font-size:12px;color:#777">22 months · Grain-Fed</p></div><span class="tag tag-green">Listed</span></div><div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:75%"></div></div><p style="font-size:11px;color:#777;margin-top:4px">75% sold</p></div>
+    <div class="card" style="margin-bottom:12px"><div class="list-item"><div><p style="font-weight:700">Berkshire Hog #H-108</p><p style="font-size:12px;color:#777">10 months · Pasture-Raised</p></div><span class="tag tag-orange">Pending</span></div></div>
+  </div>
+</div>
+
+<!-- SUPPORT PAGE -->
+<div id="page-support" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Support</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <div class="list-item" onclick="showToast('Opening live chat...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-comments emerald"></i><span style="font-weight:600">Live Chat</span></div><span class="tag tag-green">Online</span></div>
+      <div class="list-item" onclick="showToast('Opening FAQ...')"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-circle-question emerald"></i><span style="font-weight:600">FAQ & Help Center</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+      <div class="list-item" onclick="showToast('Email: support@proteinoutfitters.com')" style="border-bottom:none"><div style="display:flex;align-items:center;gap:12px"><i class="fa-solid fa-envelope emerald"></i><span style="font-weight:600">Email Support</span></div><i class="fa-solid fa-chevron-right" style="color:#ccc"></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROCESSOR SETTINGS PAGE -->
+<div id="page-processor-settings" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Processor Settings</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div style="display:grid;gap:16px">
+      <div><label class="section-title">Facility Name</label><input type="text" value="Bemidji Meat Processing" class="input-field"></div>
+      <div><label class="section-title">Daily Beef Capacity (head)</label><input type="number" value="6" class="input-field"></div>
+      <div><label class="section-title">Kill Fee (per head)</label><input type="number" value="350" class="input-field"></div>
+      <div><label class="section-title">Processing Fee (per lb HW)</label><input type="number" value="1.25" class="input-field"></div>
+      <div><label class="section-title">Cut & Wrap Fee (per lb)</label><input type="number" value="0.45" class="input-field"></div>
+      <div class="card"><div style="display:flex;justify-content:space-between;align-items:center"><div><p style="font-weight:600">Dynamic Pricing</p><p style="font-size:12px;color:#777">Prices rise as date approaches</p></div><label style="position:relative;display:inline-block;width:44px;height:24px"><input type="checkbox" checked style="opacity:0;width:0;height:0"><span style="position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#10b981;border-radius:34px"></span></label></div></div>
+      <button onclick="showToast('Settings saved!')" class="btn-primary">Save Settings</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOOK PROCESSOR PAGE -->
+<div id="page-book-processor" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Book a Processor</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+        <div class="avatar">B</div>
+        <div><h3 style="font-weight:700">Bemidji Meat Processing</h3><p style="font-size:13px;color:#777">4.9 ⭐ · 8 miles away</p></div>
+        <span class="tag tag-green" style="margin-left:auto">Available</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px">
+        <div style="background:#f9fafb;border-radius:10px;padding:10px"><span style="color:#777">Kill Fee</span><p style="font-weight:700;margin-top:2px">$350/head</p></div>
+        <div style="background:#f9fafb;border-radius:10px;padding:10px"><span style="color:#777">Processing</span><p style="font-weight:700;margin-top:2px">$1.25/lb HW</p></div>
+      </div>
+    </div>
+    <div class="section-title">Select Processing Date</div>
+    <div class="card" style="margin-bottom:16px" id="booking-calendar-wrapper"></div>
+    <button onclick="showToast('Booking confirmed! All fraction buyers have been notified.')" class="btn-primary" style="font-size:17px;padding:18px">Confirm Booking</button>
+  </div>
+</div>
+
+<!-- PROCESSOR MAP PAGE -->
+<div id="page-processor-map" class="page">
+  <div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px">
+    <button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button>
+    <h2 style="font-size:18px;font-weight:700">Find Processors</h2>
+  </div>
+  <div style="padding:20px;padding-bottom:100px">
+    <div class="map-placeholder" style="margin-bottom:20px"><i class="fa-solid fa-map-location-dot"></i></div>
+    <div class="section-title">Processors Near Bemidji, MN</div>
+    <div class="card" style="margin-bottom:12px"><div class="list-item"><div><p style="font-weight:700">Bemidji Meat Processing</p><p style="font-size:12px;color:#777">8 miles · Next avail: Apr 15</p></div><span class="tag tag-green">Open</span></div><div style="display:flex;gap:8px;margin-top:8px"><button onclick="goTo('page-book-processor')" class="btn-primary" style="flex:1;padding:10px">Book</button><button onclick="showToast('Opening directions...')" class="btn-ghost" style="flex:1;padding:10px">Directions</button></div></div>
+    <div class="card" style="margin-bottom:12px"><div class="list-item"><div><p style="font-weight:700">Northern MN Custom Meats</p><p style="font-size:12px;color:#777">24 miles · Next avail: Apr 28</p></div><span class="tag tag-orange">Limited</span></div><button onclick="goTo('page-book-processor')" class="btn-ghost" style="margin-top:8px">Book</button></div>
+  </div>
+</div>
+<div id="page-notifications" class="page"><div style="position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);padding:16px 20px;display:flex;align-items:center;gap:12px"><button onclick="goBack()" class="back-btn" style="margin:0"><i class="fa-solid fa-arrow-left"></i></button><h2 style="font-size:18px;font-weight:700">All Notifications</h2><button onclick="showToast('All notifications marked as read')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:#10b981;font-weight:600;font-size:13px;font-family:inherit">Clear All</button></div><div style="padding:20px;padding-bottom:100px" id="all-notifs-list"></div></div>
+<div id="modal-filter" class="modal"><div class="modal-sheet"><div style="padding:20px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h3 style="font-size:20px;font-weight:700">Filter</h3><button onclick="closeModal('modal-filter')" style="background:none;border:none;cursor:pointer;font-size:24px;color:#999">&times;</button></div><div class="section-title">Animal Type</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px"><span class="chip active">All</span><span class="chip inactive">Beef</span><span class="chip inactive">Pork</span><span class="chip inactive">Lamb</span></div><div class="section-title">Price Range</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px"><input type="number" placeholder="Min $/lb" class="input-field"><input type="number" placeholder="Max $/lb" class="input-field"></div><div class="section-title">Distance</div><select class="select-field" style="margin-bottom:20px"><option>Within 50 miles</option><option>Within 100 miles</option><option>Statewide</option><option>Nationwide</option></select><button onclick="closeModal('modal-filter');showToast('Filters applied!')" class="btn-primary">Apply Filters</button></div></div></div>
+<div class="toast" id="app-toast"></div>
 <script>
-let currentRole = "Consumer";
-let cart = [];
-const listings = [{id:1, name:"Premium Angus Steer", price:13.75},{id:2, name:"Heritage Berkshire Pork", price:9.25}];
-
-function goToAuth() { document.getElementById("onboarding").classList.remove("active"); document.getElementById("auth").classList.add("active"); }
-function demoLogin() { goToRoleSelect(); }
-function goToRoleSelect() { document.getElementById("auth").classList.remove("active"); document.getElementById("role-select").classList.add("active"); }
-
-function selectRole(role) {
-  currentRole = role;
-  document.getElementById("role-select").classList.remove("active");
-  document.getElementById("main-app").classList.remove("hidden");
-  document.getElementById("role-badge").textContent = role;
-  switchTab(0);
-}
-
-function switchTab(n) {
-  document.querySelectorAll("#content-area > div").forEach(d => d.classList.add("hidden"));
-  const pages = ["home-page","market-page","cart-page","notifications-page","profile-page"];
-  document.getElementById(pages[n]).classList.remove("hidden");
-  document.querySelectorAll(".nav-btn").forEach((b,i) => b.classList.toggle("active", i===n));
-  if (n===1) renderMarket();
-  if (n===2) renderCart();
-}
-
-function renderMarket() {
-  const grid = document.getElementById("listing-grid");
-  grid.innerHTML = "";
-  listings.forEach(l => {
-    const card = document.createElement("div");
-    card.className = "glass p-6 rounded-3xl cursor-pointer";
-    card.innerHTML = `<div class="text-6xl mb-4">🐂</div><h4 class="font-semibold">${l.name}</h4><p class="text-emerald-600">$${l.price}/lb</p>`;
-    card.onclick = () => openDetail(l);
-    grid.appendChild(card);
-  });
-}
-
-function openDetail(l) {
-  document.getElementById("modal-name").textContent = l.name;
-  document.getElementById("detail-modal").classList.add("active");
-  updateCalculator();
-}
-
-function closeModal() { document.getElementById("detail-modal").classList.remove("active"); }
-
-function updateCalculator() {
-  const age = parseFloat(document.getElementById("calc-age").value) || 18;
-  const feed = document.getElementById("calc-feed").value;
-  const share = parseFloat(document.getElementById("share-size").value);
-  let live = 1100 + (age * 8);
-  let hanging = Math.round(live * 0.62);
-  let takehome = Math.round(hanging * 0.67);
-  let price = feed === "grain" ? 13.75 : 12.50;
-  let total = (takehome * price * share).toFixed(0);
-  document.getElementById("live-wt").textContent = live + " lbs";
-  document.getElementById("hanging-wt").textContent = hanging + " lbs";
-  document.getElementById("takehome-wt").textContent = takehome + " lbs";
-  document.getElementById("price-lb").textContent = "$" + price;
-  document.getElementById("total-price").textContent = "$" + total;
-}
-
-function addToCart() { alert("Added to bag ✓"); closeModal(); }
-function renderCart() { document.getElementById("cart-items").innerHTML = "<p class='text-center text-zinc-500 py-12'>Your bag is empty</p>"; }
-function goToCheckout() { document.getElementById("checkout-modal").classList.add("active"); }
-function completePayment() { document.getElementById("checkout-modal").classList.remove("active"); alert("✅ Order complete!"); }
-function showSubScreen(screen) { alert(screen.toUpperCase() + " Screen"); }
-
-window.onload = () => { renderMarket(); };
+var appState={role:'Consumer',cart:[],currentPage:'page-onboarding',pageHistory:[],selectedFraction:'quarter',selectedAnimalType:null,currentListing:null};
+var LISTINGS=[
+{id:1,name:'Premium Angus Steer',icon:'&#x1F402;',farm:'Stittsworth Meats',location:'Bemidji, MN',breed:'Angus',age:22,feed:'grain',pricePerLb:13.75,pctSold:62,type:'beef'},
+{id:2,name:'Heritage Berkshire Pork',icon:'&#x1F437;',farm:'Green Valley Ranch',location:'Walker, MN',breed:'Berkshire',age:8,feed:'grass',pricePerLb:9.25,pctSold:40,type:'pork'},
+{id:3,name:'Grass-Fed Hereford',icon:'&#x1F402;',farm:'River Bend Farm',location:'Brainerd, MN',breed:'Hereford',age:20,feed:'grass',pricePerLb:16.25,pctSold:85,type:'beef'},
+{id:4,name:'Icelandic Lamb',icon:'&#x1F411;',farm:'Nordic Pastures',location:'Moorhead, MN',breed:'Icelandic',age:6,feed:'grass',pricePerLb:14.50,pctSold:25,type:'lamb'},
+{id:5,name:'American Wagyu Cross',icon:'&#x1F402;',farm:'Prairie Heritage',location:'Fargo, ND',breed:'Wagyu/Angus',age:26,feed:'grain',pricePerLb:19.00,pctSold:90,type:'beef'},
+{id:6,name:'Mangalitsa Pork',icon:'&#x1F437;',farm:'Old World Farms',location:'Detroit Lakes, MN',breed:'Mangalitsa',age:12,feed:'mixed',pricePerLb:11.50,pctSold:50,type:'pork'}
+];
+var CUTS=[
+{id:10,name:'Ribeye Steaks',icon:'&#x1F969;',farm:'Stittsworth Meats',price:24.99,unit:'per lb',tag:'In Stock'},
+{id:11,name:'NY Strip (2-pack)',icon:'&#x1F969;',farm:'Green Valley Ranch',price:19.99,unit:'per lb',tag:'Limited'},
+{id:12,name:'Ground Beef 10lb',icon:'&#x1F356;',farm:'River Bend Farm',price:6.99,unit:'per lb',tag:'In Stock'},
+{id:13,name:'Smoked Bratwurst',icon:'&#x1F32D;',farm:'Stittsworth Meats',price:12.99,unit:'per lb',tag:'In Stock'}
+];
+var HARDWARE=[
+{id:20,name:'PS1 Mobile Processing Unit',icon:'&#x2699;',desc:'Complete mobile slaughter system',price:'$185,000',tag:'Most Popular'},
+{id:21,name:'CS1 Cold Storage Module',icon:'&#x1F9CA;',desc:'Portable walk-in cooler + freezer',price:'$48,000',tag:'Bundle Deal'}
+];
+var NOTIFICATIONS=[
+{icon:'&#x2705;',title:'Order Confirmed',body:'Your quarter Angus Steer order is confirmed!',time:'2 min ago',unread:true},
+{icon:'&#x1F3ED;',title:'Processor Booked',body:'Stittsworth Farms booked Bemidji Meat Processing for Apr 15',time:'1 hour ago',unread:true},
+{icon:'&#x1F69A;',title:'Shipped!',body:'Your order #PO-2024-1823 is on its way',time:'Yesterday',unread:false},
+{icon:'&#x26A0;',title:'Price Alert',body:'Grass-fed beef prices up 8% in your area',time:'2 days ago',unread:false}
+];
+var ORDERS=[
+{id:'PO-2024-1847',item:'Quarter Angus Steer',farm:'Stittsworth Meats',date:'Apr 1, 2026',status:'In Transit',amount:'$2,123.50',statusClass:'tag-blue'},
+{id:'PO-2024-1823',item:'Half Berkshire Pork',farm:'Green Valley Ranch',date:'Mar 15, 2026',status:'Delivered',amount:'$845.00',statusClass:'tag-green'},
+{id:'PO-2024-1791',item:'Whole Lamb',farm:'Nordic Pastures',date:'Feb 28, 2026',status:'Delivered',amount:'$1,250.00',statusClass:'tag-green'}
+];
+function goTo(pageId){var curr=document.querySelector('.page.active');if(curr){curr.classList.remove('active');}appState.pageHistory.push(appState.currentPage);appState.currentPage=pageId;var next=document.getElementById(pageId);if(next){next.classList.add('active');next.scrollTop=0;}if(pageId==='page-order-history')renderOrders();if(pageId==='page-processor-calendar')renderCalendar();if(pageId==='page-notifications')renderAllNotifs();if(pageId==='page-book-processor')renderBookingCalendar();}
+function goBack(){if(appState.pageHistory.length>0){var prev=appState.pageHistory.pop();var curr=document.querySelector('.page.active');if(curr)curr.classList.remove('active');appState.currentPage=prev;var prevEl=document.getElementById(prev);if(prevEl){prevEl.classList.add('active');prevEl.scrollTop=0;}}}
+function goToAuth(){goTo('page-auth');}
+function toggleAuthTab(idx){document.querySelectorAll('.auth-tab').forEach(function(t,i){t.style.background=i===idx?'#fff':'transparent';t.style.color=i===idx?'#111':'#999';t.style.boxShadow=i===idx?'0 2px 8px rgba(0,0,0,0.1)':'none';});document.getElementById('login-form').style.display=idx===0?'block':'none';document.getElementById('signup-form').style.display=idx===1?'block':'none';}
+function togglePw(){var f=document.getElementById('pw-field');f.type=f.type==='password'?'text':'password';}
+function completeAuth(){goTo('page-role-select');}
+function demoMode(){appState.role='Consumer';launchApp('Consumer');}
+function goToRoleSelect(){goTo('page-role-select');}
+function selectRole(role){appState.role=role;launchApp(role);}
+function launchApp(role){document.getElementById('role-badge').textContent=role;document.getElementById('profile-role-text').textContent=role;document.querySelectorAll('.role-home').forEach(function(el){el.style.display='none';});var homeEl=document.getElementById('home-'+role.toLowerCase());if(homeEl)homeEl.style.display='block';document.getElementById('farmer-links').style.display=role==='Farmer'?'block':'none';document.getElementById('processor-profile-links').style.display=role==='Processor'?'block':'none';document.getElementById('admin-profile-links').style.display=role==='Admin'?'block':'none';renderFeaturedListings();renderFarmerListings();renderProcessorBookings();renderNotifList();goTo('page-main');switchTab(0);}
+function switchTab(n){var screens=['screen-home','screen-market','screen-bag','screen-alerts','screen-profile'];screens.forEach(function(s){var el=document.getElementById(s);if(el)el.classList.remove('active');});var el=document.getElementById(screens[n]);if(el)el.classList.add('active');document.querySelectorAll('.nav-btn').forEach(function(b,i){b.classList.toggle('active',i===n);});if(n===1)renderMarket();if(n===2)renderBag();}
+function setMarketTab(tab){['live','cuts','hardware'].forEach(function(t){document.getElementById('market-'+t).style.display=t===tab?'block':'none';var chip=document.getElementById('tab-'+t);if(chip){chip.className=t===tab?'chip active':'chip inactive';}});if(tab==='live')renderMarket();if(tab==='cuts')renderCuts();if(tab==='hardware')renderHardware();}
+function renderMarket(filter){var grid=document.getElementById('market-grid');if(!grid)return;var listings=filter?LISTINGS.filter(function(l){return l.type===filter;}):LISTINGS;grid.innerHTML=listings.map(function(l){return '<div onclick="openListing('+l.id+')" class="card" style="padding:16px"><div style="text-align:center;margin-bottom:10px"><span style="font-size:40px">'+l.icon+'</span></div><h4 style="font-weight:700;font-size:14px;margin-bottom:4px;line-height:1.3">'+l.name+'</h4><p style="font-size:12px;color:#777;margin-bottom:8px">'+l.farm+'</p><div class="progress-bar" style="margin-bottom:6px"><div class="progress-fill" style="width:'+l.pctSold+'%"></div></div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#10b981;font-size:15px">$'+l.pricePerLb+'/lb</span><span class="tag tag-green" style="font-size:10px">'+l.pctSold+'% sold</span></div></div>';}).join('');}
+function renderCuts(){var grid=document.getElementById('cuts-grid');if(!grid)return;grid.innerHTML=CUTS.map(function(c){return '<div onclick="showToast(c.name+\' added to bag!\')" class="card" style="padding:16px"><div style="text-align:center;margin-bottom:10px"><span style="font-size:40px">'+c.icon+'</span></div><h4 style="font-weight:700;font-size:14px;margin-bottom:4px">'+c.name+'</h4><p style="font-size:12px;color:#777;margin-bottom:8px">'+c.farm+'</p><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#10b981;font-size:15px">$'+c.price+'</span><span class="tag tag-green" style="font-size:10px">'+c.tag+'</span></div></div>';}).join('');}
+function renderHardware(){var grid=document.getElementById('hardware-grid');if(!grid)return;grid.innerHTML=HARDWARE.map(function(h){return '<div onclick="goTo(\'page-processing-catalog\')" class="card" style="padding:16px"><div style="text-align:center;margin-bottom:10px"><span style="font-size:40px">'+h.icon+'</span></div><h4 style="font-weight:700;font-size:14px;margin-bottom:4px">'+h.name+'</h4><p style="font-size:12px;color:#777;margin-bottom:8px">'+h.desc+'</p><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-weight:800;color:#10b981;font-size:14px">'+h.price+'</span><span class="tag tag-blue" style="font-size:10px">'+h.tag+'</span></div></div>';}).join('');}
+function filterMarket(type){switchTab(1);setMarketTab('live');renderMarket(type);}
+function openListing(id){var l=LISTINGS.find(function(x){return x.id===id;});if(!l)return;appState.currentListing=l;var set=function(eid,v){var el=document.getElementById(eid);if(el)el.textContent=v;};set('detail-animal-icon',l.icon);set('detail-name',l.name);set('detail-farm',l.farm+' · '+l.location);set('detail-breed',l.breed);set('detail-age',l.age+' months');set('detail-feed',l.feed==='grain'?'Grain-Fed':l.feed==='grass'?'Grass-Fed':'Pasture');set('detail-pct',l.pctSold+'% sold');var prog=document.getElementById('detail-progress');if(prog)prog.style.width=l.pctSold+'%';var ageEl=document.getElementById('calc-age');if(ageEl)ageEl.value=l.age;var feedEl=document.getElementById('calc-feed');if(feedEl)feedEl.value=l.feed==='pasture'?'grass':l.feed;updateCalc();selectFraction('quarter');goTo('page-listing-detail');}
+function selectFraction(frac){appState.selectedFraction=frac;['whole','half','quarter'].forEach(function(f){var el=document.getElementById('frac-'+f);if(el)el.className='fraction-pill '+(f===frac?'selected':'');});updateCalc();}
+function updateCalc(){var age=parseFloat(document.getElementById('calc-age')&&document.getElementById('calc-age').value)||18;var feed=(document.getElementById('calc-feed')&&document.getElementById('calc-feed').value)||'grain';var fracMap={whole:1,half:0.5,quarter:0.25};var share=fracMap[appState.selectedFraction]||0.25;var live=1100+(age*8);var hang=Math.round(live*0.62);var take=Math.round(hang*0.67);var price=feed==='grain'?13.75:12.50;var total=(take*price*share).toFixed(0);var setEl=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};setEl('res-live',live.toLocaleString()+' lbs');setEl('res-hang',hang.toLocaleString()+' lbs');setEl('res-take',take.toLocaleString()+' lbs');setEl('res-price','$'+price);setEl('detail-total','$'+parseInt(total).toLocaleString());}
+function addToBag(){var l=appState.currentListing;if(!l)return;var fracMap={whole:'Whole',half:'Half',quarter:'Quarter'};var priceMap={whole:7156,half:3578,quarter:1789};appState.cart.push({id:l.id,name:l.name,icon:l.icon,fraction:fracMap[appState.selectedFraction],price:priceMap[appState.selectedFraction]||1789});showToast(fracMap[appState.selectedFraction]+' '+l.name+' added to bag!');updateBagCount();goBack();}
+function updateBagCount(){var dot=document.getElementById('bag-count');if(dot){dot.textContent=appState.cart.length;dot.style.display=appState.cart.length>0?'flex':'none';}}
+function renderBag(){var items=document.getElementById('bag-items');var empty=document.getElementById('bag-empty');var summary=document.getElementById('bag-summary');if(!items)return;if(appState.cart.length===0){if(empty)empty.style.display='block';items.innerHTML='';if(summary)summary.style.display='none';return;}if(empty)empty.style.display='none';if(summary)summary.style.display='block';var total=appState.cart.reduce(function(s,i){return s+i.price;},0);items.innerHTML=appState.cart.map(function(item,idx){return '<div class="card" style="margin-bottom:12px;display:flex;align-items:center;gap:12px"><span style="font-size:36px">'+item.icon+'</span><div style="flex:1"><p style="font-weight:700">'+item.fraction+' '+item.name+'</p><p style="font-size:13px;color:#777">$'+item.price.toLocaleString()+'</p></div><button onclick="removeFromBag('+idx+')" style="background:none;border:none;cursor:pointer;color:#ef4444;font-size:18px"><i class="fa-solid fa-trash"></i></button></div>';}).join('');var sub=document.getElementById('bag-subtotal');if(sub)sub.textContent='$'+total.toLocaleString();var proc=document.getElementById('bag-processing');if(proc)proc.textContent='~$'+Math.round(total*0.08).toLocaleString();var tot=document.getElementById('bag-total');if(tot)tot.textContent='$'+(total+Math.round(total*0.08)).toLocaleString();}
+function removeFromBag(idx){appState.cart.splice(idx,1);renderBag();updateBagCount();}
+var checkoutCurrentStep=1;
+function checkoutNext(step){document.getElementById('checkout-step-'+checkoutCurrentStep).style.display='none';document.getElementById('checkout-step-'+step).style.display='block';[1,2,3].forEach(function(d){var dot=document.getElementById('step-'+d+'-dot');if(dot){dot.style.background=d<=step?'#10b981':'#e5e7eb';dot.style.color=d<=step?'#fff':'#999';}});checkoutCurrentStep=step;if(step===3){appState.cart=[];updateBagCount();}}
+function renderNotifList(){var list=document.getElementById('notif-list');if(!list)return;list.innerHTML=NOTIFICATIONS.slice(0,3).map(function(n){return '<div class="card" style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start"><span style="font-size:28px">'+n.icon+'</span><div style="flex:1"><p style="font-weight:700;font-size:14px">'+n.title+'</p><p style="font-size:13px;color:#777;margin-top:2px">'+n.body+'</p><p style="font-size:11px;color:#bbb;margin-top:4px">'+n.time+'</p></div>'+(n.unread?'<span style="width:8px;height:8px;background:#10b981;border-radius:50%;flex-shrink:0;margin-top:4px"></span>':'')+'</div>';}).join('');}
+function renderAllNotifs(){var list=document.getElementById('all-notifs-list');if(!list)return;list.innerHTML=NOTIFICATIONS.map(function(n){return '<div class="card" style="margin-bottom:12px;display:flex;gap:12px;align-items:flex-start"><span style="font-size:28px">'+n.icon+'</span><div style="flex:1"><p style="font-weight:700;font-size:14px">'+n.title+'</p><p style="font-size:13px;color:#777;margin-top:2px">'+n.body+'</p><p style="font-size:11px;color:#bbb;margin-top:4px">'+n.time+'</p></div>'+(n.unread?'<span style="width:8px;height:8px;background:#10b981;border-radius:50%;flex-shrink:0;margin-top:4px"></span>':'')+'</div>';}).join('');}
+function showNotifications(){goTo('page-notifications');}
+function renderOrders(){var list=document.getElementById('orders-list');if(!list)return;list.innerHTML=ORDERS.map(function(o){return '<div class="card" style="margin-bottom:12px" onclick="goTo(\'page-shipping-tracker\')"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><span style="font-weight:700">Order #'+o.id+'</span><span class="tag '+o.statusClass+'">'+o.status+'</span></div><p style="font-weight:600;margin-bottom:4px">'+o.item+'</p><div style="display:flex;justify-content:space-between;font-size:13px;color:#777"><span>'+o.farm+' &middot; '+o.date+'</span><span style="font-weight:700;color:#111">'+o.amount+'</span></div></div>';}).join('');}
+function renderFeaturedListings(){var grid=document.getElementById('featured-listings');if(!grid)return;grid.innerHTML=LISTINGS.slice(0,4).map(function(l){return '<div onclick="openListing('+l.id+')" class="card" style="padding:14px"><div style="text-align:center;margin-bottom:8px"><span style="font-size:36px">'+l.icon+'</span></div><h4 style="font-weight:700;font-size:13px;margin-bottom:3px;line-height:1.3">'+l.name+'</h4><p style="font-size:11px;color:#777;margin-bottom:6px">'+l.farm+'</p><span style="font-weight:800;color:#10b981;font-size:14px">$'+l.pricePerLb+'/lb</span></div>';}).join('');}
+function renderFarmerListings(){var list=document.getElementById('farmer-listings');if(!list)return;list.innerHTML=LISTINGS.slice(0,3).map(function(l){return '<div class="card" style="margin-bottom:12px"><div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:32px">'+l.icon+'</span><div style="flex:1"><p style="font-weight:700">'+l.name+'</p><p style="font-size:12px;color:#777">$'+l.pricePerLb+'/lb</p></div><span class="tag tag-green">'+l.pctSold+'% sold</span></div><div class="progress-bar"><div class="progress-fill" style="width:'+l.pctSold+'%"></div></div></div>';}).join('');}
+function renderProcessorBookings(){var list=document.getElementById('processor-bookings');if(!list)return;list.innerHTML='<div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:700">Stittsworth Farms</span><span class="tag tag-green">Confirmed</span></div><p style="font-size:13px;color:#777">Apr 15 &middot; 2x Angus Steer</p></div><div class="card" style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;margin-bottom:8px"><span style="font-weight:700">Green Valley Ranch</span><span class="tag tag-orange">Pending</span></div><p style="font-size:13px;color:#777">Apr 22 &middot; Berkshire Pork</p></div>';}
+function selectAnimalType(type){appState.selectedAnimalType=type;['beef','pork','lamb','chicken','venison','other'].forEach(function(t){var el=document.getElementById('type-'+t);if(el)el.style.border=t===type?'2px solid #10b981':'2px solid transparent';});}
+function updateListingCalc(){var age=parseFloat(document.getElementById('listing-age')&&document.getElementById('listing-age').value)||18;var live=1100+(age*8);var hang=Math.round(live*0.62);var take=Math.round(hang*0.67);var el1=document.getElementById('listing-live');if(el1)el1.textContent=live.toLocaleString()+' lbs';var el2=document.getElementById('listing-take');if(el2)el2.textContent=take.toLocaleString()+' lbs';}
+function submitListing(){showToast('Listing published! Buyers can now find your animal.');goBack();}
+function renderCalendar(){var grid=document.getElementById('calendar-grid');if(!grid)return;var m=new Date(2026,3,1);var monthName='April 2026';var calTitle=document.getElementById('cal-month');if(calTitle)calTitle.textContent=monthName;var firstDay=new Date(2026,3,1).getDay();var daysInMonth=30;var booked=[5,8,12,15,19,22];var html='';for(var i=0;i<firstDay;i++)html+='<div></div>';for(var d=1;d<=daysInMonth;d++){var isBooked=booked.indexOf(d)>-1;var isToday=d===1;var cls=isBooked?'calendar-day booked':(isToday?'calendar-day today':'calendar-day available');var onclk=!isBooked?'onclick="selectCalDay(this,'+d+')"':'';html+='<div class="'+cls+'" '+onclk+'>'+d+'</div>';}grid.innerHTML=html;}
+function selectCalDay(el,day){document.querySelectorAll('.calendar-day.selected').forEach(function(d){d.classList.remove('selected');d.classList.add('available');});el.classList.remove('available');el.classList.add('selected');showToast('Apr '+day+' selected!');}
+function renderBookingCalendar(){var wrapper=document.getElementById('booking-calendar-wrapper');if(!wrapper)return;wrapper.innerHTML='<div id="booking-cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;padding:12px"></div>';var booked=[5,8,12];var html='';for(var i=0;i<2;i++)html+='<div></div>';for(var d=1;d<=30;d++){var isBooked=booked.indexOf(d)>-1;var cls=isBooked?'calendar-day booked':'calendar-day available';var onclk=!isBooked?'onclick="showToast(\'Apr '+d+' booked!\')"':'';html+='<div class="'+cls+'" '+onclk+'>'+d+'</div>';}var g=document.getElementById('booking-cal-grid');if(g)g.innerHTML=html;}
+function showFilterModal(){document.getElementById('modal-filter').classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function showToast(msg){var t=document.getElementById('app-toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+function logout(){goTo('page-onboarding');appState.role='Consumer';appState.cart=[];appState.pageHistory=[];}
+document.addEventListener('DOMContentLoaded',function(){renderMarket();renderCalendar();console.log('%c Protein Outfitters | MeatMatch v2.0','color:#10b981;font-weight:bold');});
 </script>
+</div>
 </body>
-</html>
+      </html>
