@@ -1399,6 +1399,7 @@ img{display:block;max-width:100%;object-fit:cover}
     </button>
   </nav>
 
+
 <script>
 // ═══════════════════════════ DATA ════════════════════════════
 const IMG = {
@@ -1429,6 +1430,7 @@ let _selectedListing = null;
 let _orderCount = 1;
 let _navOpen = false;
 let _demoActive = false;
+let _marketTab = 'all';
 
 // ═══════════════════════════ NAVIGATION ══════════════════════
 function goTo(page) {
@@ -1441,10 +1443,8 @@ function goTo(page) {
   _currentPage = page;
   closeNav();
   window.scrollTo(0, 0);
-  // Update bottom nav
-  const navMap = { home:'home', market:'market', track:'track', profile:'profile', favorites:'profile', alerts:'profile', messages:'profile', settings:'profile', sell:'sell', bag:'market', checkout:'market', confirmed:'track', 'order-detail':'track', processors:'track', 'processor-detail':'track', chat:'profile', compliance:'profile' };
+  const navMap = { home:'home', market:'market', track:'track', profile:'profile', favorites:'profile', alerts:'profile', messages:'profile', settings:'profile', 'order-detail':'track', processors:'track', 'processor-detail':'track', chat:'profile', compliance:'profile' };
   if (navMap[page]) setActiveNav(navMap[page]);
-  // Run page init
   if (page === 'market') renderMarketGrid();
   if (page === 'home') renderFeaturedListings();
   if (page === 'bag') renderBag();
@@ -1484,41 +1484,37 @@ function closeNav() {
   if (overlay) overlay.classList.remove('active');
 }
 
-// ═══════════════════════════ SPLASH / ONBOARDING ═════════════
+// ═══════════════════════════ SPLASH ══════════════════════════
 function enterApp() {
   document.getElementById('page-splash').classList.remove('active');
   document.getElementById('page-home').classList.add('active');
   document.getElementById('bottom-nav').style.display = 'flex';
   _currentPage = 'home';
   renderFeaturedListings();
+  renderAnimalBrowse();
 }
 
 function demoMode() {
   _demoActive = true;
   enterApp();
-  showToast('Demo Mode Active 🎉');
+  showToast('Demo Mode Active!');
 }
 
-// ═══════════════════════════ HOME PAGE ═══════════════════════
+// ═══════════════════════════ HOME ════════════════════════════
 function renderFeaturedListings() {
-  const container = document.getElementById('featured-listings');
+  const container = document.getElementById('home-featured');
   if (!container) return;
   container.innerHTML = LISTINGS.slice(0, 3).map(l => `
-    <div class="featured-card" onclick="openListing(${l.id})">
-      <div class="featured-img-wrap">
-        <img src="${l.img}" alt="${l.breed}" loading="lazy" />
-        <div class="featured-badge">${l.type}</div>
-        <button class="fav-btn ${_favorites.has(l.id)?'active':''}" onclick="event.stopPropagation();toggleFavorite(${l.id})">
-          <svg viewBox="0 0 24 24" fill="${_favorites.has(l.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+    <div class="card" onclick="openListing(${l.id})" style="min-width:220px;flex-shrink:0;cursor:pointer">
+      <div style="position:relative">
+        <img class="card-img" src="${l.img}" alt="${l.breed}" loading="lazy" />
+        <span class="pill dark" style="position:absolute;top:10px;left:10px">${l.type}</span>
+        <button onclick="event.stopPropagation();toggleFavorite(${l.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:16px">${_favorites.has(l.id)?'❤️':'🤍'}</button>
       </div>
-      <div class="featured-info">
-        <div class="listing-breed">${l.breed}</div>
-        <div class="listing-farm">${l.farm} · ${l.location}</div>
-        <div class="listing-footer">
-          <div class="listing-price">$${l.price.toFixed(2)}<span>/lb</span></div>
-          <div class="listing-dist">${l.distance}</div>
-        </div>
+      <div class="card-body">
+        <div class="card-title">${l.breed}</div>
+        <div class="card-sub">${l.farm} · ${l.location}</div>
+        <div class="card-price">$${l.price.toFixed(2)}<span>/lb</span> <span style="font-weight:400;font-size:12px;color:var(--text-secondary)">${l.distance}</span></div>
       </div>
     </div>
   `).join('');
@@ -1529,42 +1525,27 @@ function renderAnimalBrowse() {
   const icons = ['🐄','🐷','🐑','🦌','🐐','🐔'];
   const c = document.getElementById('animal-browse');
   if (!c) return;
-  c.innerHTML = types.map((t,i) => `
-    <div class="animal-chip" onclick="filterByType('${t}')">
-      <span class="animal-emoji">${icons[i]}</span>
-      <span>${t}</span>
-    </div>
-  `).join('');
+  c.innerHTML = types.map((t,i) => `<div class="filter-chip" onclick="filterByType('${t}')">${icons[i]} ${t}</div>`).join('');
 }
 
-// ═══════════════════════════ MARKET PAGE ═════════════════════
-let _marketTab = 'all';
-let _marketFilter = {};
-
-function renderMarketGrid(filter) {
+// ═══════════════════════════ MARKET ══════════════════════════
+function renderMarketGrid() {
   const container = document.getElementById('market-grid');
   if (!container) return;
   let listings = [...LISTINGS];
-  if (_marketTab !== 'all') listings = listings.filter(l => l.type.toLowerCase() === _marketTab);
-  if (filter && filter.type) listings = listings.filter(l => l.type === filter.type);
+  if (_marketTab && _marketTab !== 'all') listings = listings.filter(l => l.type.toLowerCase() === _marketTab.toLowerCase());
   container.innerHTML = listings.map(l => `
-    <div class="market-card" onclick="openListing(${l.id})">
-      <div class="market-img-wrap">
-        <img src="${l.img}" alt="${l.breed}" loading="lazy" />
-        <div class="market-badge">${l.type}</div>
-        <button class="fav-btn ${_favorites.has(l.id)?'active':''}" onclick="event.stopPropagation();toggleFavorite(${l.id})">
-          <svg viewBox="0 0 24 24" fill="${_favorites.has(l.id)?'currentColor':'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-        </button>
+    <div class="card" onclick="openListing(${l.id})" style="cursor:pointer">
+      <div style="position:relative">
+        <img class="card-img" src="${l.img}" alt="${l.breed}" loading="lazy" />
+        <span class="pill dark" style="position:absolute;top:10px;left:10px">${l.type}</span>
+        <button onclick="event.stopPropagation();toggleFavorite(${l.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:16px">${_favorites.has(l.id)?'❤️':'🤍'}</button>
       </div>
-      <div class="market-info">
-        <div class="listing-breed">${l.breed}</div>
-        <div class="listing-farm">${l.farm}</div>
-        <div class="listing-dist-small">${l.distance} · ${l.location}</div>
-        <div class="listing-footer">
-          <div class="listing-price">$${l.price.toFixed(2)}<span>/lb</span></div>
-          <div class="listing-rating">${l.rating}★ (${l.reviews})</div>
-        </div>
-        <div class="cert-tags">${l.certified.map(c => `<span class="cert-tag">${c}</span>`).join('')}</div>
+      <div class="card-body">
+        <div class="card-title">${l.breed}</div>
+        <div class="card-sub">${l.farm} · ${l.distance}</div>
+        <div class="card-price">$${l.price.toFixed(2)}<span>/lb</span></div>
+        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">${l.certified.map(c => `<span class="pill green" style="font-size:10px;padding:2px 8px">${c}</span>`).join('')}</div>
       </div>
     </div>
   `).join('');
@@ -1572,7 +1553,7 @@ function renderMarketGrid(filter) {
 
 function setMarketTab(el, tab) {
   _marketTab = tab;
-  document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#market-tabs .filter-chip').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   renderMarketGrid();
 }
@@ -1580,10 +1561,7 @@ function setMarketTab(el, tab) {
 function filterByType(type) {
   goTo('market');
   _marketTab = type.toLowerCase();
-  setTimeout(() => {
-    document.querySelectorAll('.market-tab').forEach(t => { if (t.textContent.toLowerCase() === type.toLowerCase()) t.classList.add('active'); else t.classList.remove('active'); });
-    renderMarketGrid();
-  }, 100);
+  setTimeout(renderMarketGrid, 100);
 }
 
 // ═══════════════════════════ LISTING DETAIL ══════════════════
@@ -1591,21 +1569,22 @@ function openListing(id) {
   _selectedListing = LISTINGS.find(l => l.id === id);
   if (!_selectedListing) return;
   const l = _selectedListing;
-  // Hero image
   const heroImg = document.getElementById('detail-hero-img');
   if (heroImg) heroImg.src = l.img;
-  // Populate fields
-  const fields = { 'detail-breed': l.breed, 'detail-type': l.type, 'detail-farm': l.farm, 'detail-location': l.location, 'detail-price': '$' + l.price.toFixed(2) + '/lb', 'detail-weight': l.weight + ' lbs live weight', 'detail-unit': l.unit + ' animal', 'detail-distance': l.distance, 'detail-rating': l.rating + '★ (' + l.reviews + ' reviews)', 'detail-desc': l.desc };
-  Object.entries(fields).forEach(([id, val]) => { const el = document.getElementById(id); if (el) el.textContent = val; });
-  // Certifications
+  const fields = {
+    'detail-breed': l.breed, 'detail-type': l.type, 'detail-farm': l.farm,
+    'detail-location': l.location, 'detail-price': '$' + l.price.toFixed(2) + '/lb',
+    'detail-weight': l.weight + ' lbs live weight', 'detail-unit': l.unit + ' animal',
+    'detail-distance': l.distance, 'detail-rating': l.rating + '★ (' + l.reviews + ' reviews)',
+    'detail-desc': l.desc
+  };
+  Object.entries(fields).forEach(([elId, val]) => { const el = document.getElementById(elId); if (el) el.textContent = val; });
   const certEl = document.getElementById('detail-certs');
-  if (certEl) certEl.innerHTML = l.certified.map(c => `<span class="cert-tag">${c}</span>`).join('');
-  // Shares
+  if (certEl) certEl.innerHTML = l.certified.map(c => `<span class="pill green" style="font-size:11px">${c}</span>`).join('');
   const shareEl = document.getElementById('detail-shares');
   if (shareEl) shareEl.textContent = l.shares + ' share' + (l.shares !== 1 ? 's' : '') + ' available';
-  // Fav button
   const favBtn = document.getElementById('detail-fav');
-  if (favBtn) { favBtn.innerHTML = _favorites.has(l.id) ? '❤️' : '🤍'; favBtn.onclick = () => { toggleFavorite(l.id); favBtn.innerHTML = _favorites.has(l.id) ? '❤️' : '🤍'; }; }
+  if (favBtn) { favBtn.textContent = _favorites.has(l.id) ? '❤️' : '🤍'; favBtn.onclick = () => { toggleFavorite(l.id); favBtn.textContent = _favorites.has(l.id) ? '❤️' : '🤍'; }; }
   goTo('detail');
 }
 
@@ -1613,61 +1592,55 @@ function addToBag(id) {
   const l = _selectedListing || LISTINGS.find(li => li.id === id);
   if (!l) return;
   const existing = _bag.find(b => b.id === l.id);
-  if (existing) { existing.qty += 1; } else { _bag.push({ ...l, qty: 1 }); }
+  if (existing) existing.qty = (existing.qty || 1) + 1;
+  else _bag.push({ ...l, qty: 1 });
   updateBagBadge();
-  showToast(l.breed + ' added to bag! 🛒');
+  showToast(l.breed + ' added to bag!');
 }
 
-function selectShare(id) {
-  showToast('Share request sent to farmer!');
-}
+function selectShare() { showToast('Share request sent to farmer!'); }
 
 function updateBagBadge() {
   const badge = document.getElementById('bag-badge');
   if (badge) { badge.textContent = _bag.length; badge.style.display = _bag.length > 0 ? 'flex' : 'none'; }
 }
 
-// ═══════════════════════════ BAG & CHECKOUT ══════════════════
+// ═══════════════════════════ BAG ═════════════════════════════
 function renderBag() {
   const list = document.getElementById('bag-items');
   const empty = document.getElementById('bag-empty');
   const summary = document.getElementById('bag-summary');
   if (!list) return;
-  if (_bag.length === 0) { list.innerHTML = ''; empty.style.display = 'block'; summary.style.display = 'none'; return; }
-  empty.style.display = 'none'; summary.style.display = 'block';
+  if (_bag.length === 0) { list.innerHTML = ''; if(empty) empty.style.display='block'; if(summary) summary.style.display='none'; return; }
+  if(empty) empty.style.display='none'; if(summary) summary.style.display='block';
   let subtotal = 0;
   list.innerHTML = _bag.map((item, idx) => {
     const itemTotal = item.price * item.weight * 0.6;
     subtotal += itemTotal;
-    return `<div class="bag-item card">
-      <img src="${item.img}" class="bag-thumb" />
-      <div class="bag-item-info">
-        <div class="bag-item-name">${item.breed}</div>
-        <div class="bag-item-farm">${item.farm}</div>
-        <div class="bag-item-price">$${item.price.toFixed(2)}/lb · ${Math.round(item.weight * 0.6)} lbs est.</div>
-        <div class="bag-item-total">$${itemTotal.toFixed(2)}</div>
+    return `<div class="bag-item card" style="display:flex;align-items:center;gap:12px;padding:16px">
+      <img src="${item.img}" class="bag-img" style="width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0" />
+      <div class="bag-item-info" style="flex:1">
+        <div class="bag-item-title" style="font-weight:600;font-size:15px">${item.breed}</div>
+        <div class="bag-item-sub" style="font-size:13px;color:var(--text-secondary)">${item.farm}</div>
+        <div class="bag-item-price" style="font-size:13px;color:var(--text-secondary)">$${item.price.toFixed(2)}/lb · est. $${itemTotal.toFixed(2)}</div>
       </div>
-      <button class="bag-remove" onclick="removeFromBag(${idx})">✕</button>
+      <button class="bag-item-remove" onclick="removeFromBag(${idx})" style="background:none;border:none;color:#FF3B30;font-size:20px;cursor:pointer;padding:4px">✕</button>
     </div>`;
   }).join('');
   const fee = subtotal * 0.03;
-  document.getElementById('bag-subtotal').textContent = '$' + subtotal.toFixed(2);
-  document.getElementById('bag-fee').textContent = '$' + fee.toFixed(2);
-  document.getElementById('bag-total').textContent = '$' + (subtotal + fee).toFixed(2);
+  const subEl = document.getElementById('bag-subtotal'); if(subEl) subEl.textContent='$'+subtotal.toFixed(2);
+  const feeEl = document.getElementById('bag-fee'); if(feeEl) feeEl.textContent='$'+fee.toFixed(2);
+  const totEl = document.getElementById('bag-total'); if(totEl) totEl.textContent='$'+(subtotal+fee).toFixed(2);
 }
 
-function removeFromBag(idx) { _bag.splice(idx, 1); updateBagBadge(); renderBag(); }
+function removeFromBag(idx) { _bag.splice(idx,1); updateBagBadge(); renderBag(); }
 
 function renderCheckout() {
   const itemsEl = document.getElementById('checkout-items');
   const totalEl = document.getElementById('checkout-total');
   if (!itemsEl) return;
   let total = 0;
-  itemsEl.innerHTML = _bag.map(item => {
-    const t = item.price * item.weight * 0.6;
-    total += t;
-    return `<div class="summary-row"><span>${item.breed}</span><span>$${t.toFixed(2)}</span></div>`;
-  }).join('');
+  itemsEl.innerHTML = _bag.map(item => { const t = item.price * item.weight * 0.6; total += t; return `<div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0"><span>${item.breed}</span><span>$${t.toFixed(2)}</span></div>`; }).join('');
   if (totalEl) totalEl.textContent = '$' + (total * 1.03).toFixed(2);
 }
 
@@ -1675,17 +1648,13 @@ function placeOrder() {
   _orderCount++;
   const num = document.getElementById('order-num');
   if (num) num.textContent = 'PO-' + String(_orderCount).padStart(5, '0');
-  _bag = [];
-  updateBagBadge();
+  _bag = []; updateBagBadge();
   goTo('confirmed');
 }
 
 function toggleStep(step) {
   const body = document.getElementById('step-body-' + step);
   if (body) body.style.display = body.style.display === 'none' ? 'block' : 'none';
-  document.querySelectorAll('.checkout-step').forEach(s => s.classList.remove('active'));
-  const stepEl = document.getElementById('step-' + step);
-  if (stepEl) stepEl.classList.add('active');
 }
 
 function selectPayment(el, type) {
@@ -1698,67 +1667,37 @@ function selectPayment(el, type) {
 // ═══════════════════════════ FAVORITES ═══════════════════════
 function toggleFavorite(id) {
   if (_favorites.has(id)) { _favorites.delete(id); showToast('Removed from saved'); }
-  else { _favorites.add(id); showToast('Saved to favorites ❤️'); }
-  renderMarketGrid();
-  renderFeaturedListings();
+  else { _favorites.add(id); showToast('Saved to favorites!'); }
+  renderFeaturedListings(); renderMarketGrid();
 }
 
 function renderFavorites() {
   const c = document.getElementById('favorites-content');
   if (!c) return;
   const favs = LISTINGS.filter(l => _favorites.has(l.id));
-  if (favs.length === 0) { c.innerHTML = `<div class="empty-state"><div class="empty-icon">❤️</div><div class="empty-title">No saved listings</div><div class="empty-sub">Tap the heart on any listing to save it.</div><button class="btn-primary" onclick="goTo('market')" style="margin-top:24px">Browse Market</button></div>`; return; }
-  c.innerHTML = favs.map(l => `<div class="market-card" onclick="openListing(${l.id})"><div class="market-img-wrap"><img src="${l.img}" alt="${l.breed}" /><div class="market-badge">${l.type}</div></div><div class="market-info"><div class="listing-breed">${l.breed}</div><div class="listing-farm">${l.farm}</div><div class="listing-footer"><div class="listing-price">$${l.price.toFixed(2)}<span>/lb</span></div><div class="listing-dist">${l.distance}</div></div></div></div>`).join('');
-}
-
-// ═══════════════════════════ FILTER ══════════════════════════
-function openFilter() {
-  document.getElementById('filter-modal').classList.add('active');
-}
-
-function closeFilter(event) {
-  if (!event || event.target.id === 'filter-modal') {
-    document.getElementById('filter-modal').classList.remove('active');
-  }
-}
-
-function applyFilter() {
-  closeFilter();
-  renderMarketGrid();
-  showToast('Filters applied');
+  if (!favs.length) { c.innerHTML = `<div style="text-align:center;padding:60px 24px"><div style="font-size:48px;margin-bottom:16px">❤️</div><div style="font-size:18px;font-weight:600;margin-bottom:8px">No saved listings</div><div style="color:var(--text-secondary);margin-bottom:24px">Tap the heart on any listing to save it.</div><button class="btn btn-primary" onclick="goTo('market')">Browse Market</button></div>`; return; }
+  c.innerHTML = `<div class="listing-grid">${favs.map(l=>`<div class="card" onclick="openListing(${l.id})" style="cursor:pointer"><img class="card-img" src="${l.img}" /><div class="card-body"><div class="card-title">${l.breed}</div><div class="card-sub">${l.farm}</div><div class="card-price">$${l.price.toFixed(2)}<span>/lb</span></div></div></div>`).join('')}</div>`;
 }
 
 // ═══════════════════════════ ORDERS ══════════════════════════
 function setOrderTab(el, tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  ['active','completed','cancelled'].forEach(t => {
-    const el2 = document.getElementById('orders-' + t);
-    if (el2) el2.style.display = t === tab ? 'block' : 'none';
-  });
+  ['active','completed','cancelled'].forEach(t => { const e2 = document.getElementById('orders-'+t); if(e2) e2.style.display = t===tab?'block':'none'; });
 }
+
+// ═══════════════════════════ FILTER ══════════════════════════
+function openFilter() { const m = document.getElementById('filter-modal'); if(m) m.classList.add('active'); }
+function closeFilter(event) { if (!event || event.target.id === 'filter-modal') { const m = document.getElementById('filter-modal'); if(m) m.classList.remove('active'); } }
+function applyFilter() { closeFilter(); renderMarketGrid(); showToast('Filters applied'); }
 
 // ═══════════════════════════ ALERTS ══════════════════════════
-function markAllRead() {
-  document.querySelectorAll('.alert-item').forEach(a => { a.classList.remove('unread'); const dot = a.querySelector('.alert-dot'); if (dot) dot.remove(); });
-  updateAlertBadge(0);
-  showToast('All alerts marked as read');
-}
-
-function updateAlertBadge(count) {
-  const b = document.getElementById('alert-badge');
-  if (b) { b.textContent = count; b.style.display = count > 0 ? 'flex' : 'none'; }
-}
+function markAllRead() { document.querySelectorAll('.alert-item').forEach(a => { a.classList.remove('unread'); const dot = a.querySelector('.alert-dot'); if(dot) dot.remove(); }); updateAlertBadge(0); showToast('All alerts marked as read'); }
+function updateAlertBadge(count) { const b = document.getElementById('alert-badge'); if(b) { b.textContent = count; b.style.display = count > 0 ? 'flex' : 'none'; } }
 
 // ═══════════════════════════ SELL ════════════════════════════
 function addPhotoSlot() { showToast('Photo upload coming soon'); }
-
-function submitListing() {
-  const type = document.getElementById('sell-type');
-  if (!type || !type.value) { showToast('Please select an animal type'); return; }
-  showToast('Listing posted! 🎉');
-  setTimeout(() => goTo('home'), 1500);
-}
+function submitListing() { const type = document.getElementById('sell-type'); if (!type||!type.value) { showToast('Please select an animal type'); return; } showToast('Listing posted!'); setTimeout(()=>goTo('home'),1500); }
 
 // ═══════════════════════════ CHAT ════════════════════════════
 function sendMessage() {
@@ -1767,12 +1706,8 @@ function sendMessage() {
   const msgs = document.getElementById('chat-messages');
   const msg = input.value.trim();
   msgs.innerHTML += `<div class="chat-msg sent"><div class="msg-bubble">${msg}</div><div class="msg-time">Just now</div></div>`;
-  input.value = '';
-  msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => {
-    msgs.innerHTML += `<div class="chat-msg received"><div class="msg-bubble">Thanks for your message! I'll get back to you shortly.</div><div class="msg-time">Just now</div></div>`;
-    msgs.scrollTop = msgs.scrollHeight;
-  }, 1000);
+  input.value = ''; msgs.scrollTop = msgs.scrollHeight;
+  setTimeout(() => { msgs.innerHTML += `<div class="chat-msg received"><div class="msg-bubble">Thanks! I'll get back to you shortly.</div><div class="msg-time">Just now</div></div>`; msgs.scrollTop = msgs.scrollHeight; }, 1000);
 }
 
 // ═══════════════════════════ TOAST ═══════════════════════════
@@ -1788,12 +1723,9 @@ function showToast(msg) {
 // ═══════════════════════════ INIT ════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('page-splash').classList.add('active');
-  renderAnimalBrowse();
-  updateBagBadge();
-  updateAlertBadge(2);
-  // Enter key on chat
+  updateBagBadge(); updateAlertBadge(2);
   const chatInput = document.getElementById('chat-input');
-  if (chatInput) chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+  if (chatInput) chatInput.addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
 });
 </script>
 </body>
