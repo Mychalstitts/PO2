@@ -1,1944 +1,633 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Protein Outfitters | Farm-Direct Marketplace</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<style>
-/* ===================== RESET & BASE ===================== */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{font-size:16px;scroll-behavior:smooth}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F5F5F7;color:#1D1D1F;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-button{font-family:inherit;cursor:pointer;border:none;background:none;outline:none}
-input,select,textarea{font-family:inherit;outline:none;border:none}
-a{text-decoration:none;color:inherit}
-img{display:block;max-width:100%;object-fit:cover}
-
-/* ===================== CSS VARIABLES ===================== */
-:root{
-  --bg:#F5F5F7;
-  --surface:#FFFFFF;
-  --surface2:#F2F2F7;
-  --primary:#1D1D1F;
-  --secondary:#6E6E73;
-  --tertiary:#AEAEB2;
-  --accent:#2C7A4B;
-  --accent-light:#E8F5EE;
-  --accent2:#FF6B35;
-  --accent2-light:#FFF0EB;
-  --blue:#007AFF;
-  --blue-light:#EAF3FF;
-  --red:#FF3B30;
-  --yellow:#FF9F0A;
-  --border:#E5E5EA;
-  --border2:#D1D1D6;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);
-  --shadow:0 4px 16px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
-  --shadow-lg:0 20px 60px rgba(0,0,0,0.12),0 8px 20px rgba(0,0,0,0.06);
-  --radius-sm:8px;
-  --radius:12px;
-  --radius-lg:20px;
-  --radius-xl:28px;
-  --nav-h:80px;
-  --header-h:56px;
-  --safe-bottom:env(safe-area-inset-bottom,0px);
-}
-
-/* ===================== APP SHELL ===================== */
-#app{min-height:100vh;display:flex;flex-direction:column}
-
-/* ===================== PAGES ===================== */
-.page{display:none;min-height:100vh;flex-direction:column;animation:fadeIn 0.25s ease}
-.page.active{display:flex}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
-
-/* ===================== SCROLLABLE CONTENT ===================== */
-.scroll-content{flex:1;overflow-y:auto;padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);-webkit-overflow-scrolling:touch}
-.scroll-content::-webkit-scrollbar{display:none}
-
-/* ===================== TOP HEADER ===================== */
-.top-header{
-  position:sticky;top:0;z-index:100;
-  background:rgba(255,255,255,0.92);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-bottom:1px solid var(--border);
-  padding:0 20px;
-  height:var(--header-h);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.top-header .logo{display:flex;align-items:center;gap:8px;font-weight:800;font-size:17px;letter-spacing:-0.3px}
-.top-header .logo .dot{width:8px;height:8px;background:var(--accent);border-radius:50%}
-.header-actions{display:flex;align-items:center;gap:8px}
-.icon-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--surface2);transition:background 0.15s,transform 0.1s}
-.icon-btn:active{transform:scale(0.93);background:var(--border)}
-.icon-btn svg{width:18px;height:18px;stroke:var(--primary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.badge-btn{position:relative}
-.badge-btn .badge{position:absolute;top:-2px;right:-2px;width:16px;height:16px;background:var(--red);border-radius:50%;font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface)}
-
-/* ===================== BOTTOM NAV ===================== */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;z-index:200;
-  height:var(--nav-h);
-  padding-bottom:var(--safe-bottom);
-  background:rgba(255,255,255,0.95);
-  backdrop-filter:saturate(180%) blur(20px);
-  -webkit-backdrop-filter:saturate(180%) blur(20px);
-  border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-around;
-  padding:0 8px;padding-bottom:calc(var(--safe-bottom) + 4px);
-}
-.nav-item{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;padding:8px 4px;cursor:pointer;
-  transition:opacity 0.15s,transform 0.1s;
-  border-radius:var(--radius-sm);
-}
-.nav-item:active{transform:scale(0.93);opacity:0.7}
-.nav-item svg{width:24px;height:24px;stroke:var(--tertiary);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:stroke 0.15s}
-.nav-item .nav-label{font-size:10px;font-weight:500;color:var(--tertiary);transition:color 0.15s}
-.nav-item.active svg{stroke:var(--accent)}
-.nav-item.active .nav-label{color:var(--accent);font-weight:700}
-
-/* ===================== CARDS ===================== */
-.card{background:var(--surface);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
-.card:active{transform:scale(0.975);box-shadow:var(--shadow)}
-.card-body{padding:16px}
-.card-img{width:100%;height:200px;object-fit:cover;display:block}
-.card-title{font-size:17px;font-weight:700;color:var(--primary);margin-bottom:4px;letter-spacing:-0.3px}
-.card-sub{font-size:13px;color:var(--secondary);margin-bottom:8px}
-.card-price{font-size:20px;font-weight:800;color:var(--primary);letter-spacing:-0.5px}
-.card-price span{font-size:13px;font-weight:500;color:var(--secondary)}
-
-/* ===================== PILLS & TAGS ===================== */
-.pill{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:100px;font-size:12px;font-weight:600;background:var(--surface2);color:var(--secondary)}
-.pill.green{background:var(--accent-light);color:var(--accent)}
-.pill.orange{background:var(--accent2-light);color:var(--accent2)}
-.pill.blue{background:var(--blue-light);color:var(--blue)}
-.pill.dark{background:var(--primary);color:#fff}
-
-/* ===================== BUTTONS ===================== */
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:var(--radius-xl);font-size:15px;font-weight:600;letter-spacing:-0.2px;transition:all 0.15s;width:100%;cursor:pointer}
-.btn:active{transform:scale(0.97)}
-.btn-primary{background:var(--primary);color:#fff}
-.btn-primary:active{background:#000}
-.btn-green{background:var(--accent);color:#fff}
-.btn-green:active{background:#1a5c38}
-.btn-outline{background:transparent;color:var(--primary);border:1.5px solid var(--border2)}
-.btn-outline:active{background:var(--surface2)}
-.btn-ghost{background:var(--surface2);color:var(--primary)}
-.btn-ghost:active{background:var(--border)}
-.btn-sm{padding:10px 18px;font-size:13px;border-radius:var(--radius)}
-
-/* ===================== INPUTS ===================== */
-.input-wrap{position:relative;margin-bottom:12px}
-.input-wrap label{display:block;font-size:12px;font-weight:600;color:var(--secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px}
-.input{width:100%;padding:14px 16px;background:var(--surface2);border:1.5px solid transparent;border-radius:var(--radius);font-size:15px;color:var(--primary);transition:border-color 0.15s,background 0.15s}
-.input:focus{background:var(--surface);border-color:var(--accent)}
-.input.with-icon{padding-left:44px}
-.input-icon{position:absolute;left:14px;bottom:14px;pointer-events:none}
-.input-icon svg{width:18px;height:18px;stroke:var(--tertiary)}
-
-/* ===================== SEARCH BAR ===================== */
-.search-bar{
-  display:flex;align-items:center;gap:10px;
-  background:var(--surface2);border-radius:var(--radius-xl);
-  padding:10px 16px;
-  border:1.5px solid transparent;
-  transition:border-color 0.15s,background 0.15s;
-}
-.search-bar:focus-within{background:var(--surface);border-color:var(--border2)}
-.search-bar svg{width:18px;height:18px;stroke:var(--tertiary);flex-shrink:0}
-.search-bar input{background:none;font-size:15px;color:var(--primary);width:100%}
-.search-bar input::placeholder{color:var(--tertiary)}
-
-/* ===================== SECTION TITLE ===================== */
-.section-label{font-size:11px;font-weight:700;color:var(--tertiary);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.section-header h2{font-size:20px;font-weight:800;letter-spacing:-0.5px}
-.see-all{font-size:14px;font-weight:600;color:var(--accent);cursor:pointer}
-
-/* ===================== BACK BUTTON ===================== */
-.back-btn{display:flex;align-items:center;gap:6px;font-size:16px;font-weight:500;color:var(--accent);cursor:pointer;padding:4px 0}
-.back-btn svg{width:18px;height:18px;stroke:var(--accent);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
-
-/* ===================== PROGRESS BAR ===================== */
-.progress-wrap{background:var(--surface2);border-radius:100px;height:6px;overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;border-radius:100px;background:var(--accent);transition:width 0.6s ease}
-
-/* ===================== DIVIDER ===================== */
-.divider{height:1px;background:var(--border);margin:16px 0}
-
-/* ===================== STAT CARD ===================== */
-.stat-card{background:var(--surface);border-radius:var(--radius-lg);padding:16px;flex:1;box-shadow:var(--shadow-sm)}
-.stat-number{font-size:28px;font-weight:800;letter-spacing:-1px;color:var(--primary)}
-.stat-label{font-size:11px;font-weight:600;color:var(--tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px}
-
-/* ===================== LIST ITEM ===================== */
-.list-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.15s}
-.list-item:last-child{border-bottom:none}
-.list-item:active{opacity:0.6}
-.list-icon{width:44px;height:44px;border-radius:var(--radius);background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden}
-.list-icon img{width:44px;height:44px;object-fit:cover}
-.list-icon svg{width:20px;height:20px;stroke:var(--secondary)}
-.list-content{flex:1;min-width:0}
-.list-title{font-size:15px;font-weight:600;color:var(--primary);margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.list-sub{font-size:13px;color:var(--secondary)}
-.list-right{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.list-right svg{width:16px;height:16px;stroke:var(--tertiary)}
-.chevron{width:16px;height:16px;stroke:var(--tertiary);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-
-/* ===================== HORIZONTAL SCROLL ===================== */
-.h-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.h-scroll::-webkit-scrollbar{display:none}
-
-/* ===================== FILTER CHIPS ===================== */
-.filter-chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 0}
-.filter-chips::-webkit-scrollbar{display:none}
-.filter-chip{padding:8px 16px;border-radius:100px;font-size:14px;font-weight:600;background:var(--surface2);color:var(--secondary);white-space:nowrap;cursor:pointer;transition:all 0.15s;border:1.5px solid transparent;flex-shrink:0}
-.filter-chip:active{transform:scale(0.95)}
-.filter-chip.active{background:var(--primary);color:#fff}
-.filter-chip.green.active{background:var(--accent);color:#fff}
-
-/* ===================== COMPLIANCE SCORE ===================== */
-.score-circle{width:100px;height:100px;border-radius:50%;background:conic-gradient(var(--accent) 0deg calc(3.6deg * 98), var(--surface2) calc(3.6deg * 98) 360deg);display:flex;align-items:center;justify-content:center;position:relative}
-.score-circle::before{content:'';position:absolute;inset:8px;background:var(--surface);border-radius:50%}
-.score-inner{position:relative;z-index:1;text-align:center}
-.score-num{font-size:24px;font-weight:900;letter-spacing:-1px;color:var(--primary)}
-.score-denom{font-size:10px;font-weight:600;color:var(--secondary)}
-
-/* ===================== HERO SECTION ===================== */
-.hero-img{width:100%;height:280px;object-fit:cover;display:block}
-.hero-overlay{position:relative}
-.hero-overlay .overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.5) 100%)}
-.hero-overlay .content{position:absolute;bottom:0;left:0;right:0;padding:24px;color:#fff}
-
-/* ===================== MAP PLACEHOLDER ===================== */
-.map-placeholder{background:linear-gradient(135deg,#e8f4e8 0%,#c8e6c9 50%,#a5d6a7 100%);border-radius:var(--radius-lg);height:180px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.map-pin{background:var(--accent);color:#fff;border-radius:var(--radius);padding:8px 12px;font-size:13px;font-weight:700;box-shadow:var(--shadow)}
-
-/* ===================== TIMELINE ===================== */
-.timeline{padding:0 16px}
-.timeline-item{display:flex;gap:16px;position:relative;padding-bottom:24px}
-.timeline-item:last-child{padding-bottom:0}
-.timeline-line{position:absolute;left:19px;top:38px;bottom:0;width:2px;background:var(--border)}
-.timeline-item:last-child .timeline-line{display:none}
-.timeline-dot{width:40px;height:40px;border-radius:50%;background:var(--surface2);border:3px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1}
-.timeline-dot.done{background:var(--accent);border-color:var(--accent)}
-.timeline-dot.done svg{stroke:#fff}
-.timeline-dot svg{width:18px;height:18px;stroke:var(--secondary);fill:none;stroke-width:2;stroke-linecap:round}
-.timeline-content{flex:1;padding-top:8px}
-.timeline-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:2px}
-.timeline-sub{font-size:13px;color:var(--secondary)}
-.timeline-date{font-size:12px;color:var(--tertiary);margin-top:2px}
-
-/* ===================== MODAL/SHEET ===================== */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:flex-end;animation:fadeIn 0.2s ease}
-.modal-overlay.open{display:flex}
-.modal-sheet{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-height:90vh;overflow-y:auto;animation:slideUp 0.3s ease;padding-bottom:calc(var(--safe-bottom) + 20px)}
-.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 20px}
-.modal-header{padding:0 20px 16px;border-bottom:1px solid var(--border)}
-.modal-header h2{font-size:20px;font-weight:800;letter-spacing:-0.5px}
-.modal-body{padding:20px}
-
-/* ===================== TOGGLE ===================== */
-.toggle{position:relative;width:50px;height:30px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-track{position:absolute;cursor:pointer;inset:0;background:var(--border2);border-radius:15px;transition:background 0.3s}
-.toggle input:checked + .toggle-track{background:var(--accent)}
-.toggle-thumb{position:absolute;height:26px;width:26px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:transform 0.3s;box-shadow:0 1px 4px rgba(0,0,0,0.2)}
-.toggle input:checked ~ .toggle-thumb{transform:translateX(20px)}
-
-/* ===================== FORM SELECT ===================== */
-.select{width:100%;padding:14px 16px;background:var(--surface2);border-radius:var(--radius);font-size:15px;color:var(--primary);appearance:none;cursor:pointer;border:1.5px solid transparent;transition:border-color 0.15s}
-.select:focus{background:var(--surface);border-color:var(--accent)}
-
-/* ===================== NOTIFICATION BADGE ===================== */
-.notif-item{display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:opacity 0.15s}
-.notif-item:active{opacity:0.6}
-.notif-item.unread{background:var(--accent-light);margin:0 -20px;padding:14px 20px;border-radius:var(--radius-sm)}
-.notif-dot{width:10px;height:10px;background:var(--accent);border-radius:50%;flex-shrink:0;margin-top:5px}
-.notif-content h4{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:2px}
-.notif-content p{font-size:13px;color:var(--secondary);line-height:1.4}
-.notif-time{font-size:11px;color:var(--tertiary);margin-top:4px}
-
-/* ===================== RESPONSIVE ===================== */
-@media(min-width:768px){
-  .bottom-nav{display:none!important}
-  .side-nav{display:flex!important}
-  .page{padding-left:260px}
-  #app{flex-direction:row}
-  .scroll-content{padding-bottom:32px}
-  .hero-img{height:400px}
-  .card-img{height:240px}
-  .listing-grid{grid-template-columns:repeat(2,1fr)!important}
-}
-@media(min-width:1024px){
-  .page{padding-left:260px}
-  .content-max{max-width:1100px;margin:0 auto;padding:0 40px}
-  .listing-grid{grid-template-columns:repeat(3,1fr)!important}
-  .desktop-two-col{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-}
-@media(min-width:1280px){
-  .listing-grid{grid-template-columns:repeat(4,1fr)!important}
-}
-
-/* ===================== SIDE NAV (DESKTOP) ===================== */
-.side-nav{
-  display:none;
-  position:fixed;left:0;top:0;bottom:0;width:260px;
-  background:var(--surface);border-right:1px solid var(--border);
-  flex-direction:column;padding:32px 0;z-index:300;
-}
-.side-nav .sn-logo{padding:0 24px 32px;font-size:20px;font-weight:900;letter-spacing:-0.5px;display:flex;align-items:center;gap:8px}
-.side-nav .sn-logo .dot{width:10px;height:10px;background:var(--accent);border-radius:50%}
-.side-nav .sn-item{display:flex;align-items:center;gap:14px;padding:12px 24px;cursor:pointer;transition:background 0.15s,color 0.15s;font-size:15px;font-weight:500;color:var(--secondary);border-radius:0}
-.side-nav .sn-item:hover{background:var(--surface2);color:var(--primary)}
-.side-nav .sn-item.active{background:var(--accent-light);color:var(--accent);font-weight:700}
-.side-nav .sn-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.side-nav .sn-divider{height:1px;background:var(--border);margin:12px 24px}
-
-/* ===================== SPLASH ===================== */
-#page-splash{justify-content:flex-end;position:relative;min-height:100vh}
-.splash-bg{position:absolute;inset:0;z-index:0}
-.splash-bg img{width:100%;height:100%;object-fit:cover}
-.splash-bg::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.65) 60%,rgba(0,0,0,0.85) 100%)}
-.splash-content{position:relative;z-index:1;padding:32px 24px calc(var(--safe-bottom) + 40px);color:#fff}
-.splash-logo{width:48px;height:48px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
-.splash-logo svg{width:28px;height:28px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.splash-title{font-size:40px;font-weight:900;letter-spacing:-1.5px;line-height:1.05;margin-bottom:8px}
-.splash-sub{font-size:16px;font-weight:400;opacity:0.8;margin-bottom:32px;line-height:1.5}
-.splash-btns{display:flex;flex-direction:column;gap:12px}
-.btn-white{background:#fff;color:var(--primary);font-size:16px;font-weight:700}
-.btn-white:active{background:rgba(255,255,255,0.9)}
-.btn-transparent{background:rgba(255,255,255,0.15);color:#fff;font-size:16px;font-weight:600;backdrop-filter:blur(10px);border:1.5px solid rgba(255,255,255,0.3)}
-.btn-transparent:active{background:rgba(255,255,255,0.25)}
-.splash-terms{text-align:center;font-size:12px;opacity:0.5;margin-top:12px;line-height:1.5}
-
-/* ===================== PAGE-SPECIFIC ===================== */
-.page-content{padding:20px}
-.page-hero{position:relative;height:300px;overflow:hidden}
-.page-hero img{width:100%;height:100%;object-fit:cover}
-.page-hero .hero-content{position:absolute;bottom:0;left:0;right:0;padding:24px;background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 100%);color:#fff}
-.page-hero .hero-title{font-size:28px;font-weight:900;letter-spacing:-0.8px;margin-bottom:4px}
-.page-hero .hero-meta{font-size:14px;opacity:0.8;display:flex;align-items:center;gap:8px}
-
-.listing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.listing-grid .card-img{height:160px}
-
-.detail-img{width:100%;height:260px;object-fit:cover;display:block}
-.detail-section{background:var(--surface);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
-.detail-section h3{font-size:16px;font-weight:800;color:var(--primary);margin-bottom:14px;letter-spacing:-0.3px}
-.detail-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
-.detail-row:last-child{border-bottom:none}
-.detail-row .label{font-size:14px;color:var(--secondary)}
-.detail-row .value{font-size:14px;font-weight:700;color:var(--primary)}
-
-.bag-item{display:flex;align-items:center;gap:14px;background:var(--surface);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
-.bag-item .bag-img{width:64px;height:64px;border-radius:var(--radius);object-fit:cover;flex-shrink:0}
-.bag-item-info{flex:1}
-.bag-item-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:2px}
-.bag-item-sub{font-size:12px;color:var(--secondary);margin-bottom:6px}
-.bag-item-price{font-size:17px;font-weight:800;color:var(--primary)}
-.bag-item-remove{font-size:12px;font-weight:600;color:var(--red);cursor:pointer;margin-top:4px}
-
-.summary-card{background:var(--surface);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm)}
-.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
-.summary-row:last-child{border-bottom:none;padding-top:12px;margin-top:4px}
-.summary-row.total .label{font-size:16px;font-weight:800}
-.summary-row.total .value{font-size:20px;font-weight:900;color:var(--primary)}
-
-.profile-avatar{width:80px;height:80px;border-radius:50%;object-fit:cover;margin:0 auto}
-.profile-header{text-align:center;padding:24px 20px 0}
-.profile-name{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-top:12px}
-.profile-bio{font-size:14px;color:var(--secondary);margin-top:4px}
-.profile-stats{display:flex;gap:0;margin-top:20px;border-top:1px solid var(--border)}
-.profile-stat{flex:1;text-align:center;padding:16px 8px}
-.profile-stat .num{font-size:20px;font-weight:800;letter-spacing:-0.5px}
-.profile-stat .lbl{font-size:11px;color:var(--secondary);margin-top:2px}
-.profile-stat + .profile-stat{border-left:1px solid var(--border)}
-
-.settings-group{background:var(--surface);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);margin-bottom:20px}
-.settings-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s}
-.settings-item:last-child{border-bottom:none}
-.settings-item:active{background:var(--surface2)}
-.settings-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.settings-icon svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round}
-.settings-text{flex:1}
-.settings-title{font-size:15px;font-weight:500;color:var(--primary)}
-.settings-sub{font-size:12px;color:var(--secondary);margin-top:1px}
-
-.sell-hero{background:linear-gradient(135deg,var(--accent) 0%,#1a5c38 100%);padding:28px 20px;color:#fff;border-radius:0 0 var(--radius-xl) var(--radius-xl);margin-bottom:24px}
-.sell-hero h1{font-size:28px;font-weight:900;letter-spacing:-0.8px;margin-bottom:8px}
-.sell-hero p{font-size:14px;opacity:0.85;line-height:1.5}
-.sell-steps{display:flex;gap:8px;margin-top:16px}
-.sell-step{background:rgba(255,255,255,0.15);border-radius:var(--radius);padding:8px 12px;font-size:12px;font-weight:600;backdrop-filter:blur(10px)}
-
-.yield-calc{background:var(--surface2);border-radius:var(--radius-lg);padding:16px}
-.yield-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0}
-.yield-label{font-size:13px;color:var(--secondary)}
-.yield-value{font-size:14px;font-weight:700;color:var(--primary)}
-.yield-value.highlight{font-size:18px;font-weight:900;color:var(--accent)}
-
-.processor-card{background:var(--surface);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);cursor:pointer;border:2px solid transparent;transition:border-color 0.15s}
-.processor-card.selected{border-color:var(--accent)}
-.processor-card .pc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.processor-name{font-size:16px;font-weight:700;color:var(--primary)}
-.processor-dist{font-size:12px;color:var(--secondary)}
-.processor-meta{display:flex;gap:8px;flex-wrap:wrap}
-
-/* ===================== RESPONSIVE CONTAINERS ===================== */
-@media(min-width:768px){
-  .page-content{padding:32px 40px;max-width:900px;margin:0 auto}
-  .splash-content{max-width:500px;margin:0 auto}
-  #page-splash .splash-content{padding:40px}
-}
-
-/* ===================== LOADING ===================== */
-.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 50%,var(--surface2) 75%);background-size:200% 100%;animation:skeleton 1.5s infinite;border-radius:var(--radius-sm)}
-@keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* ===================== TOAST ===================== */
-.toast{position:fixed;bottom:calc(var(--nav-h) + var(--safe-bottom) + 16px);left:50%;transform:translateX(-50%) translateY(20px);background:var(--primary);color:#fff;padding:12px 20px;border-radius:var(--radius);font-size:14px;font-weight:600;z-index:1000;opacity:0;transition:all 0.3s;white-space:nowrap;box-shadow:var(--shadow-lg)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media(min-width:768px){.toast{bottom:32px}}
-
-
-/* ═══════════════════ PAGE STRUCTURE ═══════════════════ */
-.page-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;min-height:56px}
-.page-title{font-size:17px;font-weight:700;color:var(--primary);letter-spacing:-0.3px}
-.page-content{padding:16px;padding-bottom:100px;background:var(--bg)}
-
-/* ═══════════════════ BUTTONS ═══════════════════ */
-.btn-primary{background:var(--primary);color:#fff;border:none;border-radius:14px;padding:14px 24px;font-size:15px;font-weight:600;cursor:pointer;width:auto;transition:opacity 0.15s}
-.btn-primary:active{opacity:0.8}
-.btn-secondary{background:var(--surface);color:var(--primary);border:1.5px solid var(--border);border-radius:14px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;transition:background 0.15s}
-.btn-secondary:active{background:var(--surface2)}
-.btn-full{width:100%;display:block;text-align:center}
-.btn-sm{padding:8px 16px;font-size:13px;border-radius:10px}
-
-/* ═══════════════════ TAB BAR ═══════════════════ */
-.tab-bar{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px}
-.tab-btn{flex:1;border:none;background:transparent;border-radius:10px;padding:8px 12px;font-size:13px;font-weight:500;color:var(--text-secondary);cursor:pointer;transition:all 0.2s}
-.tab-btn.active{background:#fff;color:var(--primary);font-weight:700;box-shadow:var(--shadow-sm)}
-
-/* ═══════════════════ STATUS BADGES ═══════════════════ */
-.status-badge{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;white-space:nowrap}
-.status-confirmed{background:#E8F9EE;color:#2C7A4B}
-.status-done{background:#E8F0FE;color:#1a73e8}
-.status-pending{background:#FFF3E0;color:#E65100}
-
-/* ═══════════════════ ORDER CARDS ═══════════════════ */
-.order-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm);cursor:pointer;transition:box-shadow 0.2s}
-.order-card:active{box-shadow:var(--shadow)}
-.order-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.order-id{font-size:14px;font-weight:700;color:var(--primary)}
-.order-date{font-size:12px;color:var(--text-secondary);margin-top:2px}
-.order-items{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin:8px 0}
-.order-thumb{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0}
-.order-info{flex:1}
-.order-name{font-size:14px;font-weight:600;color:var(--primary)}
-.order-farm{font-size:12px;color:var(--text-secondary);margin-top:2px}
-.order-price{font-size:14px;font-weight:700;color:var(--accent);margin-top:4px}
-.order-actions{display:flex;gap:8px;margin-top:12px}
-
-/* ═══════════════════ TRACK TIMELINE ═══════════════════ */
-.track-timeline{display:flex;align-items:center;padding:12px 0;overflow-x:auto;gap:0}
-.track-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:60px}
-.track-dot{width:14px;height:14px;border-radius:50%;background:var(--border);border:2px solid var(--border);flex-shrink:0}
-.track-step.done .track-dot{background:var(--accent);border-color:var(--accent)}
-.track-step.active .track-dot{background:#fff;border:3px solid var(--accent);box-shadow:0 0 0 3px rgba(44,122,75,0.15)}
-.track-label{font-size:10px;font-weight:500;color:var(--text-secondary);text-align:center}
-.track-date{font-size:10px;color:var(--text-tertiary)}
-.track-line{flex:1;height:2px;background:var(--border);min-width:20px}
-.track-line.done{background:var(--accent)}
-
-/* ═══════════════════ ALERT ITEMS ═══════════════════ */
-.alert-item{background:#fff;border-radius:14px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--shadow-sm);cursor:pointer;position:relative;transition:box-shadow 0.15s}
-.alert-item:active{box-shadow:var(--shadow)}
-.alert-item.unread{border-left:3px solid var(--accent)}
-.alert-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:4px}
-.alert-icon{font-size:22px;flex-shrink:0}
-.alert-body{flex:1;min-width:0}
-.alert-title{font-size:14px;font-weight:700;color:var(--primary);margin-bottom:2px}
-.alert-msg{font-size:13px;color:var(--text-secondary);line-height:1.5}
-.alert-time{font-size:11px;color:var(--text-tertiary);margin-top:4px}
-
-/* ═══════════════════ PROFILE PAGE ═══════════════════ */
-.profile-hero{background:#fff;border-radius:20px;padding:28px 20px;text-align:center;box-shadow:var(--shadow-sm);margin-bottom:4px}
-.profile-avatar{width:84px;height:84px;border-radius:50%;overflow:hidden;margin:0 auto 12px;border:3px solid var(--accent-light)}
-.profile-avatar img{width:100%;height:100%;object-fit:cover}
-.profile-name{font-size:20px;font-weight:700;color:var(--primary)}
-.profile-role{font-size:13px;color:var(--accent);font-weight:500;margin-top:2px}
-.profile-location{font-size:13px;color:var(--text-secondary);margin-top:4px}
-.profile-stats{display:flex;justify-content:center;gap:0;margin-top:20px;border-top:1px solid var(--border);padding-top:16px}
-.stat-item{flex:1;text-align:center;padding:0 12px}
-.stat-val{font-size:20px;font-weight:800;color:var(--primary)}
-.stat-lbl{font-size:11px;color:var(--text-secondary);margin-top:2px}
-
-/* ═══════════════════ MENU LIST ═══════════════════ */
-.menu-list{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm)}
-.menu-item{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s}
-.menu-item:last-child{border-bottom:none}
-.menu-item:active{background:var(--surface2)}
-.menu-item span:first-child{font-size:20px;width:28px;text-align:center}
-.menu-label{flex:1;font-size:15px;font-weight:500;color:var(--primary)}
-.menu-chevron{width:16px;height:16px;color:var(--text-tertiary);flex-shrink:0}
-
-/* ═══════════════════ BAG / CHECKOUT ═══════════════════ */
-.bag-list{margin-bottom:16px}
-.bag-summary{background:#fff;border-radius:16px;padding:20px;box-shadow:var(--shadow-sm)}
-.summary-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px;color:var(--text-secondary)}
-.summary-divider{height:1px;background:var(--border);margin:8px 0}
-.summary-total{font-size:16px;font-weight:700;color:var(--primary)}
-.checkout-steps{display:flex;flex-direction:column;gap:12px}
-.checkout-step{background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow-sm)}
-.checkout-step.active{box-shadow:var(--shadow)}
-.step-header{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer}
-.step-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
-.step-label{flex:1;font-size:15px;font-weight:600;color:var(--primary)}
-.step-chevron{width:18px;height:18px;color:var(--text-tertiary)}
-.step-body{padding:0 16px 20px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:12px;font-weight:600;color:var(--text-secondary);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px}
-.form-input{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:15px;color:var(--primary);outline:none;box-sizing:border-box;font-family:inherit;transition:border 0.15s}
-.form-input:focus{border-color:var(--accent)}
-.form-row{display:flex;gap:10px}
-.form-row .form-group{flex:1}
-.payment-methods{display:flex;gap:10px;margin-bottom:16px}
-.payment-option{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:12px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.15s}
-.payment-option svg{width:24px;height:24px}
-.payment-option.selected{border-color:var(--accent);background:var(--accent-light);color:var(--accent)}
-
-/* ═══════════════════ SELL PAGE ═══════════════════ */
-.sell-hero{background:var(--accent);border-radius:20px;padding:24px;text-align:center;margin-bottom:4px}
-.sell-hero-icon{font-size:40px;margin-bottom:8px}
-.sell-hero-title{font-size:20px;font-weight:700;color:#fff}
-.sell-hero-sub{font-size:14px;color:rgba(255,255,255,0.8);margin-top:4px}
-.checkbox-list{display:flex;flex-direction:column;gap:10px}
-.checkbox-item{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer}
-.checkbox-item input{width:18px;height:18px;accent-color:var(--accent);flex-shrink:0}
-.photo-upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.photo-upload-slot{aspect-ratio:1;background:var(--surface2);border:2px dashed var(--border);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
-
-/* ═══════════════════ PROCESSOR CARDS ═══════════════════ */
-.processor-card{background:#fff;border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
-.processor-header{display:flex;gap:12px;align-items:flex-start;margin-bottom:12px}
-.processor-logo{width:48px;height:48px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
-.processor-info{flex:1}
-.processor-name{font-size:15px;font-weight:700;color:var(--primary)}
-.processor-location{font-size:12px;color:var(--text-secondary);margin-top:2px}
-.processor-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
-.processor-rating{font-size:15px;font-weight:700;color:var(--accent);white-space:nowrap}
-.processor-services{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
-.service-tag{background:var(--accent-light);color:var(--accent);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
-.processor-details{display:flex;flex-direction:column;gap:4px}
-.detail-item{font-size:13px;color:var(--text-secondary)}
-.badge-usda{background:#E3F2FD;color:#1565C0;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
-.badge-state{background:#F3E5F5;color:#6A1B9A;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
-.badge-open{background:#E8F9EE;color:#2C7A4B;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px}
-.service-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px}
-.service-row:last-child{border-bottom:none}
-
-/* ═══════════════════ MESSAGES / CHAT ═══════════════════ */
-.message-thread{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;cursor:pointer;box-shadow:var(--shadow-sm)}
-.thread-avatar{width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0}
-.thread-body{flex:1;min-width:0}
-.thread-header{display:flex;justify-content:space-between;margin-bottom:3px}
-.thread-name{font-size:14px;font-weight:700;color:var(--primary)}
-.thread-time{font-size:11px;color:var(--text-tertiary)}
-.thread-preview{font-size:13px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.unread-badge{background:var(--accent);color:#fff;border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--bg);min-height:60vh;max-height:65vh}
-.chat-msg{display:flex;flex-direction:column;max-width:80%}
-.chat-msg.sent{align-self:flex-end;align-items:flex-end}
-.chat-msg.received{align-self:flex-start;align-items:flex-start}
-.msg-bubble{padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.5}
-.chat-msg.sent .msg-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
-.chat-msg.received .msg-bubble{background:#fff;color:var(--primary);box-shadow:var(--shadow-sm);border-bottom-left-radius:4px}
-.msg-time{font-size:11px;color:var(--text-tertiary);margin-top:4px;padding:0 4px}
-.chat-input-bar{display:flex;gap:10px;padding:12px 16px;background:#fff;border-top:1px solid var(--border);position:sticky;bottom:0}
-.chat-input{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:22px;padding:10px 16px;font-size:14px;outline:none;font-family:inherit}
-.chat-send{background:var(--primary);border:none;border-radius:50%;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.chat-send svg{width:18px;height:18px;stroke:#fff}
-
-/* ═══════════════════ TOGGLE SWITCH ═══════════════════ */
-.toggle{position:relative;display:inline-flex;align-items:center;cursor:pointer}
-.toggle input{opacity:0;width:0;height:0;position:absolute}
-.toggle-slider{width:44px;height:26px;background:var(--border);border-radius:13px;transition:background 0.2s;position:relative;flex-shrink:0}
-.toggle-slider::after{content:'';position:absolute;width:20px;height:20px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform 0.2s;box-shadow:var(--shadow-sm)}
-.toggle input:checked + .toggle-slider{background:var(--accent)}
-.toggle input:checked + .toggle-slider::after{transform:translateX(18px)}
-
-/* ═══════════════════ BOTTOM NAV SELL BTN ═══════════════════ */
-.nav-sell-btn{position:relative}
-.nav-sell-icon{width:48px;height:48px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:-16px auto 0;box-shadow:0 4px 14px rgba(29,29,31,0.25)}
-.nav-sell-icon svg{width:22px;height:22px;stroke:#fff}
-
-/* ═══════════════════ FILTER MODAL ═══════════════════ */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;display:none;align-items:flex-end;justify-content:center}
-.modal-overlay.active{display:flex}
-.modal-sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px;width:100%;max-width:var(--nav-hi, 430px);max-height:85vh;overflow-y:auto}
-.modal-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px}
-.modal-title{font-size:18px;font-weight:700;color:var(--primary);margin-bottom:16px}
-.modal-section{margin-bottom:20px}
-.modal-label{font-size:12px;font-weight:700;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px}
-.filter-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.filter-check{display:flex;align-items:center;gap:8px;font-size:14px;cursor:pointer;background:var(--surface2);padding:10px 12px;border-radius:10px}
-.filter-check input{accent-color:var(--accent);width:16px;height:16px}
-
-/* ═══════════════════ EMPTY STATE ═══════════════════ */
-.empty-state{text-align:center;padding:60px 24px}
-.empty-icon{font-size:52px;margin-bottom:16px}
-.empty-title{font-size:18px;font-weight:700;color:var(--primary);margin-bottom:8px}
-.empty-sub{font-size:14px;color:var(--text-secondary);line-height:1.5}
-
-/* ═══════════════════ CONFIRM PAGE ═══════════════════ */
-.confirm-icon{font-size:64px}
-.confirm-card{width:100%;max-width:360px;margin:24px auto;text-align:left}
-
-/* ═══════════════════ MARKET TABS ═══════════════════ */
-#market-tabs{padding:12px 16px 0;background:#fff;border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
-#market-tabs::-webkit-scrollbar{display:none}
-#market-tabs .filter-chip{white-space:nowrap;flex-shrink:0}
-
-
-/* ═══ LAYOUT CENTERING FIX ═══ */
-@media (min-width: 768px) {
-  .page { flex: 1 !important; min-width: 0 !important; }
-  .page.active { flex: 1 !important; width: auto !important; }
-  .page-content { max-width: none !important; margin: 0 !important; padding: 28px 40px 100px !important; }
-  .page-header { max-width: none !important; margin: 0 !important; padding: 14px 40px !important; box-sizing: border-box !important; }
-  #home-featured { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 16px !important; overflow: visible !important; }
-  #market-grid { grid-template-columns: repeat(3, 1fr) !important; }
-  .profile-hero { max-width: 480px; }
-  .menu-list { max-width: 480px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Protein Outfitters | Farm-Direct Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --google-blue: #4285F4;
+            --google-red: #EA4335;
+            --google-yellow: #FBBC05;
+            --google-green: #34A853;
+            --gemini-gradient: linear-gradient(135deg, #4285f4, #9b72cb, #d96570);
+            --vertex-blue: #1a73e8;
+        }
+
+        body { font-family: 'Inter', sans-serif; background-color: #f9fafb; color: #1f2937; margin-bottom: 70px; overflow-x: hidden; }
+        .hidden { display: none !important; }
+        
+        /* Navigation & Screens */
+        .screen { min-height: 100vh; width: 100%; padding-bottom: 140px; }
+        
+        /* Floating Gemini Button */
+        #gemini-fab {
+            position: fixed;
+            bottom: 135px;
+            right: 20px;
+            background: var(--gemini-gradient);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            border: none;
+        }
+
+        /* Price Ticker */
+        .ticker-wrap {
+            position: fixed;
+            bottom: 65px;
+            width: 100%;
+            overflow: hidden;
+            background: #111827;
+            color: #10b981;
+            padding: 8px 0;
+            z-index: 40;
+            font-family: monospace;
+            border-top: 1px solid #374151;
+        }
+        .ticker { display: inline-block; white-space: nowrap; animation: marquee 30s linear infinite; }
+        @keyframes marquee { 0% { transform: translate(100%, 0); } 100% { transform: translate(-100%, 0); } }
+
+        /* Modals & Sheets */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .bottom-sheet { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: transform 0.3s ease-out; z-index: 1100; padding: 24px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); max-height: 90vh; overflow-y: auto; }
+        .bottom-sheet.active { transform: translateY(0); }
+
+        /* Components */
+        .btn-primary { background-color: var(--primary); color: white; padding: 12px; border-radius: 8px; font-weight: 600; text-align: center; width: 100%; transition: 0.2s; cursor: pointer; border: none; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .smart-chip { background: #e8f0fe; color: #1967d2; padding: 2px 6px; border-radius: 4px; font-weight: 500; cursor: pointer; border: 1px solid #d2e3fc; font-size: 0.85em; }
+        .one-tap-card { background: white; border: 1px solid #dadce0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 100%; max-width: 320px; padding: 16px; margin-bottom: 20px; }
+        .report-tile { background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; }
+        .passkey-badge { background: #e6f4ea; color: #137333; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #ceead6; }
+
+        /* Typing Dots */
+        .typing-dots span { width: 6px; height: 6px; background: #9ca3af; border-radius: 50%; display: inline-block; animation: bounce 1.4s infinite ease-in-out both; }
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+    </style>
 </head>
 <body>
-<div id="app">
-<!-- SIDE NAV (DESKTOP) -->
-<nav class="side-nav" id="sideNav">
-  <div class="sn-logo"><div class="dot"></div>Protein Outfitters</div>
-  <div class="sn-item active" id="sn-home" onclick="goTo('home')">
-    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-    Home
-  </div>
-  <div class="sn-item" id="sn-market" onclick="goTo('market')">
-    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    Marketplace
-  </div>
-  <div class="sn-item" id="sn-bag" onclick="goTo('bag')">
-    <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-    Bag
-  </div>
-  <div class="sn-item" id="sn-sell" onclick="goTo('sell')">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-    Sell
-  </div>
-  <div class="sn-item" id="sn-track" onclick="goTo('track')">
-    <svg viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"/><polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-    Track
-  </div>
-  <div class="sn-divider"></div>
-  <div class="sn-item" id="sn-alerts" onclick="goTo('alerts')">
-    <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-    Alerts
-  </div>
-  <div class="sn-item" id="sn-profile" onclick="goTo('profile')">
-    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    Profile
-  </div>
-</nav>
 
-<!-- SPLASH PAGE -->
-<div class="page active" id="page-splash">
-  <div class="splash-bg">
-    <img src="https://imagine-public.x.ai/imagine-public/images/c3a30aac-d34c-4a5a-adc1-8be50a813c39.jpg" alt="Ranch" loading="lazy">
-  </div>
-  <div class="splash-content">
-    <div class="splash-logo">
-      <svg viewBox="0 0 24 24" width="28" height="28" stroke="#fff" fill="none" stroke-width="1.8" stroke-linecap="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-    </div>
-    <h1 class="splash-title">Farm-Fresh.<br>Delivered Direct.</h1>
-    <p class="splash-sub">Buy a quarter, half, or whole animal directly from local farmers. Know your source. Own your supply.</p>
-    <div class="splash-btns">
-      <button class="btn btn-white" onclick="enterApp()">Get Started</button>
-      <button class="btn btn-transparent" onclick="enterApp()">Sign In</button>
-      <button class="btn btn-transparent" onclick="demoMode()" style="opacity:0.7;font-size:13px;padding:10px">Continue as Guest</button>
-    </div>
-    <p class="splash-terms">By continuing you agree to our Terms of Service and Privacy Policy</p>
-  </div>
-</div>
+    <!-- ==========================================
+         SCREENS
+         ========================================== -->
 
-<!-- HOME PAGE -->
-<div class="page" id="page-home">
-  <div class="top-header">
-    <div class="logo"><div class="dot"></div>Protein Outfitters</div>
-    <div class="header-actions">
-      <button class="icon-btn" onclick="goTo('alerts')" title="Alerts">
-        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      </button>
-      <button class="icon-btn badge-btn" onclick="goTo('bag')" title="Bag">
-        <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        <span class="badge" id="bag-badge">2</span>
-      </button>
-    </div>
-  </div>
-  <div class="scroll-content" id="home-scroll">
-    <div class="page-content">
-      <!-- Greeting -->
-      <div style="margin-bottom:24px">
-        <p style="font-size:13px;color:var(--secondary);margin-bottom:4px">Good morning 👋</p>
-        <h1 style="font-size:28px;font-weight:900;letter-spacing:-0.8px;color:var(--primary)">Find Your Next<br>Harvest Share</h1>
-      </div>
-      <!-- Search -->
-      <div class="search-bar" style="margin-bottom:24px" onclick="document.getElementById('market-search').focus();goTo('market')">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <span style="font-size:15px;color:var(--tertiary)">Search animals, farms...</span>
-      </div>
-      <!-- Stats -->
-      <div style="display:flex;gap:12px;margin-bottom:28px">
-        <div class="stat-card">
-          <div class="stat-number">24</div>
-          <div class="stat-label">Listings</div>
+    <!-- SCREEN: AUTH/LOGIN -->
+    <div id="screen-auth" class="screen flex flex-col items-center justify-center p-6 bg-gray-50">
+        <!-- 📱 GOOGLE ONE TAP -->
+        <div id="one-tap" class="one-tap-card">
+            <div class="flex justify-between items-center mb-4">
+                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" class="h-4">
+                <button onclick="this.parentElement.parentElement.remove()" class="text-gray-400">✕</button>
+            </div>
+            <div class="flex items-center gap-3 cursor-pointer" onclick="finishAuth()">
+                <div class="w-10 h-10 bg-green-700 rounded-full flex items-center justify-center text-white font-bold">M</div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold">Continue as Mychal</p>
+                    <p class="text-[10px] text-gray-500">mychalstitts@gmail.com</p>
+                </div>
+                <span class="text-blue-600 font-bold text-xs">Sign in</span>
+            </div>
         </div>
-        <div class="stat-card">
-          <div class="stat-number">3</div>
-          <div class="stat-label">Active Orders</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">98</div>
-          <div class="stat-label">Compliance</div>
-        </div>
-      </div>
-      <!-- Featured Listings -->
-      <div class="section-header">
-        <h2>Featured Listings</h2>
-        <span class="see-all" onclick="goTo('market')">See all</span>
-      </div>
-      <div id="home-featured" style="margin-bottom:28px"></div>
-      <!-- Browse by Animal -->
-      <div class="section-header">
-        <h2>Browse by Animal</h2>
-      </div>
-      <div class="h-scroll" style="margin-bottom:28px" id="animal-browse"></div>
-      <!-- Nearby Processing -->
-      <div class="section-header">
-        <h2>Nearby Processing</h2>
-        <span class="see-all" onclick="goTo('processors')">See all</span>
-      </div>
-      <div class="map-placeholder" style="margin-bottom:12px" onclick="goTo('processors')">
-        <div class="map-pin">📍 3 processors within 50 miles</div>
-      </div>
-      <div id="home-processors"></div>
-    </div>
-  </div>
-</div>
-<!-- MARKET PAGE -->
-<div class="page" id="page-market">
-  <div class="top-header">
-    <button class="back-btn" onclick="goTo('home')">
-      <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
-      Home
-    </button>
-    <div style="font-size:17px;font-weight:800;letter-spacing:-0.3px">Marketplace</div>
-    <button class="icon-btn" onclick="openFilter()">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
-    </button>
-  </div>
-  <div class="scroll-content">
-    <div class="page-content">
-      <!-- Search -->
-      <div class="search-bar" style="margin-bottom:16px">
-        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input id="market-search" placeholder="Search animals, farms..." oninput="filterListings(this.value)">
-      </div>
-      <!-- Tab filters -->
-      <div class="filter-chips" style="margin-bottom:20px" id="market-tabs">
-        <div class="filter-chip green active" onclick="setMarketTab('all',this)">All Listings</div>
-        <div class="filter-chip" onclick="setMarketTab('beef',this)">🐂 Beef</div>
-        <div class="filter-chip" onclick="setMarketTab('pork',this)">🐷 Pork</div>
-        <div class="filter-chip" onclick="setMarketTab('lamb',this)">🐑 Lamb</div>
-        <div class="filter-chip" onclick="setMarketTab('deer',this)">🦌 Venison</div>
-        <div class="filter-chip" onclick="setMarketTab('cuts',this)">🥩 Cuts</div>
-      </div>
-      <!-- Listings Grid -->
-      <div class="listing-grid" id="market-grid"></div>
-    </div>
-  </div>
-</div>
 
-<!-- LISTING DETAIL PAGE -->
-<div class="page" id="page-detail">
-  <div class="top-header">
-    <button class="back-btn" onclick="goBack()">
-      <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
-      Back
-    </button>
-    <div id="detail-header-title" style="font-size:16px;font-weight:700"></div>
-    <button class="icon-btn badge-btn" onclick="goTo('bag')">
-      <svg viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      <span class="badge" id="detail-bag-badge">2</span>
-    </button>
-  </div>
-  <div class="scroll-content">
-    <!-- Hero Image -->
-    <div style="position:relative">
-      <img id="detail-hero-img" class="detail-img" src="https://imagine-public.x.ai/imagine-public/images/92a5abf9-bf7e-4d84-a1b6-9960ca0f0d3e.jpg" alt="Animal" loading="lazy">
-      <div style="position:absolute;top:16px;right:16px;display:flex;gap:8px">
-        <button class="icon-btn" style="background:rgba(255,255,255,0.9)" onclick="shareListing()">
-          <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        <img src="https://www.proteinoutfitters.com/logo.png" class="w-20 mb-8" onerror="this.src='https://cdn-icons-png.flaticon.com/512/2928/2928158.png'">
+        
+        <!-- 🔐 GOOGLE SIGN-IN -->
+        <button id="btn-google-auth" onclick="showGoogleAuth()" disabled class="flex items-center justify-center w-full max-w-xs border border-gray-300 rounded shadow-sm py-2.5 px-4 bg-white mb-6 opacity-50">
+            <svg class="w-5 h-5 mr-3" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path></svg>
+            <span class="text-gray-700 font-medium" style="font-family: 'Roboto', sans-serif;">Sign in with Google</span>
         </button>
-        <button class="icon-btn" id="detail-heart" style="background:rgba(255,255,255,0.9)" onclick="toggleFavorite()">
-          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
-        </button>
-      </div>
-      <!-- Organic badge -->
-      <div style="position:absolute;top:16px;left:16px">
-        <div class="pill green" id="detail-cert-badge">Organic Certified</div>
-      </div>
-    </div>
-    <div class="page-content">
-      <!-- Title + meta -->
-      <div style="margin-bottom:20px">
-        <h1 id="detail-name" style="font-size:26px;font-weight:900;letter-spacing:-0.8px;margin-bottom:6px">Premium Angus Steer</h1>
-        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--secondary)" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span id="detail-farm" style="font-size:14px;color:var(--secondary)">Stittsworth Meats · Bemidji, MN</span>
-        </div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap" id="detail-tags"></div>
-      </div>
-      <!-- Compliance Score -->
-      <div class="detail-section" onclick="goTo('compliance')">
-        <div style="display:flex;align-items:center;justify-content:space-between">
-          <div>
-            <h3 style="margin-bottom:4px">Compliance Score</h3>
-            <p style="font-size:13px;color:var(--secondary)">USDA · Non-GMO · Hormone Free</p>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px">
-            <div class="score-circle"><div class="score-inner"><span class="score-num" id="detail-score">98</span><div class="score-denom">/100</div></div></div>
-            <svg class="chevron" viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg>
-          </div>
-        </div>
-      </div>
-      <!-- Sales Progress -->
-      <div class="detail-section">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <h3>Available Shares</h3>
-          <span class="pill green" id="detail-sold-badge">62% sold</span>
-        </div>
-        <div class="progress-wrap"><div class="progress-fill" id="detail-progress" style="width:62%"></div></div>
-        <!-- Share selector -->
-        <div style="display:flex;gap:8px;margin-top:14px" id="detail-shares">
-          <button class="filter-chip" onclick="selectShare('whole',this)">Whole</button>
-          <button class="filter-chip active" onclick="selectShare('half',this)">½ Half</button>
-          <button class="filter-chip" onclick="selectShare('quarter',this)">¼ Quarter</button>
-        </div>
-      </div>
-      <!-- Yield Calculator -->
-      <div class="detail-section">
-        <h3>AI Yield Calculator</h3>
-        <div class="yield-calc">
-          <div class="yield-row"><span class="yield-label">Live Weight</span><span class="yield-value" id="yw-live">1,276 lbs</span></div>
-          <div class="yield-row"><span class="yield-label">Hanging Weight</span><span class="yield-value" id="yw-hang">791 lbs</span></div>
-          <div class="yield-row"><span class="yield-label">Take-Home (est.)</span><span class="yield-value highlight" id="yw-home">530 lbs</span></div>
-          <div class="yield-row"><span class="yield-label">Price/lb</span><span class="yield-value" id="yw-price">$13.75</span></div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:13px;color:var(--secondary)">Your share price</span>
-            <span style="font-size:24px;font-weight:900;letter-spacing:-0.8px" id="yw-total">$1,822</span>
-          </div>
-        </div>
-      </div>
-      <!-- Description -->
-      <div class="detail-section">
-        <h3>About This Animal</h3>
-        <p id="detail-desc" style="font-size:14px;color:var(--secondary);line-height:1.6">Raised on high-altitude fescue pastures at Northfield Pastures in Montana. 100% grass-finished, never given hormones or antibiotics. This steer represents the pinnacle of regenerative agriculture.</p>
-        <div style="margin-top:14px">
-          <div class="list-item" onclick="goTo('compliance')">
-            <div class="list-icon" style="background:var(--accent-light)"><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--accent)"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg></div>
-            <div class="list-content"><div class="list-title">View Compliance Documents</div><div class="list-sub">USDA inspections, certifications, audit trail</div></div>
-            <svg class="chevron" viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg>
-          </div>
-          <div class="list-item" onclick="goTo('processors')">
-            <div class="list-icon" style="background:var(--blue-light)"><svg viewBox="0 0 24 24" width="20" height="20" stroke="var(--blue)"><rect x="1" y="3" width="15" height="13"/><polygon points="16,8 20,8 23,11 23,16 16,16 16,8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div>
-            <div class="list-content"><div class="list-title">Book a Processor</div><div class="list-sub">3 processors within 50 miles</div></div>
-            <svg class="chevron" viewBox="0 0 24 24"><polyline points="9,18 15,12 9,6"/></svg>
-          </div>
-        </div>
-      </div>
-      <!-- Add to Bag -->
-      <div style="padding:8px 0 20px">
-        <button class="btn btn-primary" onclick="addToBag()" id="add-bag-btn" style="margin-bottom:12px">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="#fff" fill="none" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-          Add to Bag — $1,822
-        </button>
-        <button class="btn btn-outline" onclick="goTo('processors')">Book Processor First</button>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- COMPLIANCE PAGE -->
-<div class="page" id="page-compliance">
-  <div class="top-header">
-    <button class="back-btn" onclick="goBack()">
-      <svg viewBox="0 0 24 24"><polyline points="15,18 9,12 15,6"/></svg>
-      Back
-    </button>
-    <div style="font-size:17px;font-weight:800">Compliance Overview</div>
-    <div style="width:36px"></div>
-  </div>
-  <div class="scroll-content">
-    <div class="page-content">
-      <!-- Score hero -->
-      <div style="text-align:center;padding:24px 0;background:var(--surface);border-radius:var(--radius-lg);margin-bottom:20px;box-shadow:var(--shadow-sm)">
-        <div class="score-circle" style="width:120px;height:120px;margin:0 auto 16px">
-          <div class="score-inner"><span style="font-size:32px;font-weight:900;color:var(--primary)">98</span><div style="font-size:11px;color:var(--secondary)">/100</div></div>
+        <!-- 🛡️ reCAPTCHA -->
+        <div class="border bg-white p-3 rounded flex items-center gap-4 w-full max-w-xs mb-8">
+            <input type="checkbox" id="captcha-check" class="w-6 h-6 accent-emerald-500" onclick="toggleCaptcha()">
+            <span class="text-sm text-gray-600 flex-1">I'm not a robot</span>
+            <img src="https://www.gstatic.com/recaptcha/api2/logo_48.png" class="w-8">
         </div>
-        <h2 style="font-size:20px;font-weight:800;letter-spacing:-0.3px">Compliance Score</h2>
-        <p style="font-size:13px;color:var(--secondary);margin-top:4px">Last verified April 1, 2026</p>
-        <div style="display:flex;justify-content:center;gap:8px;margin-top:14px">
-          <div class="pill green">Certified Organic</div>
-          <div class="pill blue">USDA Inspected</div>
-          <div class="pill">Non-GMO</div>
-        </div>
-      </div>
-      <!-- Certifications -->
-      <div class="detail-section">
-        <h3>Active Certifications</h3>
-        <div class="list-item">
-          <div class="list-icon" style="background:#E8F5EE"><svg viewBox="0 0 24 24" width="20" stroke="var(--accent)"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22,4 12,14.01 9,11.01"/></svg></div>
-          <div class="list-content"><div class="list-title">USDA Organic Certification</div><div class="list-sub">Expires Dec 31, 2026 · Certificate #OR-2024-8831</div></div>
-          <span class="pill green" style="font-size:10px">Active</span>
-        </div>
-        <div class="list-item">
-          <div class="list-icon" style="background:#EAF3FF"><svg viewBox="0 0 24 24" width="20" stroke="var(--blue)"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
-          <div class="list-content"><div class="list-title">Non-GMO Verified</div><div class="list-sub">Non-GMO Project · Verified August 2025</div></div>
-          <span class="pill blue" style="font-size:10px">Active</span>
-        </div>
-        <div class="list-item">
-          <div class="list-icon" style="background:#FFF0EB"><svg viewBox="0 0 24 24" width="20" stroke="var(--accent2)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-          <div class="list-content"><div class="list-title">Hormone Free Certification</div><div class="list-sub">No added hormones or steroids · Verified 2025</div></div>
-          <span class="pill orange" style="font-size:10px">Active</span>
-        </div>
-        <div class="list-item">
-          <div class="list-icon" style="background:#F5F5F7"><svg viewBox="0 0 24 24" width="20" stroke="var(--secondary)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
-          <div class="list-content"><div class="list-title">Antibiotic Free</div><div class="list-sub">No subtherapeutic antibiotics · Verified 2025</div></div>
-          <span class="pill" style="font-size:10px">Active</span>
-        </div>
-      </div>
-      <!-- Audit Trail -->
-      <div class="detail-section">
-        <h3>Audit Trail</h3>
-        <div class="timeline">
-          <div class="timeline-item">
-            <div class="timeline-dot done"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-title">USDA Inspection Passed</div>
-              <div class="timeline-sub">Grade A — No deficiencies found</div>
-              <div class="timeline-date">March 28, 2026</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot done"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-title">Veterinary Health Certificate</div>
-              <div class="timeline-sub">Dr. James Holden, DVM</div>
-              <div class="timeline-date">March 15, 2026</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot done"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-title">Annual Farm Audit Complete</div>
-              <div class="timeline-sub">Score: 98/100 — Exceeds standards</div>
-              <div class="timeline-date">January 10, 2026</div>
-            </div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-dot done"><svg viewBox="0 0 24 24"><polyline points="20,6 9,17 4,12"/></svg></div>
-            <div class="timeline-line"></div>
-            <div class="timeline-content">
-              <div class="timeline-title">Organic Certification Renewed</div>
-              <div class="timeline-sub">USDA National Organic Program</div>
-              <div class="timeline-date">December 31, 2025</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-outline" onclick="goBack()" style="margin-bottom:8px">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg>
-        Back to Listing
-      </button>
+        <p class="text-[10px] text-gray-400 mb-4">reCAPTCHA • Privacy • Terms</p>
     </div>
-  </div>
-</div>
-  <!-- ═══════════════════════════════════════════════════════ BAG / CHECKOUT PAGE -->
-  <div id="page-bag" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">My Bag</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div id="bag-items" class="bag-list"></div>
-      <div id="bag-empty" class="empty-state" style="display:none">
-        <div class="empty-icon">🛒</div>
-        <div class="empty-title">Your bag is empty</div>
-        <div class="empty-sub">Browse the marketplace to find fresh, local farm products</div>
-        <button class="btn-primary" onclick="goTo('market')" style="margin-top:24px">Browse Marketplace</button>
-      </div>
-      <div id="bag-summary" class="bag-summary card">
-        <div class="summary-row"><span>Subtotal</span><span id="bag-subtotal">$0.00</span></div>
-        <div class="summary-row"><span>Processing Fee</span><span id="bag-fee">$0.00</span></div>
-        <div class="summary-row"><span>Estimated Delivery</span><span>TBD</span></div>
-        <div class="summary-divider"></div>
-        <div class="summary-row summary-total"><span>Total</span><span id="bag-total">$0.00</span></div>
-        <button class="btn-primary btn-full" onclick="goTo('checkout')" style="margin-top:20px">Proceed to Checkout</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ CHECKOUT PAGE -->
-  <div id="page-checkout" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Checkout</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="checkout-steps">
-        <div class="checkout-step active" id="step-delivery">
-          <div class="step-header" onclick="toggleStep('delivery')">
-            <div class="step-num">1</div>
-            <div class="step-label">Delivery Details</div>
-            <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
-          </div>
-          <div class="step-body" id="step-body-delivery">
-            <div class="form-group"><label>Full Name</label><input type="text" class="form-input" placeholder="John Smith" /></div>
-            <div class="form-group"><label>Address</label><input type="text" class="form-input" placeholder="123 Main St" /></div>
-            <div class="form-row">
-              <div class="form-group"><label>City</label><input type="text" class="form-input" placeholder="Billings" /></div>
-              <div class="form-group"><label>State</label><input type="text" class="form-input" placeholder="MT" /></div>
-              <div class="form-group"><label>ZIP</label><input type="text" class="form-input" placeholder="59101" /></div>
+    <!-- SCREEN: FARMER DASHBOARD -->
+    <div id="screen-home-Farmer" class="screen hidden bg-gray-50">
+        <header class="bg-white p-4 border-b flex justify-between items-center sticky top-0 z-50">
+            <div class="flex items-center gap-2">
+                <h2 class="text-xl font-bold">Farmer Dashboard</h2>
+                <span class="flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">
+                    <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                    <span class="text-[10px] text-red-600 font-bold">LIVE</span>
+                </span>
             </div>
-            <button class="btn-primary" onclick="toggleStep('payment')">Continue</button>
-          </div>
-        </div>
-        <div class="checkout-step" id="step-payment">
-          <div class="step-header" onclick="toggleStep('payment')">
-            <div class="step-num">2</div>
-            <div class="step-label">Payment</div>
-            <svg class="step-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6,9 12,15 18,9"/></svg>
-          </div>
-          <div class="step-body" id="step-body-payment" style="display:none">
-            <div class="payment-methods">
-              <div class="payment-option selected" onclick="selectPayment(this,'card')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                <span>Credit / Debit Card</span>
-              </div>
-              <div class="payment-option" onclick="selectPayment(this,'apple')">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.4.07 2.38.74 3.2.76 1.23-.25 2.4-.94 3.66-.84 1.56.14 2.74.7 3.5 1.79-3.22 1.92-2.44 6.2.64 7.38-.48 1.3-1.11 2.6-3 3.79zM13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                <span>Apple Pay</span>
-              </div>
+            <button onclick="showSheetsExport()" class="p-2 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-100">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </button>
+        </header>
+        
+        <div class="p-4">
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">Active Sales</p>
+                    <p class="text-2xl font-bold">$12,450</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                    <p class="text-[10px] text-gray-400 font-bold uppercase mb-1">In Transit</p>
+                    <p class="text-2xl font-bold">3</p>
+                </div>
             </div>
-            <div id="card-form">
-              <div class="form-group"><label>Card Number</label><input type="text" class="form-input" placeholder="•••• •••• •••• ••••" /></div>
-              <div class="form-row">
-                <div class="form-group"><label>Expiry</label><input type="text" class="form-input" placeholder="MM/YY" /></div>
-                <div class="form-group"><label>CVV</label><input type="text" class="form-input" placeholder="•••" /></div>
-              </div>
+            
+            <h3 class="font-bold mb-3 px-1 text-gray-800">Your Listings</h3>
+            <div onclick="navigateTo('listing-detail')" class="bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between mb-4 shadow-sm cursor-pointer active:scale-95 transition-transform">
+                <div>
+                    <p class="font-bold">Premium Angus Steer #402</p>
+                    <p class="text-xs text-gray-400">Listed: Mar 24 • $4.50/lb</p>
+                </div>
+                <span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-[10px] font-bold">85% SOLD</span>
             </div>
-            <button class="btn-primary" onclick="placeOrder()">Place Order</button>
-          </div>
         </div>
-      </div>
-      <div class="card" style="margin-top:16px;padding:20px">
-        <div class="section-title" style="margin-bottom:12px">Order Summary</div>
-        <div id="checkout-items"></div>
-        <div class="summary-divider" style="margin:12px 0"></div>
-        <div class="summary-row summary-total"><span>Total</span><span id="checkout-total">$0.00</span></div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ ORDER CONFIRMED PAGE -->
-  <div id="page-confirmed" class="page">
-    <div class="page-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:40px 24px">
-      <div class="confirm-icon">✅</div>
-      <h1 style="font-size:28px;font-weight:700;margin:20px 0 12px">Order Confirmed!</h1>
-      <p style="color:var(--text-secondary);max-width:300px;line-height:1.6">Your order has been placed. The farmer will confirm within 24 hours.</p>
-      <div class="confirm-card card" style="width:100%;max-width:360px;margin:24px 0;padding:20px;text-align:left">
-        <div class="summary-row"><span>Order #</span><span id="order-num">PO-00001</span></div>
-        <div class="summary-row"><span>Status</span><span style="color:#34C759;font-weight:600">Confirmed</span></div>
-        <div class="summary-row"><span>Est. Ready</span><span>3–5 days</span></div>
-      </div>
-      <button class="btn-primary" onclick="goTo('track')" style="margin-bottom:12px;width:100%;max-width:360px">Track Order</button>
-      <button class="btn-secondary" onclick="goTo('home')" style="width:100%;max-width:360px">Back to Home</button>
+        <!-- 🔥 FIREBASE PRICE TICKER -->
+        <div class="ticker-wrap">
+            <div id="ticker-content" class="ticker">
+                🐂 Beef <span id="p-beef">$13.75</span>/lb ↑ &nbsp;&nbsp;&nbsp; 
+                🐷 Pork <span id="p-pork">$9.25</span>/lb → &nbsp;&nbsp;&nbsp; 
+                🐑 Lamb <span id="p-lamb">$14.50</span>/lb ↑ &nbsp;&nbsp;&nbsp; 
+                🐔 Poultry <span id="p-poultry">$4.20</span>/lb ↓ &nbsp;&nbsp;&nbsp; 
+                🦌 Venison <span id="p-venison">$18.00</span>/lb ↑
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ SELL / CREATE LISTING PAGE -->
-  <div id="page-sell" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Create Listing</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="sell-hero card">
-        <div class="sell-hero-icon">🐄</div>
-        <div class="sell-hero-title">Sell Your Farm Products</div>
-        <div class="sell-hero-sub">Connect directly with buyers in your area</div>
-      </div>
-      <div class="card" style="padding:20px;margin-top:16px">
-        <div class="section-title" style="margin-bottom:16px">Animal Details</div>
-        <div class="form-group">
-          <label>Animal Type</label>
-          <select class="form-input" id="sell-type">
-            <option value="">Select type...</option>
-            <option>Beef (Angus)</option>
-            <option>Beef (Hereford)</option>
-            <option>Beef (Wagyu)</option>
-            <option>Pork</option>
-            <option>Lamb</option>
-            <option>Goat</option>
-            <option>Deer / Venison</option>
-            <option>Chicken</option>
-            <option>Turkey</option>
-            <option>Duck</option>
-          </select>
-        </div>
-        <div class="form-group"><label>Breed / Description</label><input type="text" class="form-input" placeholder="e.g. Black Angus, grass-fed" /></div>
-        <div class="form-row">
-          <div class="form-group"><label>Live Weight (lbs)</label><input type="number" class="form-input" placeholder="1,200" /></div>
-          <div class="form-group"><label>Est. Dressed Wt.</label><input type="number" class="form-input" placeholder="720" /></div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>Price Per Lb ($)</label><input type="number" class="form-input" placeholder="4.50" /></div>
-          <div class="form-group"><label>Available Date</label><input type="date" class="form-input" /></div>
-        </div>
-      </div>
-      <div class="card" style="padding:20px;margin-top:16px">
-        <div class="section-title" style="margin-bottom:16px">Farm Information</div>
-        <div class="form-group"><label>Farm Name</label><input type="text" class="form-input" placeholder="Rolling Hills Ranch" /></div>
-        <div class="form-group"><label>Location (City, State)</label><input type="text" class="form-input" placeholder="Billings, MT" /></div>
-        <div class="form-group"><label>Description</label><textarea class="form-input" rows="3" placeholder="Tell buyers about your farming practices, certifications, feed type..."></textarea></div>
-      </div>
-      <div class="card" style="padding:20px;margin-top:16px">
-        <div class="section-title" style="margin-bottom:16px">Photos</div>
-        <div class="photo-upload-grid" id="photo-grid">
-          <div class="photo-upload-slot" onclick="addPhotoSlot()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:32px;height:32px;color:var(--text-tertiary)"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21,15 16,10 5,21"/></svg>
-            <span style="font-size:12px;color:var(--text-tertiary);margin-top:8px">Add Photo</span>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="padding:20px;margin-top:16px">
-        <div class="section-title" style="margin-bottom:16px">Processing Options</div>
-        <div class="checkbox-list">
-          <label class="checkbox-item"><input type="checkbox" checked /><span>Buyer arranges processing</span></label>
-          <label class="checkbox-item"><input type="checkbox" /><span>I can recommend a processor</span></label>
-          <label class="checkbox-item"><input type="checkbox" /><span>Full-service (I handle processing)</span></label>
-        </div>
-      </div>
-      <div style="padding:16px 0 32px;display:flex;gap:12px">
-        <button class="btn-secondary" style="flex:1" onclick="goTo('home')">Save Draft</button>
-        <button class="btn-primary" style="flex:2" onclick="submitListing()">Post Listing</button>
-      </div>
-    </div>
-  </div>
+    <!-- SCREEN: FIND PROCESSORS -->
+    <div id="screen-find-processors" class="screen hidden bg-gray-50">
+        <header class="bg-emerald-800 text-white p-4">
+            <h2 class="font-bold mb-4">Find Processors</h2>
+            <!-- 🤖 CLOUD NLP SMART SEARCH -->
+            <div class="relative">
+                <input id="nlp-search" onkeyup="processNLP(this.value)" type="text" placeholder="Try: 'USDA certified' or 'next week'" class="w-full rounded-lg px-4 py-3 text-sm text-gray-900 outline-none">
+                <div id="nlp-chip" class="hidden absolute right-3 top-3 bg-blue-100 text-blue-600 text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1">
+                    🔍 AI Matched
+                </div>
+            </div>
+            <p class="text-[9px] text-emerald-200 mt-2 opacity-80 uppercase tracking-widest font-bold">Powered by Cloud Natural Language API</p>
+        </header>
 
-  <!-- ═══════════════════════════════════════════════════════ TRACK ORDERS PAGE -->
-  <div id="page-track" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="toggleNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <h1 class="page-title">My Orders</h1>
-      <div style="width:40px"></div>
+        <div class="map-bg h-72 w-full">
+            <!-- Interactive Pins -->
+            <div class="map-pin" style="top:40%; left:30%" onclick="showProcessor('Bemidji Meat Processing')"></div>
+            <div class="map-pin" style="top:65%; left:65%" onclick="showProcessor('Northern MN Custom Meats')"></div>
+        </div>
+
+        <div class="p-4 space-y-4">
+            <div id="proc-card-bemidji" class="bg-white p-4 rounded-xl border flex justify-between items-center shadow-sm">
+                <div>
+                    <h4 class="font-bold">Bemidji Meat Processing</h4>
+                    <p class="text-xs text-gray-500">USDA Certified • 8 mi away</p>
+                </div>
+                <!-- 💬 BUSINESS MESSAGES -->
+                <button onclick="openBusinessChat('Bemidji Meat')" class="text-blue-600 p-2 bg-blue-50 rounded-full border border-blue-100">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 📍 PROCESSOR DETAIL SHEET (G-MY-BUSINESS) -->
+        <div id="processor-sheet" class="bottom-sheet">
+            <div class="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-6"></div>
+            <h3 id="sheet-title" class="text-xl font-bold mb-1">Processor Name</h3>
+            <div class="flex items-center gap-2 text-sm mb-6">
+                <span class="text-yellow-500 font-bold">4.8 ⭐</span>
+                <span class="text-gray-400">(47 reviews)</span>
+                <span class="text-emerald-600 font-bold ml-2 uppercase text-[10px]">Open Now</span>
+            </div>
+            
+            <div class="flex gap-3 mb-6">
+                <button onclick="navigateTo('book-processor')" class="btn-primary flex-1">Book Now</button>
+                <button onclick="showToast('Opening Directions...')" class="flex-1 py-3 border border-gray-300 font-bold rounded-lg text-sm">Directions</button>
+            </div>
+
+            <div class="border-t pt-4 space-y-4">
+                <p class="text-[10px] font-bold text-gray-400 uppercase">Google My Business Info</p>
+                <div class="text-sm space-y-2">
+                    <div class="flex items-center gap-3"><span>🕒</span> <span class="text-gray-600">Mon-Fri: 6AM-5PM, Sat: 7AM-2PM</span></div>
+                    <div class="flex items-center gap-3"><span>📞</span> <span class="text-gray-600">(218) 555-0192</span></div>
+                </div>
+                <div class="flex gap-2 overflow-x-auto pb-2">
+                    <div class="w-24 h-16 bg-gray-100 rounded shrink-0"></div>
+                    <div class="w-24 h-16 bg-gray-100 rounded shrink-0"></div>
+                    <div class="w-24 h-16 bg-gray-100 rounded shrink-0"></div>
+                </div>
+                <a href="#" class="block text-center text-blue-600 font-bold text-xs py-2">View on Google Maps ↗</a>
+            </div>
+        </div>
     </div>
-    <div class="page-content">
-      <div class="tab-bar" style="margin-bottom:20px">
-        <button class="tab-btn active" onclick="setOrderTab(this,'active')">Active</button>
-        <button class="tab-btn" onclick="setOrderTab(this,'completed')">Completed</button>
-        <button class="tab-btn" onclick="setOrderTab(this,'cancelled')">Cancelled</button>
-      </div>
-      <div id="orders-active">
-        <div class="order-card card" onclick="goTo('order-detail')">
-          <div class="order-header">
+
+    <!-- SCREEN: ADMIN PANEL -->
+    <div id="screen-page-admin" class="screen hidden bg-gray-50">
+        <header class="bg-emerald-900 text-white p-6">
+            <h2 class="text-2xl font-bold">Admin Panel</h2>
+        </header>
+        
+        <div class="flex border-b bg-white overflow-x-auto sticky top-0 z-10">
+            <button onclick="showAdminTab('overview')" class="flex-1 py-3 font-bold border-b-2 border-emerald-500 text-emerald-600 text-sm">Overview</button>
+            <button onclick="showAdminTab('analytics')" class="flex-1 py-3 font-bold text-gray-400 text-sm">Analytics</button>
+        </div>
+
+        <!-- Admin Overview Tab -->
+        <div id="admin-overview" class="p-4 space-y-6">
+            <!-- 🎯 GOOGLE ADS (P-MAX) -->
+            <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c7/Google_Ads_logo.svg" class="h-4">
+                    <h4 class="font-bold text-sm">Ad Performance (Performance Max)</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="p-3 bg-blue-50 rounded-lg">
+                        <p class="text-[9px] text-blue-600 font-bold">IMPRESSIONS</p>
+                        <p class="text-lg font-bold">48.2K</p>
+                    </div>
+                    <div class="p-3 bg-green-50 rounded-lg">
+                        <p class="text-[9px] text-green-600 font-bold">ROAS</p>
+                        <p class="text-lg font-bold">4.2x</p>
+                    </div>
+                </div>
+                <button onclick="showToast('Opening Google Ads...')" class="w-full py-2 bg-blue-600 text-white rounded-lg text-xs font-bold">View Campaigns</button>
+            </div>
+
+            <!-- FCM NOTIFICATIONS -->
+            <div class="bg-white p-5 rounded-xl border shadow-sm">
+                <h4 class="font-bold text-sm mb-1">Push Notifications</h4>
+                <p class="text-xs text-gray-500 mb-4">Send alerts to 1,284 devices via FCM.</p>
+                <button onclick="openFCMModal()" class="w-full py-3 bg-gray-800 text-white rounded-lg font-bold text-sm">Send Platform Update</button>
+            </div>
+        </div>
+
+        <!-- Admin Analytics Tab -->
+        <div id="admin-analytics" class="p-4 hidden space-y-6">
+            <!-- 📊 GOOGLE LOOKER STUDIO -->
+            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1d/Looker_Studio_logo.svg" class="h-4">
+                    <h4 class="font-bold text-sm">Looker Studio Reports</h4>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="report-tile">
+                        <p class="text-[9px] font-bold text-gray-400 mb-2">SALES TREND</p>
+                        <svg viewBox="0 0 100 30" class="h-10 text-emerald-500"><path d="M0,25 Q10,15 20,25 T40,10 T60,20 T80,5 T100,15" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+                    </div>
+                    <div class="report-tile">
+                        <p class="text-[9px] font-bold text-gray-400 mb-2">CATEGORY MIX</p>
+                        <div class="flex justify-center"><div class="w-10 h-10 rounded-full border-[6px] border-emerald-500 border-r-blue-400"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📊 GOOGLE SEARCH CONSOLE -->
+            <div class="bg-white p-4 rounded-xl border shadow-sm">
+                <div class="flex items-center gap-2 mb-4">
+                    <img src="https://www.gstatic.com/images/branding/product/2x/search_console_48dp.png" class="h-5">
+                    <h4 class="font-bold text-sm">Search Console / SEO</h4>
+                </div>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between border-b pb-2"><span>buy beef shares mn</span><span class="font-bold text-emerald-600">Pos 1.2</span></div>
+                    <div class="flex justify-between border-b pb-2"><span>farm direct meat</span><span class="font-bold text-emerald-600">Pos 4.5</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN: GMAIL NOTIFICATIONS -->
+    <div id="screen-gmail-notifications" class="screen hidden bg-gray-50">
+        <header class="p-4 bg-white border-b flex items-center gap-3">
+            <button onclick="navigateTo('profile')" class="text-emerald-600 font-bold">←</button>
+            <h2 class="font-bold">Gmail Notifications</h2>
+        </header>
+        <div class="p-4">
+            <div class="flex items-center gap-2 mb-8 bg-white p-3 rounded-xl border">
+                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-xs">M</div>
+                <div class="flex-1">
+                    <p class="text-sm font-bold">mychalstitts@gmail.com</p>
+                    <p class="text-[10px] text-emerald-600 font-bold">✓ Connected to Cloud</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div class="bg-white p-4 rounded-xl border-l-4 border-emerald-500 shadow-sm">
+                    <p class="text-[10px] text-gray-400 font-bold mb-1 uppercase">Order Confirmed</p>
+                    <p class="text-sm font-bold">Your quarter Angus Steer...</p>
+                    <p class="text-xs text-gray-500 mt-1">Hi Mychal, your reservation for listing #402 is confirmed...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN: PROFILE -->
+    <div id="screen-profile" class="screen hidden p-4 bg-gray-50">
+        <div class="flex items-center gap-4 mb-8 bg-white p-6 rounded-2xl border shadow-sm">
+            <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">MS</div>
             <div>
-              <div class="order-id">Order #PO-2024-001</div>
-              <div class="order-date">Placed Dec 15, 2024</div>
+                <h2 class="text-xl font-bold">Mychal Stitts</h2>
+                <p class="text-sm text-gray-500">mychalstitts@gmail.com</p>
             </div>
-            <span class="status-badge status-confirmed">Confirmed</span>
-          </div>
-          <div class="order-items">
-            <img src="https://imagine-public.x.ai/imagine-public/images/92a5abf9-bf7e-4d84-a1b6-9960ca0f0d3e.jpg" alt="Angus" class="order-thumb" />
-            <div class="order-info">
-              <div class="order-name">Black Angus Half Beef</div>
-              <div class="order-farm">Rolling Hills Ranch</div>
-              <div class="order-price">$1,440.00</div>
+        </div>
+
+        <!-- 🔒 GOOGLE IDENTITY / PASSKEYS -->
+        <div class="bg-white p-5 rounded-xl border mb-4">
+            <h4 class="text-xs font-bold text-gray-400 uppercase mb-4 tracking-wider">Security & Identity</h4>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">🛡️</span>
+                        <div>
+                            <p class="text-sm font-bold">Google Passkey</p>
+                            <span class="passkey-badge">✅ ACTIVE</span>
+                        </div>
+                    </div>
+                    <button class="text-[10px] font-bold text-blue-600 underline">MANAGE</button>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <span class="text-xl">📱</span>
+                        <div>
+                            <p class="text-sm font-bold">iPhone 15 Pro</p>
+                            <p class="text-[10px] text-gray-400">Bemidji, MN • Last active: 2m ago</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="track-timeline">
-            <div class="track-step done"><div class="track-dot"></div><div class="track-label">Order Placed</div><div class="track-date">Dec 15</div></div>
-            <div class="track-line done"></div>
-            <div class="track-step done"><div class="track-dot"></div><div class="track-label">Confirmed</div><div class="track-date">Dec 16</div></div>
-            <div class="track-line"></div>
-            <div class="track-step active"><div class="track-dot"></div><div class="track-label">Processing</div><div class="track-date">Dec 20</div></div>
-            <div class="track-line"></div>
-            <div class="track-step"><div class="track-dot"></div><div class="track-label">Ready</div><div class="track-date">—</div></div>
-          </div>
-          <div class="order-actions">
-            <button class="btn-secondary btn-sm" onclick="event.stopPropagation();goTo('messages')">Message Farmer</button>
-            <button class="btn-secondary btn-sm" onclick="event.stopPropagation();goTo('processors')">Find Processor</button>
-          </div>
         </div>
-      </div>
-      <div id="orders-completed" style="display:none">
-        <div class="order-card card" onclick="goTo('order-detail')">
-          <div class="order-header">
-            <div>
-              <div class="order-id">Order #PO-2023-089</div>
-              <div class="order-date">Placed Oct 3, 2023</div>
+
+        <button onclick="navigateTo('gmail-notifications')" class="w-full bg-white p-4 rounded-xl border flex items-center justify-between mb-4">
+            <span class="font-bold text-sm">📧 Gmail Notifications</span>
+            <span class="text-emerald-500">→</span>
+        </button>
+        
+        <div class="bg-white p-5 rounded-xl border">
+            <p class="text-xs font-bold text-gray-400 uppercase mb-3">Language & Translation</p>
+            <div class="flex gap-2 overflow-x-auto">
+                <button class="bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-xs font-bold border border-blue-100">English</button>
+                <button onclick="showToast('Translating...')" class="bg-gray-100 text-gray-600 px-4 py-2 rounded-full text-xs font-bold">Español</button>
             </div>
-            <span class="status-badge status-done">Completed</span>
-          </div>
-          <div class="order-items">
-            <img src="https://imagine-public.x.ai/imagine-public/images/4d781833-b270-450f-aa59-0eb9e221fa8a.jpg" alt="Pork" class="order-thumb" />
-            <div class="order-info">
-              <div class="order-name">Heritage Pork Whole Hog</div>
-              <div class="order-farm">Sunridge Family Farm</div>
-              <div class="order-price">$520.00</div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         NAVIGATION
+         ========================================== -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around p-3 z-50">
+        <button onclick="navigateTo('home-Farmer')" class="flex flex-col items-center gap-1 text-emerald-600">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            <span class="text-[10px] font-bold">Home</span>
+        </button>
+        <button onclick="navigateTo('find-processors')" class="flex flex-col items-center gap-1 text-gray-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span class="text-[10px] font-bold">Processors</span>
+        </button>
+        <button onclick="navigateTo('page-admin')" class="flex flex-col items-center gap-1 text-gray-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span class="text-[10px] font-bold">Admin</span>
+        </button>
+        <button onclick="navigateTo('profile')" class="flex flex-col items-center gap-1 text-gray-400">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            <span class="text-[10px] font-bold">Profile</span>
+        </button>
+    </nav>
+
+    <!-- ✨ GEMINI FAB -->
+    <button id="gemini-fab" onclick="toggleGemini()">Ask Gemini ✨</button>
+
+    <!-- ==========================================
+         MODALS & SHEETS
+         ========================================== -->
+
+    <!-- MODAL: GEMINI CHAT -->
+    <div id="modal-gemini" class="modal-overlay hidden">
+        <div class="bg-white w-full h-full max-w-lg flex flex-col">
+            <div class="p-4 flex justify-between items-center" style="background: var(--gemini-gradient)">
+                <h3 class="text-white font-bold">Gemini AI Assistant</h3>
+                <button onclick="toggleGemini()" class="text-white text-2xl">✕</button>
             </div>
-          </div>
-          <div class="order-actions"><button class="btn-primary btn-sm" onclick="event.stopPropagation();goTo('market')">Reorder</button></div>
-        </div>
-      </div>
-      <div id="orders-cancelled" style="display:none">
-        <div class="empty-state"><div class="empty-icon">✅</div><div class="empty-title">No cancelled orders</div><div class="empty-sub">All your orders are active or completed.</div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ ORDER DETAIL PAGE -->
-  <div id="page-order-detail" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Order #PO-2024-001</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-          <img src="https://imagine-public.x.ai/imagine-public/images/92a5abf9-bf7e-4d84-a1b6-9960ca0f0d3e.jpg" style="width:80px;height:80px;border-radius:12px;object-fit:cover" />
-          <div><div style="font-weight:700;font-size:16px">Black Angus Half Beef</div><div style="color:var(--text-secondary)">Rolling Hills Ranch</div><div style="font-weight:700;color:var(--accent);margin-top:4px">$1,440.00</div></div>
-        </div>
-        <div class="track-timeline" style="padding:0">
-          <div class="track-step done"><div class="track-dot"></div><div class="track-label">Order Placed</div><div class="track-date">Dec 15</div></div>
-          <div class="track-line done"></div>
-          <div class="track-step done"><div class="track-dot"></div><div class="track-label">Confirmed</div><div class="track-date">Dec 16</div></div>
-          <div class="track-line"></div>
-          <div class="track-step active"><div class="track-dot"></div><div class="track-label">At Processor</div><div class="track-date">Dec 20</div></div>
-          <div class="track-line"></div>
-          <div class="track-step"><div class="track-dot"></div><div class="track-label">Ready for Pickup</div><div class="track-date">—</div></div>
-        </div>
-      </div>
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div class="section-title" style="margin-bottom:12px">Farmer Contact</div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <img src="https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg" style="width:48px;height:48px;border-radius:50%;object-fit:cover" />
-          <div style="flex:1"><div style="font-weight:600">Jake Morrison</div><div style="color:var(--text-secondary);font-size:13px">Rolling Hills Ranch</div></div>
-          <button class="btn-secondary btn-sm" onclick="goTo('messages')">Message</button>
-        </div>
-      </div>
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div class="section-title" style="margin-bottom:12px">Processor Info</div>
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div><div style="font-weight:600">Montana Prime Cuts</div><div style="color:var(--text-secondary);font-size:13px">Billings, MT · USDA Inspected</div></div>
-          <button class="btn-secondary btn-sm" onclick="goTo('processors')">Details</button>
-        </div>
-      </div>
-      <button class="btn-secondary btn-full" onclick="goBack()" style="margin-bottom:32px">Back to Orders</button>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ ALERTS / NOTIFICATIONS PAGE -->
-  <div id="page-alerts" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="toggleNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <h1 class="page-title">Alerts</h1>
-      <button class="icon-btn" onclick="markAllRead()" style="font-size:12px;color:var(--accent);width:auto;padding:0 4px">Mark all read</button>
-    </div>
-    <div class="page-content">
-      <div class="alert-item unread card" onclick="goTo('order-detail')">
-        <div class="alert-dot"></div>
-        <div class="alert-icon">🐄</div>
-        <div class="alert-body">
-          <div class="alert-title">Order Update: PO-2024-001</div>
-          <div class="alert-msg">Your Black Angus has arrived at Montana Prime Cuts processor.</div>
-          <div class="alert-time">2 hours ago</div>
-        </div>
-      </div>
-      <div class="alert-item unread card" onclick="goTo('market')">
-        <div class="alert-dot"></div>
-        <div class="alert-icon">🔔</div>
-        <div class="alert-body">
-          <div class="alert-title">New listing in your area</div>
-          <div class="alert-msg">Heritage Pork listed near Billings, MT — $3.20/lb</div>
-          <div class="alert-time">5 hours ago</div>
-        </div>
-      </div>
-      <div class="alert-item card" onclick="goTo('home')">
-        <div class="alert-icon">✅</div>
-        <div class="alert-body">
-          <div class="alert-title">Order Completed</div>
-          <div class="alert-msg">Your Heritage Pork Whole Hog order has been picked up.</div>
-          <div class="alert-time">Oct 28, 2023</div>
-        </div>
-      </div>
-      <div class="alert-item card" onclick="goTo('market')">
-        <div class="alert-icon">📣</div>
-        <div class="alert-body">
-          <div class="alert-title">Price Drop Alert</div>
-          <div class="alert-msg">Grass-fed Lamb in Montana dropped to $5.00/lb</div>
-          <div class="alert-time">Nov 5, 2023</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ PROFILE / ME PAGE -->
-  <div id="page-profile" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="toggleNav()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
-      <h1 class="page-title">My Profile</h1>
-      <button class="icon-btn" onclick="goTo('settings')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
-    </div>
-    <div class="page-content">
-      <div class="profile-hero card">
-        <div class="profile-avatar">
-          <img src="https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg" alt="Profile" />
-        </div>
-        <div class="profile-name">Jake Morrison</div>
-        <div class="profile-role">Farmer &amp; Buyer</div>
-        <div class="profile-location">📍 Billings, MT</div>
-        <div class="profile-stats">
-          <div class="stat-item"><div class="stat-val">12</div><div class="stat-lbl">Listings</div></div>
-          <div class="stat-item"><div class="stat-val">47</div><div class="stat-lbl">Sales</div></div>
-          <div class="stat-item"><div class="stat-val">4.9★</div><div class="stat-lbl">Rating</div></div>
-        </div>
-      </div>
-      <div class="menu-list card" style="margin-top:16px">
-        <div class="menu-item" onclick="goTo('sell')"><span>🐄</span><span class="menu-label">My Listings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" onclick="goTo('track')"><span>📦</span><span class="menu-label">My Orders</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" onclick="goTo('favorites')"><span>❤️</span><span class="menu-label">Saved Listings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" onclick="goTo('messages')"><span>💬</span><span class="menu-label">Messages</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" onclick="goTo('compliance')"><span>📋</span><span class="menu-label">Compliance Docs</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" onclick="goTo('settings')"><span>⚙️</span><span class="menu-label">Settings</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ SETTINGS PAGE -->
-  <div id="page-settings" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Settings</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="menu-list card">
-        <div class="menu-item"><span>🔔</span><span class="menu-label">Notifications</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
-        <div class="menu-item"><span>📍</span><span class="menu-label">Location Services</span><label class="toggle"><input type="checkbox" checked /><span class="toggle-slider"></span></label></div>
-        <div class="menu-item"><span>🔒</span><span class="menu-label">Privacy</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item"><span>💳</span><span class="menu-label">Payment Methods</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item"><span>📞</span><span class="menu-label">Help &amp; Support</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item"><span>⭐</span><span class="menu-label">Rate Protein Outfitters</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="menu-chevron"><polyline points="9,18 15,12 9,6"/></svg></div>
-        <div class="menu-item" style="color:#FF3B30"><span>🚪</span><span class="menu-label" style="color:#FF3B30">Sign Out</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ FAVORITES PAGE -->
-  <div id="page-favorites" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Saved Listings</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content" id="favorites-content"></div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ MESSAGES PAGE -->
-  <div id="page-messages" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Messages</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="message-thread card" onclick="goTo('chat')">
-        <img src="https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg" class="thread-avatar" />
-        <div class="thread-body">
-          <div class="thread-header"><span class="thread-name">Jake Morrison</span><span class="thread-time">2h ago</span></div>
-          <div class="thread-preview">The beef is currently at the processor, should be ready by Friday!</div>
-        </div>
-        <div class="unread-badge">2</div>
-      </div>
-      <div class="message-thread card" onclick="goTo('chat')">
-        <img src="https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg" class="thread-avatar" />
-        <div class="thread-body">
-          <div class="thread-header"><span class="thread-name">Sarah Fields</span><span class="thread-time">Yesterday</span></div>
-          <div class="thread-preview">Thanks for your order! The lambs are ready.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ PROCESSORS PAGE -->
-  <div id="page-processors" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Find Processors</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <div class="search-bar" style="margin-bottom:16px">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;color:var(--text-tertiary);flex-shrink:0"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" placeholder="Search by city or zip..." style="border:none;outline:none;background:transparent;flex:1;font-size:15px" />
-      </div>
-      <div class="filter-chips" style="margin-bottom:20px">
-        <span class="filter-chip active">All</span>
-        <span class="filter-chip">USDA Inspected</span>
-        <span class="filter-chip">State Inspected</span>
-        <span class="filter-chip">Custom Exempt</span>
-      </div>
-      <div class="processor-card card">
-        <div class="processor-header">
-          <div class="processor-logo">🥩</div>
-          <div class="processor-info">
-            <div class="processor-name">Montana Prime Cuts</div>
-            <div class="processor-location">📍 Billings, MT · 12 mi away</div>
-            <div class="processor-badges">
-              <span class="badge-usda">USDA Inspected</span>
-              <span class="badge-open">Open</span>
+            <div id="chat-messages" class="flex-1 p-4 bg-gray-50 overflow-y-auto space-y-4">
+                <div class="bg-white p-3 rounded-lg border text-sm max-w-[85%] shadow-sm">
+                    Hi Mychal! I've analyzed your cattle genetics and regional demand. Ready to write a listing description?
+                </div>
             </div>
-          </div>
-          <div class="processor-rating">4.8★</div>
+            <div id="typing-indicator" class="px-4 py-2 hidden"><div class="typing-dots"><span></span> <span></span> <span></span></div></div>
+            <div class="p-4 bg-white border-t">
+                <div class="flex gap-2 overflow-x-auto pb-3 mb-2">
+                    <button onclick="sendGeminiMsg('Write a description')" class="whitespace-nowrap bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-full border border-blue-100 font-bold">Write a description</button>
+                    <button onclick="sendGeminiMsg('Price prediction')" class="whitespace-nowrap bg-blue-50 text-blue-600 text-xs px-3 py-1.5 rounded-full border border-blue-100 font-bold">Price prediction</button>
+                </div>
+                <input type="text" placeholder="Ask Gemini anything..." class="w-full border rounded-full px-4 py-2 text-sm outline-none">
+            </div>
         </div>
-        <div class="processor-services">
-          <span class="service-tag">Beef</span>
-          <span class="service-tag">Pork</span>
-          <span class="service-tag">Lamb</span>
-          <span class="service-tag">Venison</span>
-        </div>
-        <div class="processor-details">
-          <div class="detail-item">⏱ 3–5 days processing</div>
-          <div class="detail-item">💵 $0.55/lb cut &amp; wrap</div>
-          <div class="detail-item">📅 Next available: Dec 22</div>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:16px">
-          <button class="btn-secondary" style="flex:1" onclick="showToast('Calling Montana Prime Cuts...')">Call</button>
-          <button class="btn-primary" style="flex:1" onclick="goTo('processor-detail')">View Details</button>
-        </div>
-      </div>
-      <div class="processor-card card">
-        <div class="processor-header">
-          <div class="processor-logo">🔪</div>
-          <div class="processor-info">
-            <div class="processor-name">High Plains Butcher Co.</div>
-            <div class="processor-location">📍 Miles City, MT · 38 mi away</div>
-            <div class="processor-badges"><span class="badge-state">State Inspected</span></div>
-          </div>
-          <div class="processor-rating">4.6★</div>
-        </div>
-        <div class="processor-services">
-          <span class="service-tag">Beef</span>
-          <span class="service-tag">Bison</span>
-          <span class="service-tag">Venison</span>
-        </div>
-        <div class="processor-details">
-          <div class="detail-item">⏱ 5–7 days processing</div>
-          <div class="detail-item">💵 $0.48/lb cut &amp; wrap</div>
-          <div class="detail-item">📅 Next available: Dec 27</div>
-        </div>
-        <div style="display:flex;gap:12px;margin-top:16px">
-          <button class="btn-secondary" style="flex:1" onclick="showToast('Calling High Plains Butcher...')">Call</button>
-          <button class="btn-primary" style="flex:1" onclick="goTo('processor-detail')">View Details</button>
-        </div>
-      </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ PROCESSOR DETAIL PAGE -->
-  <div id="page-processor-detail" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <h1 class="page-title">Montana Prime Cuts</h1>
-      <div style="width:40px"></div>
-    </div>
-    <div class="page-content">
-      <img src="https://imagine-public.x.ai/imagine-public/images/8a272570-12da-436e-bce4-25f7e1e6a0e1.jpg" style="width:100%;height:220px;object-fit:cover;border-radius:16px;margin-bottom:16px" />
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-          <div><div style="font-size:20px;font-weight:700">Montana Prime Cuts</div><div style="color:var(--text-secondary)">📍 Billings, MT 59101</div></div>
-          <span class="badge-usda">USDA #12345</span>
+    <!-- MODAL: GOOGLE DOCS (AI GENERATOR + SMART CHIPS) -->
+    <div id="modal-docs" class="modal-overlay hidden">
+        <div class="bg-white w-full h-full max-w-xl flex flex-col">
+            <div class="p-4 border-b flex justify-between items-center">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/01/Google_Docs_logo_%282014-2020%29.svg" class="h-5">
+                <button onclick="closeModals()" class="text-xl text-gray-400">✕</button>
+            </div>
+            <div class="flex-1 p-10 bg-gray-100 overflow-y-auto">
+                <div class="bg-white shadow-2xl p-8 min-h-full text-sm leading-relaxed text-gray-800">
+                    <h2 class="text-xl font-bold mb-4">AI Listing Generator</h2>
+                    Raising premium Black Angus in 
+                    <span class="smart-chip" onclick="showToast('📍 Bemidji Regional Data')">📍 Bemidji, MN</span>. 
+                    Targeting a finish weight of 
+                    <span class="smart-chip" onclick="showToast('⚖️ Predicted Yield: 72%')">⚖️ 1,250 lbs</span>. 
+                    Price set at 
+                    <span class="smart-chip" onclick="showToast('💰 Regional Avg: $4.25')">💰 $4.50/lb</span>.
+                    Grain-finished for 120 days for superior marbling.
+                </div>
+            </div>
+            <div class="p-4 bg-white border-t flex justify-end gap-3">
+                <button onclick="showToast('Saved to Drive')" class="px-6 py-2 bg-blue-600 text-white rounded font-bold text-sm">Save to Drive</button>
+            </div>
         </div>
-        <div style="display:flex;gap:16px">
-          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:var(--accent)">4.8</div><div style="font-size:12px;color:var(--text-secondary)">Rating</div></div>
-          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:var(--accent)">247</div><div style="font-size:12px;color:var(--text-secondary)">Reviews</div></div>
-          <div style="text-align:center"><div style="font-size:22px;font-weight:700;color:var(--accent)">12yr</div><div style="font-size:12px;color:var(--text-secondary)">In Business</div></div>
+    </div>
+
+    <!-- MODAL: BUSINESS MESSAGES CHAT -->
+    <div id="modal-biz-chat" class="modal-overlay hidden">
+        <div class="bg-white w-full h-full max-w-lg flex flex-col">
+            <div class="p-4 bg-blue-600 text-white flex items-center gap-4">
+                <img src="https://www.gstatic.com/images/branding/product/2x/business_messages_48dp.png" class="h-8">
+                <h3 class="font-bold" id="chat-biz-title">Processor Chat</h3>
+                <button onclick="closeModals()" class="ml-auto text-2xl">✕</button>
+            </div>
+            <div id="biz-chat-content" class="flex-1 p-4 bg-gray-50 overflow-y-auto space-y-4">
+                <div class="bg-white p-3 rounded-lg border text-sm max-w-[85%]">Hi! We're Bemidji Meat Processing. How can we help?</div>
+            </div>
+            <div class="p-4 bg-white border-t">
+                <div class="flex gap-2 overflow-x-auto pb-4">
+                    <button onclick="sendBizMsg('What are your fees?')" class="whitespace-nowrap border border-blue-200 text-blue-600 px-3 py-1.5 rounded-full text-[10px] font-bold">What are your fees?</button>
+                    <button onclick="sendBizMsg('Earliest opening?')" class="whitespace-nowrap border border-blue-200 text-blue-600 px-3 py-1.5 rounded-full text-[10px] font-bold">Earliest opening?</button>
+                </div>
+                <input type="text" placeholder="Type a message..." class="w-full border rounded-full px-4 py-2 text-sm">
+            </div>
         </div>
-      </div>
-      <div class="card" style="padding:20px;margin-bottom:16px">
-        <div class="section-title" style="margin-bottom:12px">Services &amp; Pricing</div>
-        <div class="service-row"><span>Cut &amp; Wrap</span><span style="font-weight:600">$0.55/lb</span></div>
-        <div class="service-row"><span>Custom Cuts</span><span style="font-weight:600">$0.65/lb</span></div>
-        <div class="service-row"><span>Smoking</span><span style="font-weight:600">$0.85/lb</span></div>
-        <div class="service-row"><span>Sausage Making</span><span style="font-weight:600">$1.20/lb</span></div>
-        <div class="service-row"><span>Cold Storage (per mo.)</span><span style="font-weight:600">$25.00</span></div>
-      </div>
-      <div style="display:flex;gap:12px;margin-bottom:32px">
-        <button class="btn-secondary" style="flex:1" onclick="showToast('Opening maps...')">Get Directions</button>
-        <button class="btn-primary" style="flex:1" onclick="showToast('Scheduling appointment...')">Schedule Drop-off</button>
-      </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ CHAT PAGE -->
-  <div id="page-chat" class="page">
-    <div class="page-header">
-      <button class="icon-btn" onclick="goBack()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15,18 9,12 15,6"/></svg></button>
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg" style="width:36px;height:36px;border-radius:50%;object-fit:cover" />
-        <div><div style="font-weight:700;font-size:15px">Jake Morrison</div><div style="font-size:12px;color:#34C759">Online</div></div>
-      </div>
-      <div style="width:40px"></div>
-    </div>
-    <div class="chat-messages" id="chat-messages">
-      <div class="chat-msg received"><div class="msg-bubble">Hey! Thanks for your order. The beef is doing great — should be ready for pickup at the processor by Friday.</div><div class="msg-time">10:32 AM</div></div>
-      <div class="chat-msg sent"><div class="msg-bubble">That's great news! Which processor are you using?</div><div class="msg-time">10:45 AM</div></div>
-      <div class="chat-msg received"><div class="msg-bubble">Montana Prime Cuts in Billings. They're USDA inspected and do excellent work. I'll send you the address and drop-off confirmation.</div><div class="msg-time">10:47 AM</div></div>
-      <div class="chat-msg sent"><div class="msg-bubble">Perfect, I'll coordinate with them directly. Can I request specific cuts?</div><div class="msg-time">11:02 AM</div></div>
-      <div class="chat-msg received"><div class="msg-bubble">Absolutely! Just fill out the cut sheet they'll send you. They do custom cuts, smoking, everything.</div><div class="msg-time">11:05 AM</div></div>
-    </div>
-    <div class="chat-input-bar">
-      <input type="text" id="chat-input" class="chat-input" placeholder="Message Jake..." />
-      <button class="chat-send" onclick="sendMessage()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- ═══════════════════════════════════════════════════════ FILTER MODAL -->
-  <div id="filter-modal" class="modal-overlay" onclick="closeFilter(event)">
-    <div class="modal-sheet">
-      <div class="modal-handle"></div>
-      <div class="modal-title">Filter Listings</div>
-      <div class="modal-section">
-        <div class="modal-label">Animal Type</div>
-        <div class="filter-check-grid">
-          <label class="filter-check"><input type="checkbox" checked /><span>Beef</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Pork</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Lamb</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Goat</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Venison</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Poultry</span></label>
+    <!-- MODAL: GOOGLE MEET / CALENDAR SYNC -->
+    <div id="modal-meet" class="modal-overlay hidden">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl">
+            <div class="flex items-center gap-3 mb-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg" class="h-8">
+                <h3 class="font-bold text-lg">Meeting Scheduled!</h3>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-xl border mb-6">
+                <p class="text-[10px] font-bold text-gray-400 mb-1">GOOGLE MEET LINK</p>
+                <p class="text-xs font-mono text-blue-600">meet.google.com/abc-defg-hij</p>
+            </div>
+            <button onclick="showToast('Launching Meet...')" class="btn-primary bg-emerald-600 mb-2">Join Meeting Now</button>
+            <button onclick="closeModals()" class="w-full text-xs text-gray-400 py-2">Dismiss</button>
         </div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-label">Price Per Pound</div>
-        <div style="display:flex;gap:12px">
-          <input type="number" class="form-input" placeholder="Min $" style="flex:1" />
-          <input type="number" class="form-input" placeholder="Max $" style="flex:1" />
+    </div>
+
+    <!-- MODAL: FCM NOTIFICATION -->
+    <div id="modal-fcm" class="modal-overlay hidden">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6">
+            <h3 class="font-bold text-lg mb-4">Send System Notification</h3>
+            <textarea class="w-full border p-3 rounded-lg text-sm h-24 mb-6">🔔 New beef listings available in your area!</textarea>
+            <button onclick="sendFCM()" id="btn-fcm-send" class="btn-primary">Send via Firebase FCM</button>
         </div>
-      </div>
-      <div class="modal-section">
-        <div class="modal-label">Distance</div>
-        <select class="form-input"><option>Within 25 miles</option><option>Within 50 miles</option><option>Within 100 miles</option><option>Statewide</option></select>
-      </div>
-      <div class="modal-section">
-        <div class="modal-label">Certifications</div>
-        <div class="filter-check-grid">
-          <label class="filter-check"><input type="checkbox" /><span>USDA Organic</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Grass-Fed</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Pasture-Raised</span></label>
-          <label class="filter-check"><input type="checkbox" /><span>Hormone-Free</span></label>
-        </div>
-      </div>
-      <div style="display:flex;gap:12px;padding:16px 0 32px">
-        <button class="btn-secondary" style="flex:1" onclick="closeFilter()">Reset</button>
-        <button class="btn-primary" style="flex:2" onclick="applyFilter()">Show Results</button>
-      </div>
     </div>
-  </div>
 
-  <!-- ═══════════════════════════════════════════════════════ TOAST -->
-  <div id="toast" class="toast"></div>
-
-  <!-- ═══════════════════════════════════════════════════════ BOTTOM NAV -->
-  <nav class="bottom-nav" id="bottom-nav">
-    <button class="nav-item active" id="nav-home" onclick="goTo('home');setActiveNav('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
-      <span>Home</span>
-    </button>
-    <button class="nav-item" id="nav-market" onclick="goTo('market');setActiveNav('market')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-      <span>Market</span>
-    </button>
-    <button class="nav-item nav-sell-btn" onclick="goTo('sell')">
-      <div class="nav-sell-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </div>
-      <span>Sell</span>
-    </button>
-    <button class="nav-item" id="nav-track" onclick="goTo('track');setActiveNav('track')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      <span>Track</span>
-    </button>
-    <button class="nav-item" id="nav-profile" onclick="goTo('profile');setActiveNav('profile')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>Me</span>
-    </button>
-  </nav>
-
-
-<script>
-// ═══════════════════════════ DATA ════════════════════════════
-const IMG = {
-  angus:   'https://imagine-public.x.ai/imagine-public/images/92a5abf9-bf7e-4d84-a1b6-9960ca0f0d3e.jpg',
-  pig:     'https://imagine-public.x.ai/imagine-public/images/4d781833-b270-450f-aa59-0eb9e221fa8a.jpg',
-  hereford:'https://imagine-public.x.ai/imagine-public/images/f387ea3b-b3c9-4902-8701-3b2e9af5af26.jpg',
-  lamb:    'https://imagine-public.x.ai/imagine-public/images/102dd79d-5141-4d18-9506-0efee0191e4e.jpg',
-  deer:    'https://imagine-public.x.ai/imagine-public/images/fe79467a-57a6-4bfa-bc05-eeb0dca59f9d.jpg',
-  hero:    'https://imagine-public.x.ai/imagine-public/images/c3a30aac-d34c-4a5a-adc1-8be50a813c39.jpg',
-  farmer:  'https://imagine-public.x.ai/imagine-public/images/afaa1857-6fa0-4e1a-b72f-e55e02b9eadc.jpg',
-  meat:    'https://imagine-public.x.ai/imagine-public/images/8a272570-12da-436e-bce4-25f7e1e6a0e1.jpg'
-};
-
-const LISTINGS = [
-  { id:1, type:'Beef', breed:'Black Angus', farm:'Rolling Hills Ranch', location:'Billings, MT', distance:'12 mi', price:4.50, weight:1200, unit:'half', desc:'Pasture-raised Black Angus, 100% grass-fed, no hormones or antibiotics. Beautiful marbling. Ready Dec 20.', img:IMG.angus, rating:4.9, reviews:23, certified:['Grass-Fed','Hormone-Free'], shares:2 },
-  { id:2, type:'Pork', breed:'Heritage Berkshire', farm:'Sunridge Family Farm', location:'Laurel, MT', distance:'25 mi', price:3.20, weight:280, unit:'whole', desc:'Heritage breed Berkshire pork raised on pasture with supplemental grain. Exceptional flavor. Ready Dec 18.', img:IMG.pig, rating:4.7, reviews:18, certified:['Pasture-Raised'], shares:1 },
-  { id:3, type:'Beef', breed:'Hereford', farm:'Clearwater Cattle Co.', location:'Roundup, MT', distance:'48 mi', price:3.80, weight:1100, unit:'whole', desc:'Classic Hereford raised on open pasture. Grain-finished for 90 days. Ready Jan 5.', img:IMG.hereford, rating:4.8, reviews:31, certified:['Grain-Finished'], shares:0 },
-  { id:4, type:'Lamb', breed:'Rambouillet Cross', farm:'High Meadow Farm', location:'Bozeman, MT', distance:'92 mi', price:5.20, weight:110, unit:'whole', desc:'Young Rambouillet cross lambs, raised on native Montana pasture. Mild, tender flavor. Ready Dec 22.', img:IMG.lamb, rating:4.9, reviews:12, certified:['Pasture-Raised','Hormone-Free'], shares:3 },
-  { id:5, type:'Venison', breed:'Whitetail Deer', farm:'Big Sky Meats', location:'Lewistown, MT', distance:'68 mi', price:6.80, weight:140, unit:'whole', desc:'Wild-harvested whitetail deer processed by USDA-inspected facility. Lean, rich flavor. Available now.', img:IMG.deer, rating:5.0, reviews:7, certified:['Wild-Harvested'], shares:1 }
-];
-
-// ═══════════════════════════ STATE ═══════════════════════════
-let _history = [];
-let _currentPage = 'splash';
-let _bag = [];
-let _favorites = new Set();
-let _selectedListing = null;
-let _orderCount = 1;
-let _navOpen = false;
-let _demoActive = false;
-let _marketTab = 'all';
-
-// ═══════════════════════════ NAVIGATION ══════════════════════
-function goTo(page) {
-  const curr = document.getElementById('page-' + _currentPage);
-  const next = document.getElementById('page-' + page);
-  if (!next) { showToast('Coming soon!'); return; }
-  if (curr) curr.classList.remove('active');
-  next.classList.add('active');
-  _history.push(_currentPage);
-  _currentPage = page;
-  closeNav();
-  window.scrollTo(0, 0);
-  const navMap = { home:'home', market:'market', track:'track', profile:'profile', favorites:'profile', alerts:'profile', messages:'profile', settings:'profile', 'order-detail':'track', processors:'track', 'processor-detail':'track', chat:'profile', compliance:'profile' };
-  if (navMap[page]) setActiveNav(navMap[page]);
-  if (page === 'market') renderMarketGrid();
-  if (page === 'home') renderFeaturedListings();
-  if (page === 'bag') renderBag();
-  if (page === 'checkout') renderCheckout();
-  if (page === 'favorites') renderFavorites();
-}
-
-function goBack() {
-  if (_history.length === 0) { goTo('home'); return; }
-  const prev = _history.pop();
-  const curr = document.getElementById('page-' + _currentPage);
-  const back = document.getElementById('page-' + prev);
-  if (curr) curr.classList.remove('active');
-  if (back) back.classList.add('active');
-  _currentPage = prev;
-}
-
-function setActiveNav(id) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  const btn = document.getElementById('nav-' + id);
-  if (btn) btn.classList.add('active');
-}
-
-function toggleNav() {
-  _navOpen = !_navOpen;
-  const nav = document.getElementById('side-nav');
-  const overlay = document.getElementById('nav-overlay');
-  if (_navOpen) { nav.classList.add('open'); overlay.classList.add('active'); }
-  else { nav.classList.remove('open'); overlay.classList.remove('active'); }
-}
-
-function closeNav() {
-  _navOpen = false;
-  const nav = document.getElementById('side-nav');
-  const overlay = document.getElementById('nav-overlay');
-  if (nav) nav.classList.remove('open');
-  if (overlay) overlay.classList.remove('active');
-}
-
-// ═══════════════════════════ SPLASH ══════════════════════════
-function enterApp() {
-  document.getElementById('page-splash').classList.remove('active');
-  document.getElementById('page-home').classList.add('active');
-  document.getElementById('bottom-nav').style.display = 'flex';
-  _currentPage = 'home';
-  renderFeaturedListings();
-  renderAnimalBrowse();
-}
-
-function demoMode() {
-  _demoActive = true;
-  enterApp();
-  showToast('Demo Mode Active!');
-}
-
-// ═══════════════════════════ HOME ════════════════════════════
-function renderFeaturedListings() {
-  const container = document.getElementById('home-featured');
-  if (!container) return;
-  container.innerHTML = LISTINGS.slice(0, 3).map(l => `
-    <div class="card" onclick="openListing(${l.id})" style="min-width:220px;flex-shrink:0;cursor:pointer">
-      <div style="position:relative">
-        <img class="card-img" src="${l.img}" alt="${l.breed}" loading="lazy" />
-        <span class="pill dark" style="position:absolute;top:10px;left:10px">${l.type}</span>
-        <button onclick="event.stopPropagation();toggleFavorite(${l.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:16px">${_favorites.has(l.id)?'❤️':'🤍'}</button>
-      </div>
-      <div class="card-body">
-        <div class="card-title">${l.breed}</div>
-        <div class="card-sub">${l.farm} · ${l.location}</div>
-        <div class="card-price">$${l.price.toFixed(2)}<span>/lb</span> <span style="font-weight:400;font-size:12px;color:var(--text-secondary)">${l.distance}</span></div>
-      </div>
+    <!-- TOAST COMPONENT -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-full text-sm font-medium shadow-xl hidden z-[2000] opacity-0 transition-opacity">
+        Success message here
     </div>
-  `).join('');
-}
 
-function renderAnimalBrowse() {
-  const types = ['Beef','Pork','Lamb','Venison','Goat','Poultry'];
-  const icons = ['🐄','🐷','🐑','🦌','🐐','🐔'];
-  const c = document.getElementById('animal-browse');
-  if (!c) return;
-  c.innerHTML = types.map((t,i) => `<div class="filter-chip" onclick="filterByType('${t}')">${icons[i]} ${t}</div>`).join('');
-}
+    <!-- ==========================================
+         JAVASCRIPT LOGIC
+         ========================================== -->
+    <script>
+        // 🚀 CORE NAVIGATION
+        function navigateTo(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+            document.getElementById('screen-' + screenId).classList.remove('hidden');
+            window.scrollTo(0, 0);
+            
+            // UI Tweaks per screen
+            document.getElementById('gemini-fab').classList.toggle('hidden', screenId === 'auth');
+            const ticker = document.querySelector('.ticker-wrap');
+            if (ticker) ticker.classList.toggle('hidden', screenId !== 'home-Farmer');
+            
+            // Nav Icon Highlights
+            document.querySelectorAll('nav button').forEach(b => b.classList.replace('text-emerald-600', 'text-gray-400'));
+            const navIndex = ['home-Farmer', 'find-processors', 'page-admin', 'profile'].indexOf(screenId);
+            if (navIndex >= 0) document.querySelectorAll('nav button')[navIndex].classList.replace('text-gray-400', 'text-emerald-600');
+        }
 
-// ═══════════════════════════ MARKET ══════════════════════════
-function renderMarketGrid() {
-  const container = document.getElementById('market-grid');
-  if (!container) return;
-  let listings = [...LISTINGS];
-  if (_marketTab && _marketTab !== 'all') listings = listings.filter(l => l.type.toLowerCase() === _marketTab.toLowerCase());
-  container.innerHTML = listings.map(l => `
-    <div class="card" onclick="openListing(${l.id})" style="cursor:pointer">
-      <div style="position:relative">
-        <img class="card-img" src="${l.img}" alt="${l.breed}" loading="lazy" />
-        <span class="pill dark" style="position:absolute;top:10px;left:10px">${l.type}</span>
-        <button onclick="event.stopPropagation();toggleFavorite(${l.id})" style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.9);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:16px">${_favorites.has(l.id)?'❤️':'🤍'}</button>
-      </div>
-      <div class="card-body">
-        <div class="card-title">${l.breed}</div>
-        <div class="card-sub">${l.farm} · ${l.distance}</div>
-        <div class="card-price">$${l.price.toFixed(2)}<span>/lb</span></div>
-        <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:4px">${l.certified.map(c => `<span class="pill green" style="font-size:10px;padding:2px 8px">${c}</span>`).join('')}</div>
-      </div>
-    </div>
-  `).join('');
-}
+        // 🔐 AUTH & IDENTITY
+        function toggleCaptcha() {
+            const checked = document.getElementById('captcha-check').checked;
+            const btn = document.getElementById('btn-google-auth');
+            btn.disabled = !checked;
+            btn.classList.toggle('opacity-50', !checked);
+        }
+        function showGoogleAuth() { showToast("Opening Account Picker..."); setTimeout(() => finishAuth(), 1500); }
+        function finishAuth() { showToast("Signed in as Mychal Stitts"); navigateTo('home-Farmer'); }
 
-function setMarketTab(el, tab) {
-  _marketTab = tab;
-  document.querySelectorAll('#market-tabs .filter-chip').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  renderMarketGrid();
-}
+        // 🤖 NATURAL LANGUAGE SEARCH (NLP)
+        function processNLP(query) {
+            const chip = document.getElementById('nlp-chip');
+            const card = document.getElementById('proc-card-bemidji');
+            if (query.toLowerCase().includes('usda') || query.toLowerCase().includes('cert')) {
+                chip.classList.remove('hidden');
+                card.style.borderColor = '#4285F4';
+                card.style.borderWidth = '2px';
+            } else {
+                chip.classList.add('hidden');
+                card.style.borderColor = '';
+            }
+        }
 
-function filterByType(type) {
-  goTo('market');
-  _marketTab = type.toLowerCase();
-  setTimeout(renderMarketGrid, 100);
-}
+        // 💬 BUSINESS CHAT
+        function openBusinessChat(name) {
+            document.getElementById('chat-biz-title').innerText = name;
+            document.getElementById('modal-biz-chat').classList.remove('hidden');
+        }
+        function sendBizMsg(text) {
+            const content = document.getElementById('biz-chat-content');
+            content.innerHTML += `<div class="bg-blue-600 text-white p-3 rounded-lg ml-auto max-w-[85%] text-sm shadow-sm">${text}</div>`;
+            setTimeout(() => {
+                content.innerHTML += `<div class="bg-white p-3 rounded-lg border text-sm max-w-[85%] shadow-sm">Our kill fee is $120. We have openings starting May 18th!</div>`;
+                content.scrollTop = content.scrollHeight;
+            }, 1000);
+        }
 
-// ═══════════════════════════ LISTING DETAIL ══════════════════
-function openListing(id) {
-  _selectedListing = LISTINGS.find(l => l.id === id);
-  if (!_selectedListing) return;
-  const l = _selectedListing;
-  const heroImg = document.getElementById('detail-hero-img');
-  if (heroImg) heroImg.src = l.img;
-  const fields = {
-    'detail-breed': l.breed, 'detail-type': l.type, 'detail-farm': l.farm,
-    'detail-location': l.location, 'detail-price': '$' + l.price.toFixed(2) + '/lb',
-    'detail-weight': l.weight + ' lbs live weight', 'detail-unit': l.unit + ' animal',
-    'detail-distance': l.distance, 'detail-rating': l.rating + '★ (' + l.reviews + ' reviews)',
-    'detail-desc': l.desc
-  };
-  Object.entries(fields).forEach(([elId, val]) => { const el = document.getElementById(elId); if (el) el.textContent = val; });
-  const certEl = document.getElementById('detail-certs');
-  if (certEl) certEl.innerHTML = l.certified.map(c => `<span class="pill green" style="font-size:11px">${c}</span>`).join('');
-  const shareEl = document.getElementById('detail-shares');
-  if (shareEl) shareEl.textContent = l.shares + ' share' + (l.shares !== 1 ? 's' : '') + ' available';
-  const favBtn = document.getElementById('detail-fav');
-  if (favBtn) { favBtn.textContent = _favorites.has(l.id) ? '❤️' : '🤍'; favBtn.onclick = () => { toggleFavorite(l.id); favBtn.textContent = _favorites.has(l.id) ? '❤️' : '🤍'; }; }
-  goTo('detail');
-}
+        // 🔥 FIREBASE REALTIME PRICE FLUCTUATION
+        setInterval(() => {
+            const beefEl = document.getElementById('p-beef');
+            if (beefEl) {
+                let val = parseFloat(beefEl.innerText.replace('$', ''));
+                beefEl.innerText = '$' + (val + (Math.random() * 0.10 - 0.05)).toFixed(2);
+            }
+        }, 4000);
 
-function addToBag(id) {
-  const l = _selectedListing || LISTINGS.find(li => li.id === id);
-  if (!l) return;
-  const existing = _bag.find(b => b.id === l.id);
-  if (existing) existing.qty = (existing.qty || 1) + 1;
-  else _bag.push({ ...l, qty: 1 });
-  updateBagBadge();
-  showToast(l.breed + ' added to bag!');
-}
+        // 📊 ADMIN TABS
+        function showAdminTab(tab) {
+            document.getElementById('admin-overview').classList.toggle('hidden', tab !== 'overview');
+            document.getElementById('admin-analytics').classList.toggle('hidden', tab !== 'analytics');
+            document.querySelectorAll('button[onclick*="showAdminTab"]').forEach(b => {
+                b.classList.remove('border-b-2', 'border-emerald-500', 'text-emerald-600');
+                b.classList.add('text-gray-400');
+            });
+            event.currentTarget.classList.add('border-b-2', 'border-emerald-500', 'text-emerald-600');
+        }
 
-function selectShare() { showToast('Share request sent to farmer!'); }
+        // 📝 AI GENERATOR & SYNC
+        function openDocsGenerator() { document.getElementById('modal-docs').classList.remove('hidden'); }
+        function showCalendarModal() { 
+            showToast("📅 Syncing to Google Calendar...");
+            setTimeout(() => document.getElementById('modal-meet').classList.remove('hidden'), 1500);
+        }
 
-function updateBagBadge() {
-  const badge = document.getElementById('bag-badge');
-  if (badge) { badge.textContent = _bag.length; badge.style.display = _bag.length > 0 ? 'flex' : 'none'; }
-}
+        // ☁️ FCM NOTIFICATIONS
+        function openFCMModal() { document.getElementById('modal-fcm').classList.remove('hidden'); }
+        function sendFCM() {
+            const btn = document.getElementById('btn-fcm-send');
+            btn.innerText = "Sending...";
+            setTimeout(() => {
+                btn.innerText = "✓ Sent via Firebase Cloud Messaging";
+                btn.style.backgroundColor = "#059669";
+                setTimeout(() => { closeModals(); btn.innerText = "Send via Firebase FCM"; btn.style.backgroundColor = ""; }, 1500);
+            }, 1500);
+        }
 
-// ═══════════════════════════ BAG ═════════════════════════════
-function renderBag() {
-  const list = document.getElementById('bag-items');
-  const empty = document.getElementById('bag-empty');
-  const summary = document.getElementById('bag-summary');
-  if (!list) return;
-  if (_bag.length === 0) { list.innerHTML = ''; if(empty) empty.style.display='block'; if(summary) summary.style.display='none'; return; }
-  if(empty) empty.style.display='none'; if(summary) summary.style.display='block';
-  let subtotal = 0;
-  list.innerHTML = _bag.map((item, idx) => {
-    const itemTotal = item.price * item.weight * 0.6;
-    subtotal += itemTotal;
-    return `<div class="bag-item card" style="display:flex;align-items:center;gap:12px;padding:16px">
-      <img src="${item.img}" class="bag-img" style="width:72px;height:72px;border-radius:12px;object-fit:cover;flex-shrink:0" />
-      <div class="bag-item-info" style="flex:1">
-        <div class="bag-item-title" style="font-weight:600;font-size:15px">${item.breed}</div>
-        <div class="bag-item-sub" style="font-size:13px;color:var(--text-secondary)">${item.farm}</div>
-        <div class="bag-item-price" style="font-size:13px;color:var(--text-secondary)">$${item.price.toFixed(2)}/lb · est. $${itemTotal.toFixed(2)}</div>
-      </div>
-      <button class="bag-item-remove" onclick="removeFromBag(${idx})" style="background:none;border:none;color:#FF3B30;font-size:20px;cursor:pointer;padding:4px">✕</button>
-    </div>`;
-  }).join('');
-  const fee = subtotal * 0.03;
-  const subEl = document.getElementById('bag-subtotal'); if(subEl) subEl.textContent='$'+subtotal.toFixed(2);
-  const feeEl = document.getElementById('bag-fee'); if(feeEl) feeEl.textContent='$'+fee.toFixed(2);
-  const totEl = document.getElementById('bag-total'); if(totEl) totEl.textContent='$'+(subtotal+fee).toFixed(2);
-}
+        // 🌍 MISC UI
+        function showProcessor(name) {
+            document.getElementById('sheet-title').innerText = name;
+            document.getElementById('processor-sheet').classList.add('active');
+        }
+        function toggleGemini() { document.getElementById('modal-gemini').classList.toggle('hidden'); }
+        function closeModals() {
+            document.querySelectorAll('.modal-overlay').forEach(m => m.classList.add('hidden'));
+            document.querySelectorAll('.bottom-sheet').forEach(s => s.classList.remove('active'));
+        }
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.replace('opacity-0', 'opacity-100'), 10);
+            setTimeout(() => {
+                t.classList.replace('opacity-100', 'opacity-0');
+                setTimeout(() => t.classList.add('hidden'), 500);
+            }, 2500);
+        }
+        function showSheetsExport() { showToast("Exporting to Google Sheets..."); setTimeout(() => showToast("✅ Export complete!"), 2000); }
 
-function removeFromBag(idx) { _bag.splice(idx,1); updateBagBadge(); renderBag(); }
-
-function renderCheckout() {
-  const itemsEl = document.getElementById('checkout-items');
-  const totalEl = document.getElementById('checkout-total');
-  if (!itemsEl) return;
-  let total = 0;
-  itemsEl.innerHTML = _bag.map(item => { const t = item.price * item.weight * 0.6; total += t; return `<div class="summary-row" style="display:flex;justify-content:space-between;padding:6px 0"><span>${item.breed}</span><span>$${t.toFixed(2)}</span></div>`; }).join('');
-  if (totalEl) totalEl.textContent = '$' + (total * 1.03).toFixed(2);
-}
-
-function placeOrder() {
-  _orderCount++;
-  const num = document.getElementById('order-num');
-  if (num) num.textContent = 'PO-' + String(_orderCount).padStart(5, '0');
-  _bag = []; updateBagBadge();
-  goTo('confirmed');
-}
-
-function toggleStep(step) {
-  const body = document.getElementById('step-body-' + step);
-  if (body) body.style.display = body.style.display === 'none' ? 'block' : 'none';
-}
-
-function selectPayment(el, type) {
-  document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
-  el.classList.add('selected');
-  const cardForm = document.getElementById('card-form');
-  if (cardForm) cardForm.style.display = type === 'card' ? 'block' : 'none';
-}
-
-// ═══════════════════════════ FAVORITES ═══════════════════════
-function toggleFavorite(id) {
-  if (_favorites.has(id)) { _favorites.delete(id); showToast('Removed from saved'); }
-  else { _favorites.add(id); showToast('Saved to favorites!'); }
-  renderFeaturedListings(); renderMarketGrid();
-}
-
-function renderFavorites() {
-  const c = document.getElementById('favorites-content');
-  if (!c) return;
-  const favs = LISTINGS.filter(l => _favorites.has(l.id));
-  if (!favs.length) { c.innerHTML = `<div style="text-align:center;padding:60px 24px"><div style="font-size:48px;margin-bottom:16px">❤️</div><div style="font-size:18px;font-weight:600;margin-bottom:8px">No saved listings</div><div style="color:var(--text-secondary);margin-bottom:24px">Tap the heart on any listing to save it.</div><button class="btn btn-primary" onclick="goTo('market')">Browse Market</button></div>`; return; }
-  c.innerHTML = `<div class="listing-grid">${favs.map(l=>`<div class="card" onclick="openListing(${l.id})" style="cursor:pointer"><img class="card-img" src="${l.img}" /><div class="card-body"><div class="card-title">${l.breed}</div><div class="card-sub">${l.farm}</div><div class="card-price">$${l.price.toFixed(2)}<span>/lb</span></div></div></div>`).join('')}</div>`;
-}
-
-// ═══════════════════════════ ORDERS ══════════════════════════
-function setOrderTab(el, tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  ['active','completed','cancelled'].forEach(t => { const e2 = document.getElementById('orders-'+t); if(e2) e2.style.display = t===tab?'block':'none'; });
-}
-
-// ═══════════════════════════ FILTER ══════════════════════════
-function openFilter() { const m = document.getElementById('filter-modal'); if(m) m.classList.add('active'); }
-function closeFilter(event) { if (!event || event.target.id === 'filter-modal') { const m = document.getElementById('filter-modal'); if(m) m.classList.remove('active'); } }
-function applyFilter() { closeFilter(); renderMarketGrid(); showToast('Filters applied'); }
-
-// ═══════════════════════════ ALERTS ══════════════════════════
-function markAllRead() { document.querySelectorAll('.alert-item').forEach(a => { a.classList.remove('unread'); const dot = a.querySelector('.alert-dot'); if(dot) dot.remove(); }); updateAlertBadge(0); showToast('All alerts marked as read'); }
-function updateAlertBadge(count) { const b = document.getElementById('alert-badge'); if(b) { b.textContent = count; b.style.display = count > 0 ? 'flex' : 'none'; } }
-
-// ═══════════════════════════ SELL ════════════════════════════
-function addPhotoSlot() { showToast('Photo upload coming soon'); }
-function submitListing() { const type = document.getElementById('sell-type'); if (!type||!type.value) { showToast('Please select an animal type'); return; } showToast('Listing posted!'); setTimeout(()=>goTo('home'),1500); }
-
-// ═══════════════════════════ CHAT ════════════════════════════
-function sendMessage() {
-  const input = document.getElementById('chat-input');
-  if (!input || !input.value.trim()) return;
-  const msgs = document.getElementById('chat-messages');
-  const msg = input.value.trim();
-  msgs.innerHTML += `<div class="chat-msg sent"><div class="msg-bubble">${msg}</div><div class="msg-time">Just now</div></div>`;
-  input.value = ''; msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => { msgs.innerHTML += `<div class="chat-msg received"><div class="msg-bubble">Thanks! I'll get back to you shortly.</div><div class="msg-time">Just now</div></div>`; msgs.scrollTop = msgs.scrollHeight; }, 1000);
-}
-
-// ═══════════════════════════ TOAST ═══════════════════════════
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.classList.add('show');
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
-}
-
-// ═══════════════════════════ INIT ════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('page-splash').classList.add('active');
-  updateBagBadge(); updateAlertBadge(2);
-  const chatInput = document.getElementById('chat-input');
-  if (chatInput) chatInput.addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
-});
-</script>
+        // Start at Auth
+        navigateTo('auth');
+    </script>
 </body>
 </html>
