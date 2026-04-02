@@ -1,7 +1,7 @@
 import { useApp } from '../../context/AppContext';
 import { ScreenId } from '../../types';
 
-const NAV_SCREENS: ScreenId[] = ['onboard', 'chat', 'checkout', 'confirmed'];
+const NAV_SCREENS: ScreenId[] = ['onboard', 'chat', 'checkout', 'confirmed, 'bag'']
 
 export function BottomNav() {
   const { currentScreen, goTo } = useApp();
